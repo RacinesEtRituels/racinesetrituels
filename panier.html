@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mon Panier</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#e64c19",
+            "background-light": "#f8f6f6",
+            "background-dark": "#211511",
+            "beige-light": "#F5F5DC",
+            "terracotta": "#E2725B",
+            "green-soft": "#A9B6A9"
+          },
+          fontFamily: {
+            "display": ["Epilogue", "sans-serif"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.5rem",
+            "lg": "1rem",
+            "xl": "1.5rem",
+            "full": "9999px"
+          },
+        },
+      },
+    }
+  </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-beige-light dark:bg-background-dark font-display">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="flex items-center p-4 pb-2 justify-between bg-beige-light dark:bg-background-dark">
+<div class="text-gray-800 dark:text-white flex size-12 shrink-0 items-center" data-icon="ArrowLeft" data-size="24px" data-weight="regular">
+<span class="material-symbols-outlined">arrow_back</span>
+</div>
+<h2 class="text-gray-800 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">Mon Panier</h2>
+<div class="flex w-12 items-center justify-end">
+<button class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 bg-transparent text-gray-800 dark:text-white gap-2 text-base font-bold leading-normal tracking-[0.015em] min-w-0 p-0">
+<div class="relative">
+<span class="material-symbols-outlined text-gray-800 dark:text-white">shopping_cart</span>
+<span class="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-terracotta text-white text-xs font-bold">2</span>
+</div>
+</button>
+</div>
+</div>
+<div class="flex-grow p-4 space-y-4">
+<div class="flex gap-4 bg-white dark:bg-background-dark/50 p-4 rounded-xl justify-between shadow-sm">
+<div class="flex items-start gap-4">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-lg size-[70px]" data-alt="Un sachet de 10 tiges de Khamaré" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCdEsc0-c6Lt1-Kn3gEbJz3NTiACGSOPAP1UgT93bFbboLheoHFXjhs6-vPUeNIf-KlBufikZ53OwWb--xY8bE_nCq0wYTS8ccYosburz-qPBfo75CtWsW3EJLjGJDgnjkcTsPzki0THvLQ3UlWvbN6LTSP3R1yWKSjvbDKJ-S6Hr-O7QJWfae5PoS13Rp-26_71rByDACfl7JCyf8BqAz8m4rWWJ93CACv99C1G4LoGgBpz1ZHdL7OYX9x55cpZ_PTsu_8AIANBpbc");'></div>
+<div class="flex flex-1 flex-col justify-center">
+<p class="text-gray-800 dark:text-white text-base font-medium leading-normal">Khamaré - Sachet de 10 tiges</p>
+<p class="text-green-soft dark:text-green-soft/80 text-sm font-normal leading-normal">€12.00</p>
+</div>
+</div>
+<div class="flex flex-col items-end justify-between shrink-0">
+<button class="text-terracotta">
+<span class="material-symbols-outlined text-xl">delete</span>
+</button>
+<div class="flex items-center gap-2 text-gray-800 dark:text-white">
+<button class="text-base font-medium leading-normal flex h-7 w-7 items-center justify-center rounded-full bg-beige-light/80 dark:bg-background-dark/80 cursor-pointer">-</button>
+<input class="text-base font-medium leading-normal w-6 p-0 text-center bg-transparent focus:outline-0 focus:ring-0 focus:border-none border-none [appearance:textfield] [&amp;::-webkit-inner-spin-button]:appearance-none [&amp;::-webkit-outer-spin-button]:appearance-none" type="number" value="1"/>
+<button class="text-base font-medium leading-normal flex h-7 w-7 items-center justify-center rounded-full bg-beige-light/80 dark:bg-background-dark/80 cursor-pointer">+</button>
+</div>
+</div>
+</div>
+<div class="flex gap-4 bg-white dark:bg-background-dark/50 p-4 rounded-xl justify-between shadow-sm">
+<div class="flex items-start gap-4">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-lg size-[70px]" data-alt="Des fleurs d'hibiscus séchées bio dans un bol" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAsueod0jJVlckVy7X1YSyre69GrPpNuImdsn9bxvILVeT4J2owflGvinHMRSskl4-whfO08rHNdrKkYKzKi2_NrCBjMJKsdkxxdQ5sm5aQ2YGYk5dj4ddBwBk6h74sF7eBDb5jX0n94VqjEybTOGC_QUVL8YFDMhpzexCY2TBLuI0fUDrNpT01hpF-syk1K07bcCmv5khJQX_e5hOMRPq5wiLt--xdaOL9TGXY5mmFF5eCwILiCon2HrEzQxu2_SYt0qBxN2EKciSP");'></div>
+<div class="flex flex-1 flex-col justify-center">
+<p class="text-gray-800 dark:text-white text-base font-medium leading-normal">Fleurs d'Hibiscus séchées Bio</p>
+<p class="text-green-soft dark:text-green-soft/80 text-sm font-normal leading-normal">€8.50</p>
+</div>
+</div>
+<div class="flex flex-col items-end justify-between shrink-0">
+<button class="text-terracotta">
+<span class="material-symbols-outlined text-xl">delete</span>
+</button>
+<div class="flex items-center gap-2 text-gray-800 dark:text-white">
+<button class="text-base font-medium leading-normal flex h-7 w-7 items-center justify-center rounded-full bg-beige-light/80 dark:bg-background-dark/80 cursor-pointer">-</button>
+<input class="text-base font-medium leading-normal w-6 p-0 text-center bg-transparent focus:outline-0 focus:ring-0 focus:border-none border-none [appearance:textfield] [&amp;::-webkit-inner-spin-button]:appearance-none [&amp;::-webkit-outer-spin-button]:appearance-none" type="number" value="2"/>
+<button class="text-base font-medium leading-normal flex h-7 w-7 items-center justify-center rounded-full bg-beige-light/80 dark:bg-background-dark/80 cursor-pointer">+</button>
+</div>
+</div>
+</div>
+</div>
+<div class="p-4 space-y-4 bg-white dark:bg-background-dark/50 rounded-t-xl mt-auto">
+<div class="flex max-w-[480px] flex-wrap items-end gap-2">
+<label class="flex flex-col min-w-40 flex-1">
+<div class="flex w-full flex-1 items-stretch rounded-full">
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-full text-gray-800 dark:text-white focus:outline-0 focus:ring-2 focus:ring-terracotta/50 border border-gray-300 dark:border-gray-700 bg-beige-light dark:bg-background-dark/80 focus:border-terracotta h-12 placeholder:text-green-soft dark:placeholder:text-green-soft/80 px-4 text-base font-normal leading-normal" placeholder="Entrez votre code promo" value=""/>
+</div>
+</label>
+<button class="flex items-center justify-center rounded-full h-12 px-6 bg-green-soft text-white text-base font-bold">Appliquer</button>
+</div>
+<div class="p-4 bg-beige-light/50 dark:bg-background-dark/30 rounded-xl">
+<div class="flex justify-between gap-x-6 py-2">
+<p class="text-green-soft dark:text-green-soft/80 text-sm font-normal leading-normal">Sous-total</p>
+<p class="text-gray-800 dark:text-white text-sm font-medium leading-normal text-right">€29.00</p>
+</div>
+<div class="flex justify-between gap-x-6 py-2">
+<p class="text-green-soft dark:text-green-soft/80 text-sm font-normal leading-normal">Livraison (estimée)</p>
+<p class="text-gray-800 dark:text-white text-sm font-medium leading-normal text-right">€5.00</p>
+</div>
+<div class="border-t border-gray-300 dark:border-gray-700 my-2"></div>
+<div class="flex justify-between gap-x-6 py-2">
+<p class="text-gray-800 dark:text-white text-base font-bold leading-normal">Total</p>
+<p class="text-gray-800 dark:text-white text-base font-bold leading-normal text-right">€34.00</p>
+</div>
+</div>
+<div class="flex flex-col items-center gap-2 pt-2">
+<button class="w-full flex items-center justify-center rounded-full h-14 px-6 bg-terracotta text-white text-lg font-bold shadow-lg hover:bg-terracotta/90 transition-colors">
+            Valider mon panier et payer
+          </button>
+<div class="flex items-center justify-center gap-2 text-green-soft dark:text-green-soft/80 text-xs mt-2">
+<span class="material-symbols-outlined text-base">lock</span>
+<span>Paiement sécurisé</span>
+</div>
+</div>
+</div>
+</div>
+</body></html>

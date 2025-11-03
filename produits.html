@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Fiche Produit - Khamaré</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#E07A5F",
+            "background-light": "#F5F5DC",
+            "background-dark": "#211511",
+            "text-light": "#3D405B",
+            "text-dark": "#F4F1DE",
+            "accent": "#8FBC8F"
+          },
+          fontFamily: {
+            "display": ["Epilogue", "sans-serif"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.5rem",
+            "lg": "1rem",
+            "xl": "1.5rem",
+            "full": "9999px"
+          },
+        },
+      },
+    }
+  </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="@container">
+<div class="@[480px]:px-4 @[480px]:py-3">
+<div class="w-full bg-center bg-no-repeat bg-cover flex flex-col justify-end overflow-hidden @[480px]:rounded-xl min-h-80" data-alt="Fleurs d'hibiscus séchées sur une surface en bois clair" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAgtq9a_iB5ErWpgi1ziSBthK8DUHoEwzFbfHNu8dhSRaTNDVwonoCdCluAPVoAIoVrNuzip3Cc0EttfkcX5NVNmdxlvWFrZLC48tTQdmuCTkiFxAwP5W6lHx2-nMYc_ML7_eDCvzIdZ7V_rVy7oIXZqsPyeKRsxrR6KfGTpv6SuBOLD-OmgvCRv2bBs63jrHesz3Nw1RfSYAcu2zpPB68i6UNhDgfDquIMkdF-tgkPODne5-NBAejIMV8jDu9eiNbCTTMDY0Iznek3");'></div>
+</div>
+</div>
+<h1 class="text-text-light dark:text-text-dark tracking-light text-[32px] font-bold leading-tight px-4 text-left pb-3 pt-6 text-primary">Khamaré</h1>
+<p class="text-text-light dark:text-text-dark text-base font-normal leading-normal pb-3 pt-1 px-4">
+      Découvrez les propriétés apaisantes et purifiantes du Khamaré, une herbe traditionnelle utilisée depuis des générations pour favoriser le bien-être et l'équilibre intérieur.
+    </p>
+<div class="flex flex-col p-4">
+<details class="flex flex-col border-t border-t-accent/50 py-2 group" open="">
+<summary class="flex cursor-pointer items-center justify-between gap-6 py-2">
+<p class="text-primary text-sm font-medium leading-normal">Bienfaits</p>
+<span class="material-symbols-outlined text-primary group-open:rotate-180">expand_more</span>
+</summary>
+<p class="text-text-light dark:text-text-dark text-sm font-normal leading-normal pb-2">
+          Le Khamaré est reconnu pour ses nombreux bienfaits, notamment pour favoriser une digestion saine, réduire le stress et améliorer la clarté de la peau. C'est une source naturelle d'antioxydants et de vitamines.
+        </p>
+</details>
+<details class="flex flex-col border-t border-t-accent/50 py-2 group">
+<summary class="flex cursor-pointer items-center justify-between gap-6 py-2">
+<p class="text-primary text-sm font-medium leading-normal">Préparation</p>
+<span class="material-symbols-outlined text-primary group-open:rotate-180">expand_more</span>
+</summary>
+<p class="text-text-light dark:text-text-dark text-sm font-normal leading-normal pb-2">
+          Infuser une tige dans de l'eau chaude pendant 5 à 7 minutes. Peut être dégusté chaud ou froid. Pour une saveur plus intense, laissez infuser plus longtemps.
+        </p>
+</details>
+<details class="flex flex-col border-t border-t-accent/50 py-2 group">
+<summary class="flex cursor-pointer items-center justify-between gap-6 py-2">
+<p class="text-primary text-sm font-medium leading-normal">Origine</p>
+<span class="material-symbols-outlined text-primary group-open:rotate-180">expand_more</span>
+</summary>
+<p class="text-text-light dark:text-text-dark text-sm font-normal leading-normal pb-2">
+          Notre Khamaré est récolté à la main dans les régions d'Afrique de l'Ouest, où il pousse à l'état sauvage. Nous travaillons directement avec des coopératives locales pour garantir un produit authentique et de la plus haute qualité.
+        </p>
+</details>
+<details class="flex flex-col border-t border-b border-b-accent/50 border-t-accent/50 py-2 group">
+<summary class="flex cursor-pointer items-center justify-between gap-6 py-2">
+<p class="text-primary text-sm font-medium leading-normal">Anecdote culturelle</p>
+<span class="material-symbols-outlined text-primary group-open:rotate-180">expand_more</span>
+</summary>
+<p class="text-text-light dark:text-text-dark text-sm font-normal leading-normal pb-2">
+          Traditionnellement, le Khamaré est offert aux jeunes mariées pour favoriser la fertilité et le bien-être du couple. C'est un symbole de pureté et de santé.
+        </p>
+</details>
+</div>
+<div class="flex px-4 py-3 justify-center mt-4">
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 px-5 flex-1 bg-primary text-white text-base font-bold leading-normal tracking-[0.015em] shadow-md hover:shadow-lg transition-shadow">
+<span class="truncate">Ajouter au panier</span>
+</button>
+</div>
+</div>
+</body></html>

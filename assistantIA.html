@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ton conseiller bien-être</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#e64c19",
+              "background-light": "#f8f6f6",
+              "background-dark": "#211511",
+              "advisor-bubble": "#D8A399",
+              "user-bubble": "#E0E6E2",
+            },
+            fontFamily: {
+              "display": ["Epilogue", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="sticky top-0 z-10 flex items-center bg-background-light dark:bg-background-dark p-4 pb-2 justify-between">
+<div class="flex size-12 shrink-0 items-center justify-center">
+<span class="material-symbols-outlined text-[#1b110e] dark:text-white">arrow_back</span>
+</div>
+<h2 class="text-[#1b110e] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">Ton conseiller bien-être</h2>
+<div class="flex w-12 items-center justify-end">
+<button class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 bg-transparent text-[#1b110e] dark:text-white gap-2 text-base font-bold leading-normal tracking-[0.015em] min-w-0 p-0">
+<span class="material-symbols-outlined">replay</span>
+</button>
+</div>
+</div>
+<div class="flex flex-col gap-4 p-4">
+<div class="flex items-end gap-3">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-10 shrink-0" data-alt="Avatar of the wellness advisor" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCtgWXtPt4-aIhuyOxotKFIf904fSnyZeprqlGITyGgILOfISbzBgacfDQjL2RPa8MCXG-okNzi4YmnhoFY0LtwwU7a-c8GhmcvZ8WJTWepHVy_0zqDmAPyAwpQkVH_10mKhe5JH90WzIv_phthLWM8VBbhM-BI2qNsRX7yQwsaVi8gfTVor1AF0ACIdOilq2nZUshR2UXVddvq5XcH7sc_Y0Z-bwkdSYjyFVdeBMKeZfifu9JM_KAb4hV8CkcOcL8b7adIQ61lchAz");'></div>
+<div class="flex flex-1 flex-col gap-1 items-start">
+<p class="text-[#97604e] dark:text-gray-400 text-[13px] font-normal leading-normal max-w-[360px]">Wellness Advisor</p>
+<p class="text-base font-normal leading-normal flex max-w-[360px] rounded-xl px-4 py-3 bg-advisor-bubble/50 dark:bg-advisor-bubble/20 text-[#1b110e] dark:text-white">
+                        Bonjour ! Je suis là pour t'aider à trouver le soin naturel qui te correspond. Prêt(e) ?
+                    </p>
+</div>
+</div>
+<div class="flex flex-col gap-3">
+<div class="flex gap-6 justify-between"><p class="text-[#1b110e] dark:text-gray-300 text-base font-medium leading-normal">1/3</p></div>
+<div class="rounded bg-user-bubble dark:bg-gray-700"><div class="h-2 rounded bg-primary" style="width: 33.33%;"></div></div>
+</div>
+<div class="flex items-end gap-3">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-10 shrink-0" data-alt="Avatar of the wellness advisor" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBT4G6vFQGH1dWUvgwSgKLBODTj3pb-kZccb-pBAS6xKBOunzV313CxVHHcRQC0gIwTq6Xe03eNoTxU_7SDui_sihVVmjKFqElzHwayYsITtUgPLXH335p7fM-2vMxO2CtGibvE3IRF8hRPnl6lS1g84BQ74mVze1oKTQ47jYz1-17qwCQLvatordEPmt5bEDhEitBroyLTmROyj8ahVA2RjQLO-C7KOl6qe0GM48DivwQTf3x99S8bVFa3sUnz0b72Aqk5z4IAjt3L");'></div>
+<div class="flex flex-1 flex-col gap-1 items-start">
+<p class="text-[#97604e] dark:text-gray-400 text-[13px] font-normal leading-normal max-w-[360px]">Wellness Advisor</p>
+<p class="text-base font-normal leading-normal flex max-w-[360px] rounded-xl px-4 py-3 bg-advisor-bubble/50 dark:bg-advisor-bubble/20 text-[#1b110e] dark:text-white">
+                        Comment te sens-tu aujourd'hui ou quel est ton objectif principal ?
+                    </p>
+</div>
+</div>
+<div class="flex justify-center py-2">
+<div class="flex flex-1 gap-3 max-w-[480px] flex-col items-stretch">
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 px-5 bg-user-bubble dark:bg-gray-700 text-[#1b110e] dark:text-white text-base font-bold leading-normal tracking-[0.015em] w-full">
+<span class="truncate">Besoin d'énergie</span>
+</button>
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 px-5 bg-primary text-white text-base font-bold leading-normal tracking-[0.015em] w-full">
+<span class="truncate">Envie de me détendre</span>
+</button>
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 px-5 bg-user-bubble dark:bg-gray-700 text-[#1b110e] dark:text-white text-base font-bold leading-normal tracking-[0.015em] w-full">
+<span class="truncate">Améliorer ma digestion</span>
+</button>
+</div>
+</div>
+<div class="flex items-end gap-3 justify-end">
+<div class="flex flex-1 flex-col gap-1 items-end">
+<p class="text-base font-normal leading-normal flex max-w-[360px] rounded-xl px-4 py-3 bg-primary text-white">
+                        Envie de me détendre
+                    </p>
+</div>
+</div>
+<div class="flex items-end gap-3">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-10 shrink-0" data-alt="Avatar of the wellness advisor" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAOsEwLQMFoIBRKVeErHwdDo8QJ22mwcpUxMQ0pYzKNdc_x_D1-7FykZ5M23x4vCaiE-nxTDsPlM3pFoBoe9h04h72ObF7hbUkRIGcAWme_Owe6mzCDcK27SDBtv7dTlwLHKMDuKgxc5Ax8p5K4fM9SvBncLvf9JuQHThvrVggLhMVGT267Bc5tw-e22l5jbF34KnoLKpxN6aaXAgsz9ZZz8ky6xaNPlfuDMZ-k72p_qqSB6Tyfw-ThmGcul_I77rnhPVyv-BMCI2FI");'></div>
+<div class="flex flex-1 flex-col gap-1 items-start">
+<p class="text-[#97604e] dark:text-gray-400 text-[13px] font-normal leading-normal max-w-[360px]">Wellness Advisor</p>
+<p class="text-base font-normal leading-normal flex max-w-[360px] rounded-xl px-4 py-3 bg-advisor-bubble/50 dark:bg-advisor-bubble/20 text-[#1b110e] dark:text-white">
+                        Super ! Et pour ce moment de détente, tu es plutôt...
+                    </p>
+</div>
+</div>
+<div class="flex justify-center py-2">
+<div class="flex flex-1 gap-3 max-w-[480px] flex-col items-stretch sm:flex-row">
+<button class="flex flex-1 min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 px-5 bg-user-bubble dark:bg-gray-700 text-[#1b110e] dark:text-white text-base font-bold leading-normal tracking-[0.015em]">
+<span class="truncate">Thé chaud</span>
+</button>
+<button class="flex flex-1 min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 px-5 bg-user-bubble dark:bg-gray-700 text-[#1b110e] dark:text-white text-base font-bold leading-normal tracking-[0.015em]">
+<span class="truncate">Boisson fraîche</span>
+</button>
+</div>
+</div>
+<div class="bg-background-light dark:bg-background-dark p-4 rounded-xl shadow-lg mt-4">
+<h3 class="text-lg font-bold text-center text-[#1b110e] dark:text-white mb-3">Voici ma recommandation pour toi !</h3>
+<div class="rounded-xl overflow-hidden mb-4">
+<img alt="Hibiscus tea product" class="w-full h-auto object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBVYi4z4z-HJg-oZshpCHQTKyCmLqAybHv-2N6HSLpvEY7_V82hqHK1F7BmDr9hhOytQi9uSdr-z4hUm67UQsSLPnS7rqcGMYnP5mWCGdwAEb-GiZWXIEiBXCIFNp94CZe2vw6CwZDnARRuQKeH3DAzWMqTeYWFwNtaI3eXyL5EMxVvHvD0Wm1ffgMgOzy_IAJ6h6UWac6ZnvlD1NEpU6TGmArJHJiWBribSEfMGazCSE1LAxB3DUByJ4R0iLHAvo6eA_xGozm315uZ"/>
+</div>
+<p class="text-center text-base text-[#1b110e] dark:text-gray-300 mb-6">
+                    L'hibiscus rouge t'aidera à retrouver vitalité et énergie naturelle 🌺
+                </p>
+<div class="flex flex-col gap-3">
+<button class="flex w-full min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 px-5 bg-primary text-white text-base font-bold leading-normal tracking-[0.015em]">
+<span class="truncate">Ajouter au panier</span>
+</button>
+<button class="flex w-full min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 px-5 bg-user-bubble dark:bg-gray-700 text-[#1b110e] dark:text-white text-base font-bold leading-normal tracking-[0.015em]">
+<span class="truncate">Voir le produit</span>
+</button>
+</div>
+</div>
+</div>
+<div class="h-5 bg-background-light dark:bg-background-dark"></div>
+</div>
+</body></html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Boutique - Coffret Découverte</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;700;800&amp;family=Nunito:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#E07A5F",
+                        "background-light": "#F5F5DC",
+                        "background-dark": "#3D2B1F",
+                        "secondary": "#A3B18A",
+                        "text-light": "#582F0E",
+                        "text-dark": "#F5F5DC"
+                    },
+                    fontFamily: {
+                        "display": ["Epilogue", "sans-serif"],
+                        "body": ["Nunito", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Nunito', sans-serif;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Epilogue', sans-serif;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="flex items-center bg-background-light dark:bg-background-dark p-4 pb-2 justify-between sticky top-0 z-10">
+<div class="text-text-light dark:text-text-dark flex size-12 shrink-0 items-center">
+<span class="material-symbols-outlined text-2xl">arrow_back</span>
+</div>
+<h2 class="text-text-light dark:text-text-dark text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center font-display">Boutique</h2>
+<div class="flex w-12 items-center justify-end">
+<button class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 bg-transparent text-text-light dark:text-text-dark gap-2 text-base font-bold leading-normal tracking-[0.015em] min-w-0 p-0">
+<span class="material-symbols-outlined text-2xl">shopping_cart</span>
+</button>
+</div>
+</div>
+<div class="flex overflow-y-auto [-ms-scrollbar-style:none] [scrollbar-width:none] [&amp;::-webkit-scrollbar]:hidden">
+<div class="flex items-stretch p-4 gap-4">
+<div class="flex h-full flex-1 flex-col gap-4 rounded-lg min-w-[300px] flex-shrink-0">
+<div class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl flex flex-col" data-alt="Image of the Discovery Set box with three products" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAbiLDv41gIaCoUNn4oD1hDxiX4Z3Cgo-KLBPdxxIvcqWOoZXfjXL4rjdATUDkkGJaD2sZf2OhsykpWEeC0TH_Sv6nJ-KtdnHCLC4RlfG3YNgMS7zZbi0bH7ZOjGNMm5Q42v8dv4MwdApV8OO6TgoL3ua4qZ-yYDdO4XQjoW3IMbxPLFkjMRRdBe64kAzf5o7gjY_2P2UIntIhMVvcTQwGs3AnKWGYq3aa8rJE9TnuYO3wmipljuaYbtZ3VkpIwWMtwsryKPbPXMi7l");'></div>
+</div>
+<div class="flex h-full flex-1 flex-col gap-4 rounded-lg min-w-[300px] flex-shrink-0">
+<div class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl flex flex-col" data-alt="Close up on Khamaré stems" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAD4p5jVpDXpbBX_9NzlVXJOua_cJ2h1wf4yl_0vRECoi9VgQcvCICsFJOnFiVPTKeGSwCYMdfispQgioDnj7i5_q0New3fQ-sge0pZ8_6VlutNRkCeTtTNTRTS0lkXfJtQr66LeUxOwcgo_Bt0xA59HcRlUfb3O1o4MzPnJz77aw0lVaY5Q7lRm7XddwW2HOu8jvyAnhOov6mVpMo7ajyvfD3zYErY_0gPy77p6teZFyLFg6EovuJ2qbtytdudD8ScBU8nj88eQyMq");'></div>
+</div>
+<div class="flex h-full flex-1 flex-col gap-4 rounded-lg min-w-[300px] flex-shrink-0">
+<div class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl flex flex-col" data-alt="Red hibiscus flowers" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCnizX7yFp2bhqXZHBM2xkPxp_I07iDqjLGhd3EXQHkQAbOoSIAxQsjEcRdA0pmh1pNvo87SYv68XfJaZD5ZEYLXVd6t7lKGRTTQWt8C63EjwrGm8M8-vexDFvcDmFeyQTpdGqGS_UwIsaHO99RBEv6ZW_n_0kSeebVUNJKIJlMqJn0OHb6ICzo0hFYBkFtjy_TrPYQPHvyOOsZHWc6jKVqRzh9rQl-dwa-uTEdScePX3rALwiXn8o8osINMywrbGocRrcto6cq3izi");'></div>
+</div>
+<div class="flex h-full flex-1 flex-col gap-4 rounded-lg min-w-[300px] flex-shrink-0">
+<div class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl flex flex-col" data-alt="White hibiscus flowers" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuANdd-32shrxPHgo7wD98SFdVzfeVyorTHE-1fkwyKgl8nbyPAx4BzoNZStvj1fuXP5PPim76pnx1HcfBRuj14yrk5n6dQ8qORedU0Pt57S7-PwEMw966chzrWBZ5V4v_PqP3W_WAgcnMsXzqaB-44N0aTp5UfiYZRw6F5yxVSu8UlKrASY51laE6xDjaHLa6qCmJL0Tf7Mdw2REoIKd0ZdxpTNQuGrzo2rj_0lnlC-rFR0tXtvQh2IXpxsMI39-aIKINqvcgsmKY2-");'></div>
+</div>
+</div>
+</div>
+<h1 class="text-text-light dark:text-text-dark tracking-tight text-[32px] font-bold leading-tight px-4 text-left pb-1 pt-4 font-display">Coffret Découverte</h1>
+<p class="text-text-light/80 dark:text-text-dark/80 text-base font-normal leading-normal pb-3 pt-1 px-4 font-body">L'essentiel pour votre bien-être au naturel.</p>
+<div class="pb-3 mt-4">
+<div class="flex border-b border-text-light/20 dark:border-text-dark/20 px-4 gap-8">
+<a class="flex flex-col items-center justify-center border-b-[3px] border-b-primary text-text-light dark:text-text-dark pb-[13px] pt-4" href="#">
+<p class="text-sm font-bold leading-normal tracking-[0.015em] font-display">Khamaré</p>
+</a>
+<a class="flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-text-light/60 dark:text-text-dark/60 pb-[13px] pt-4" href="#">
+<p class="text-sm font-bold leading-normal tracking-[0.015em] font-display">Hibiscus Rouge</p>
+</a>
+<a class="flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-text-light/60 dark:text-text-dark/60 pb-[13px] pt-4" href="#">
+<p class="text-sm font-bold leading-normal tracking-[0.015em] font-display">Hibiscus Blanc</p>
+</a>
+</div>
+</div>
+<div class="px-4 py-4 space-y-4">
+<h3 class="text-lg font-bold text-text-light dark:text-text-dark font-display">Bienfaits &amp; Conseils</h3>
+<p class="text-text-light/90 dark:text-text-dark/90 font-body">Les tiges de vétiver, ou Khamaré, sont reconnues pour leurs propriétés purifiantes et apaisantes. Elles sont traditionnellement utilisées pour le bien-être intime féminin, aidant à nettoyer et à rafraîchir naturellement.</p>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2 text-text-light dark:text-text-dark">
+<span class="material-symbols-outlined text-xl text-secondary">spa</span>
+<span class="text-sm font-body">Purifiant</span>
+</div>
+<div class="flex items-center gap-2 text-text-light dark:text-text-dark">
+<span class="material-symbols-outlined text-xl text-secondary">eco</span>
+<span class="text-sm font-body">Naturel</span>
+</div>
+<div class="flex items-center gap-2 text-text-light dark:text-text-dark">
+<span class="material-symbols-outlined text-xl text-secondary">female</span>
+<span class="text-sm font-body">Bien-être intime</span>
+</div>
+</div>
+<p class="text-text-light/90 dark:text-text-dark/90 font-body"><strong>Conseil d'utilisation :</strong> Infuser une tige dans de l'eau froide pendant quelques heures. Boire tout au long de la journée.</p>
+</div>
+<div class="px-4 py-6 border-t border-text-light/10 dark:border-text-dark/10">
+<h3 class="text-lg font-bold text-text-light dark:text-text-dark mb-4 font-display">Nos idées recettes</h3>
+<p class="text-text-light/90 dark:text-text-dark/90 mb-4 font-body">Découvrez des recettes exclusives pour profiter pleinement des bienfaits de votre coffret.</p>
+<button class="flex w-full items-center justify-center rounded-xl h-12 bg-secondary text-white gap-2 text-base font-bold leading-normal tracking-[0.015em] font-display">
+<span class="material-symbols-outlined">download</span>
+                Télécharger les recettes (PDF)
+            </button>
+</div>
+<div class="sticky bottom-0 bg-background-light dark:bg-background-dark p-4 border-t border-text-light/10 dark:border-text-dark/10 mt-auto">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-4">
+<p class="text-text-light dark:text-text-dark text-lg font-bold font-display">Quantité</p>
+<div class="flex items-center gap-2 rounded-full border border-text-light/30 dark:border-text-dark/30 p-1">
+<button class="flex items-center justify-center size-8 rounded-full bg-text-light/10 dark:bg-text-dark/10 text-text-light dark:text-text-dark">-</button>
+<span class="px-2 text-lg font-bold font-display">1</span>
+<button class="flex items-center justify-center size-8 rounded-full bg-text-light/10 dark:bg-text-dark/10 text-text-light dark:text-text-dark">+</button>
+</div>
+</div>
+<p class="text-2xl font-bold text-primary font-display">39,90€</p>
+</div>
+<button class="flex w-full items-center justify-center rounded-xl h-14 bg-primary text-white gap-2 text-lg font-bold leading-normal tracking-[0.015em] font-display">
+                Ajouter au panier
+            </button>
+</div>
+</div>
+</body></html>
