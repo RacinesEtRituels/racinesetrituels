@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Récupération de mot de passe</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#e64c19",
+            "background-light": "#f8f6f6",
+            "background-dark": "#211511",
+          },
+          fontFamily: {
+            "display": ["Epilogue", "sans-serif"]
+          },
+          borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+        },
+      },
+    }
+  </script>
+<style>
+    body {
+      font-family: 'Epilogue', sans-serif;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="flex items-center bg-background-light dark:bg-background-dark p-4 pb-2 justify-between">
+<div class="text-slate-800 dark:text-slate-200 flex size-12 shrink-0 items-center justify-center">
+<span class="material-symbols-outlined">arrow_back</span>
+</div>
+</div>
+<div class="flex flex-col flex-1 px-4 py-6">
+<h1 class="text-slate-800 dark:text-slate-200 tracking-tight text-[32px] font-bold leading-tight text-left pb-3 pt-6 font-display">Mot de passe oublié ?</h1>
+<p class="text-slate-600 dark:text-slate-400 text-base font-normal leading-normal pb-6 pt-1 font-display">
+        Saisissez votre adresse e-mail et nous vous enverrons un lien pour réinitialiser votre mot de passe.
+      </p>
+<div class="flex max-w-[480px] flex-wrap items-end gap-4 py-3">
+<label class="flex flex-col min-w-40 flex-1">
+<p class="text-slate-800 dark:text-slate-200 text-base font-medium leading-normal pb-2 font-display">E-mail</p>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-slate-800 dark:text-slate-200 focus:outline-0 focus:ring-0 border border-slate-300 dark:border-slate-700 bg-background-light dark:bg-background-dark focus:border-primary h-14 placeholder:text-slate-400 dark:placeholder:text-slate-500 p-[15px] text-base font-normal leading-normal font-display" placeholder="votre.email@exemple.com" value=""/>
+</label>
+</div>
+<div class="flex px-0 py-3 mt-4">
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 px-5 flex-1 bg-primary text-white text-base font-bold leading-normal tracking-[0.015em] font-display">
+<span class="truncate">Envoyer le lien</span>
+</button>
+</div>
+<div class="mt-8 p-4 bg-green-100 dark:bg-green-900/30 rounded-lg hidden">
+<p class="text-green-800 dark:text-green-200 text-sm font-medium font-display">Un lien de réinitialisation a été envoyé à votre adresse e-mail. Veuillez vérifier votre boîte de réception.</p>
+</div>
+</div>
+<div class="flex justify-center p-4">
+<a class="text-primary dark:text-primary/80 text-sm font-medium font-display" href="#">Retour à la connexion</a>
+</div>
+</div>
+</body></html>

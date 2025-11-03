@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Email Sent Confirmation</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#A12B32",
+                        "accent": "#7E8B74",
+                        "background-light": "#F8F6F4",
+                        "background-dark": "#211511",
+                        "text-light": "#3D352E",
+                        "text-dark": "#F8F6F4"
+                    },
+                    fontFamily: {
+                        "display": ["Epilogue", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings:
+            'FILL' 1,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 48
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-text-light dark:text-text-dark">
+<div class="relative flex h-auto min-h-screen w-full flex-col items-center justify-center bg-background-light dark:bg-background-dark p-4 group/design-root overflow-x-hidden">
+<div class="flex flex-col items-center justify-center w-full max-w-md space-y-6">
+<div class="flex items-center justify-center h-24 w-24 rounded-full bg-accent/20 dark:bg-accent/30">
+<span class="material-symbols-outlined text-accent text-5xl">mark_email_read</span>
+</div>
+<h1 class="text-text-light dark:text-text-dark tracking-tight text-3xl font-bold text-center">E-mail envoyé !</h1>
+<p class="text-text-light dark:text-text-dark text-base font-normal leading-relaxed text-center">
+                Si un compte existe pour votre adresse e-mail, vous recevrez un lien pour réinitialiser votre mot de passe sous peu.
+            </p>
+<div class="bg-primary/10 dark:bg-primary/20 p-4 rounded-lg w-full">
+<p class="text-primary dark:text-primary/90 text-sm font-normal leading-normal text-center">Pensez à vérifier votre dossier de courriers indésirables ou spams.</p>
+</div>
+<div class="flex px-4 py-3 justify-center w-full">
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 px-5 flex-1 bg-primary text-white text-base font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-colors duration-300">
+<span class="truncate">Retour à la connexion</span>
+</button>
+</div>
+</div>
+</div>
+</body></html>

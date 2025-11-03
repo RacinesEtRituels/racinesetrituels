@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<title>Khamaré &amp; Hibiscus - Inscription</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#e64c19",
+            "background-light": "#f8f6f6",
+            "background-dark": "#211511",
+            "text-light": "#1b110e",
+            "text-dark": "#f8f6f6",
+            "input-bg-light": "#f3eae7",
+            "input-bg-dark": "#3a2b27",
+            "placeholder-light": "#97604e",
+            "placeholder-dark": "#bfaea8"
+          },
+          fontFamily: {
+            "display": ["Epilogue", "sans-serif"]
+          },
+          borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+        },
+      },
+    }
+  </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-text-light dark:text-text-dark">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="flex items-center p-4 pb-2 justify-between">
+<div class="text-text-light dark:text-text-dark flex size-12 shrink-0 items-center justify-center">
+<span class="material-symbols-outlined">arrow_back</span>
+</div>
+<h2 class="text-text-light dark:text-text-dark text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">Créez votre compte</h2>
+<div class="size-12"></div>
+</div>
+<div class="flex-1 px-4 py-8">
+<div class="mx-auto max-w-md space-y-6">
+<div class="flex flex-col min-w-40 flex-1">
+<label class="text-text-light dark:text-text-dark text-base font-medium leading-normal pb-2" for="name">Nom</label>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-text-light dark:text-text-dark focus:outline-0 focus:ring-2 focus:ring-primary border-none bg-input-bg-light dark:bg-input-bg-dark h-14 placeholder:text-placeholder-light dark:placeholder:text-placeholder-dark p-4 text-base font-normal leading-normal" id="name" placeholder="Entrez votre nom complet" value=""/>
+</div>
+<div class="flex flex-col min-w-40 flex-1">
+<label class="text-text-light dark:text-text-dark text-base font-medium leading-normal pb-2" for="email">Email</label>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-text-light dark:text-text-dark focus:outline-0 focus:ring-2 focus:ring-primary border-none bg-input-bg-light dark:bg-input-bg-dark h-14 placeholder:text-placeholder-light dark:placeholder:text-placeholder-dark p-4 text-base font-normal leading-normal" id="email" placeholder="Entrez votre adresse e-mail" type="email" value=""/>
+</div>
+<div class="flex flex-col min-w-40 flex-1">
+<label class="text-text-light dark:text-text-dark text-base font-medium leading-normal pb-2" for="password">Mot de passe</label>
+<div class="flex w-full flex-1 items-stretch rounded-xl bg-input-bg-light dark:bg-input-bg-dark">
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-text-light dark:text-text-dark focus:outline-0 focus:ring-2 focus:ring-primary border-none bg-transparent h-14 placeholder:text-placeholder-light dark:placeholder:text-placeholder-dark p-4 rounded-r-none border-r-0 pr-2 text-base font-normal leading-normal" id="password" placeholder="Créez votre mot de passe" type="password" value=""/>
+<button aria-label="Toggle password visibility" class="text-placeholder-light dark:text-placeholder-dark flex border-none bg-transparent items-center justify-center pr-4 rounded-r-xl border-l-0">
+<span class="material-symbols-outlined">visibility_off</span>
+</button>
+</div>
+<p class="text-xs text-placeholder-light dark:text-placeholder-dark mt-2">Au moins 8 caractères, 1 chiffre et 1 caractère spécial.</p>
+</div>
+<div class="flex flex-col min-w-40 flex-1">
+<label class="text-text-light dark:text-text-dark text-base font-medium leading-normal pb-2" for="confirm-password">Confirmez le mot de passe</label>
+<div class="flex w-full flex-1 items-stretch rounded-xl bg-input-bg-light dark:bg-input-bg-dark">
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-text-light dark:text-text-dark focus:outline-0 focus:ring-2 focus:ring-primary border-none bg-transparent h-14 placeholder:text-placeholder-light dark:placeholder:text-placeholder-dark p-4 rounded-r-none border-r-0 pr-2 text-base font-normal leading-normal" id="confirm-password" placeholder="Confirmez votre mot de passe" type="password" value=""/>
+<button aria-label="Toggle password visibility" class="text-placeholder-light dark:text-placeholder-dark flex border-none bg-transparent items-center justify-center pr-4 rounded-r-xl border-l-0">
+<span class="material-symbols-outlined">visibility_off</span>
+</button>
+</div>
+</div>
+<div class="flex items-start space-x-3 pt-2">
+<input class="form-checkbox h-5 w-5 rounded border-placeholder-light/50 text-primary bg-input-bg-light dark:bg-input-bg-dark focus:ring-primary" id="terms" type="checkbox"/>
+<div class="flex-1">
+<label class="text-sm text-text-light dark:text-text-dark" for="terms">J'accepte les <a class="font-semibold text-primary hover:underline" href="#">Conditions Générales</a> et la <a class="font-semibold text-primary hover:underline" href="#">Politique de Confidentialité</a>.</label>
+</div>
+</div>
+</div>
+</div>
+<div class="px-4 py-6">
+<button class="w-full bg-primary text-white font-bold py-4 px-4 rounded-xl text-lg hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background-light dark:focus:ring-offset-background-dark focus:ring-primary transition-colors">
+      S'inscrire
+    </button>
+</div>
+</div>
+</body></html>
