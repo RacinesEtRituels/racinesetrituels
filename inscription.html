@@ -1,12 +1,19 @@
 <!DOCTYPE html>
+<html class="light" lang="fr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Khamaré & Hibiscus - Inscription</title>
 
-<html class="light" lang="en"><head>
-<meta charset="utf-8"/>
-<title>Khamaré &amp; Hibiscus - Inscription</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
-<script id="tailwind-config">
+  <!-- TailwindCSS -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+  <!-- Polices -->
+  <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+
+  <!-- Thème Tailwind -->
+  <script>
     tailwind.config = {
       darkMode: "class",
       theme: {
@@ -25,67 +32,179 @@
           fontFamily: {
             "display": ["Epilogue", "sans-serif"]
           },
-          borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+          borderRadius: {
+            "DEFAULT": "0.5rem",
+            "lg": "1rem",
+            "xl": "1.5rem",
+            "full": "9999px"
+          },
         },
       },
     }
   </script>
-<style>
+
+  <style>
     body {
+      font-family: 'Epilogue', sans-serif;
       min-height: max(884px, 100dvh);
     }
   </style>
-  </head>
-<body class="bg-background-light dark:bg-background-dark font-display text-text-light dark:text-text-dark">
-<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
-<div class="flex items-center p-4 pb-2 justify-between">
-<div class="text-text-light dark:text-text-dark flex size-12 shrink-0 items-center justify-center">
-<span class="material-symbols-outlined">arrow_back</span>
-</div>
-<h2 class="text-text-light dark:text-text-dark text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">Créez votre compte</h2>
-<div class="size-12"></div>
-</div>
-<div class="flex-1 px-4 py-8">
-<div class="mx-auto max-w-md space-y-6">
-<div class="flex flex-col min-w-40 flex-1">
-<label class="text-text-light dark:text-text-dark text-base font-medium leading-normal pb-2" for="name">Nom</label>
-<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-text-light dark:text-text-dark focus:outline-0 focus:ring-2 focus:ring-primary border-none bg-input-bg-light dark:bg-input-bg-dark h-14 placeholder:text-placeholder-light dark:placeholder:text-placeholder-dark p-4 text-base font-normal leading-normal" id="name" placeholder="Entrez votre nom complet" value=""/>
-</div>
-<div class="flex flex-col min-w-40 flex-1">
-<label class="text-text-light dark:text-text-dark text-base font-medium leading-normal pb-2" for="email">Email</label>
-<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-text-light dark:text-text-dark focus:outline-0 focus:ring-2 focus:ring-primary border-none bg-input-bg-light dark:bg-input-bg-dark h-14 placeholder:text-placeholder-light dark:placeholder:text-placeholder-dark p-4 text-base font-normal leading-normal" id="email" placeholder="Entrez votre adresse e-mail" type="email" value=""/>
-</div>
-<div class="flex flex-col min-w-40 flex-1">
-<label class="text-text-light dark:text-text-dark text-base font-medium leading-normal pb-2" for="password">Mot de passe</label>
-<div class="flex w-full flex-1 items-stretch rounded-xl bg-input-bg-light dark:bg-input-bg-dark">
-<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-text-light dark:text-text-dark focus:outline-0 focus:ring-2 focus:ring-primary border-none bg-transparent h-14 placeholder:text-placeholder-light dark:placeholder:text-placeholder-dark p-4 rounded-r-none border-r-0 pr-2 text-base font-normal leading-normal" id="password" placeholder="Créez votre mot de passe" type="password" value=""/>
-<button aria-label="Toggle password visibility" class="text-placeholder-light dark:text-placeholder-dark flex border-none bg-transparent items-center justify-center pr-4 rounded-r-xl border-l-0">
-<span class="material-symbols-outlined">visibility_off</span>
-</button>
-</div>
-<p class="text-xs text-placeholder-light dark:text-placeholder-dark mt-2">Au moins 8 caractères, 1 chiffre et 1 caractère spécial.</p>
-</div>
-<div class="flex flex-col min-w-40 flex-1">
-<label class="text-text-light dark:text-text-dark text-base font-medium leading-normal pb-2" for="confirm-password">Confirmez le mot de passe</label>
-<div class="flex w-full flex-1 items-stretch rounded-xl bg-input-bg-light dark:bg-input-bg-dark">
-<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-text-light dark:text-text-dark focus:outline-0 focus:ring-2 focus:ring-primary border-none bg-transparent h-14 placeholder:text-placeholder-light dark:placeholder:text-placeholder-dark p-4 rounded-r-none border-r-0 pr-2 text-base font-normal leading-normal" id="confirm-password" placeholder="Confirmez votre mot de passe" type="password" value=""/>
-<button aria-label="Toggle password visibility" class="text-placeholder-light dark:text-placeholder-dark flex border-none bg-transparent items-center justify-center pr-4 rounded-r-xl border-l-0">
-<span class="material-symbols-outlined">visibility_off</span>
-</button>
-</div>
-</div>
-<div class="flex items-start space-x-3 pt-2">
-<input class="form-checkbox h-5 w-5 rounded border-placeholder-light/50 text-primary bg-input-bg-light dark:bg-input-bg-dark focus:ring-primary" id="terms" type="checkbox"/>
-<div class="flex-1">
-<label class="text-sm text-text-light dark:text-text-dark" for="terms">J'accepte les <a class="font-semibold text-primary hover:underline" href="#">Conditions Générales</a> et la <a class="font-semibold text-primary hover:underline" href="#">Politique de Confidentialité</a>.</label>
-</div>
-</div>
-</div>
-</div>
-<div class="px-4 py-6">
-<button class="w-full bg-primary text-white font-bold py-4 px-4 rounded-xl text-lg hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background-light dark:focus:ring-offset-background-dark focus:ring-primary transition-colors">
-      S'inscrire
-    </button>
-</div>
-</div>
-</body></html>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark">
+  <div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+
+    <!-- Header -->
+    <header class="flex items-center p-4 pb-2 justify-between sticky top-0 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700">
+      <a href="connexion.html" class="text-text-light dark:text-text-dark flex size-12 items-center justify-center hover:opacity-80 transition">
+        <span class="material-symbols-outlined">arrow_back</span>
+      </a>
+      <h2 class="text-lg font-bold flex-1 text-center pr-12">Créez votre compte</h2>
+    </header>
+
+    <!-- Formulaire d'inscription -->
+    <main class="flex-1 px-4 py-8">
+      <div class="mx-auto max-w-md space-y-6">
+
+        <!-- Nom -->
+        <div>
+          <label for="name" class="block text-base font-medium pb-2">Nom</label>
+          <input id="name" type="text" placeholder="Entrez votre nom complet"
+                 class="form-input w-full rounded-xl h-14 p-4 text-base bg-input-bg-light dark:bg-input-bg-dark placeholder:text-placeholder-light dark:placeholder:text-placeholder-dark focus:ring-2 focus:ring-primary outline-none border-none"/>
+        </div>
+
+        <!-- Email -->
+        <div>
+          <label for="email" class="block text-base font-medium pb-2">Email</label>
+          <input id="email" type="email" placeholder="Entrez votre adresse e-mail"
+                 class="form-input w-full rounded-xl h-14 p-4 text-base bg-input-bg-light dark:bg-input-bg-dark placeholder:text-placeholder-light dark:placeholder:text-placeholder-dark focus:ring-2 focus:ring-primary outline-none border-none"/>
+        </div>
+
+        <!-- Mot de passe -->
+        <div>
+          <label for="password" class="block text-base font-medium pb-2">Mot de passe</label>
+          <div class="flex w-full items-stretch rounded-xl bg-input-bg-light dark:bg-input-bg-dark">
+            <input id="password" type="password" placeholder="Créez votre mot de passe"
+                   class="form-input flex-1 h-14 p-4 bg-transparent rounded-l-xl placeholder:text-placeholder-light dark:placeholder:text-placeholder-dark focus:ring-2 focus:ring-primary outline-none border-none"/>
+            <button type="button" aria-label="Afficher le mot de passe"
+                    class="text-placeholder-light dark:text-placeholder-dark pr-4 flex items-center justify-center">
+              <span class="material-symbols-outlined">visibility_off</span>
+            </button>
+          </div>
+          <p class="text-xs text-placeholder-light dark:text-placeholder-dark mt-2">
+            Au moins 8 caractères, 1 chiffre et 1 caractère spécial.
+          </p>
+        </div>
+
+        <!-- Confirmation mot de passe -->
+        <div>
+          <label for="confirm-password" class="block text-base font-medium pb-2">Confirmez le mot de passe</label>
+          <div class="flex w-full items-stretch rounded-xl bg-input-bg-light dark:bg-input-bg-dark">
+            <input id="confirm-password" type="password" placeholder="Confirmez votre mot de passe"
+                   class="form-input flex-1 h-14 p-4 bg-transparent rounded-l-xl placeholder:text-placeholder-light dark:placeholder:text-placeholder-dark focus:ring-2 focus:ring-primary outline-none border-none"/>
+            <button type="button" aria-label="Afficher le mot de passe"
+                    class="text-placeholder-light dark:text-placeholder-dark pr-4 flex items-center justify-center">
+              <span class="material-symbols-outlined">visibility_off</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Conditions -->
+        <div class="flex items-start space-x-3 pt-2">
+          <input id="terms" type="checkbox"
+                 class="form-checkbox h-5 w-5 rounded border-placeholder-light/50 text-primary bg-input-bg-light dark:bg-input-bg-dark focus:ring-primary"/>
+          <label for="terms" class="text-sm">
+            J'accepte les <a href="#" class="font-semibold text-primary hover:underline">Conditions Générales</a> et la
+            <a href="#" class="font-semibold text-primary hover:underline">Politique de Confidentialité</a>.
+          </label>
+        </div>
+
+        <!-- Bouton d'inscription -->
+        <div class="pt-4">
+          <a href="index.html"
+             class="block w-full text-center bg-primary text-white font-bold py-4 px-4 rounded-xl text-lg hover:bg-primary/90 focus:ring-2 focus:ring-primary transition">
+            S'inscrire
+          </a>
+        </div>
+
+        <!-- Lien connexion -->
+        <p class="text-center text-sm pt-2">
+          Déjà un compte ?
+          <a href="connexion.html" class="font-semibold text-primary hover:underline">Se connecter</a>
+        </p>
+      </div>
+    </main>
+
+    <!-- 🚀 Footer adaptatif -->
+    <footer class="sticky bottom-0 w-full bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm border-t border-gray-200 dark:border-gray-700">
+      <!-- Mobile -->
+      <div class="flex justify-around py-2 md:hidden text-gray-600 dark:text-gray-400 text-xs font-medium">
+        <a href="index.html" class="flex flex-col items-center hover:text-primary transition">
+          <span class="material-symbols-outlined text-2xl">home</span>
+          Accueil
+        </a>
+        <a href="produits.html" class="flex flex-col items-center hover:text-primary transition">
+          <span class="material-symbols-outlined text-2xl">local_mall</span>
+          Produits
+        </a>
+        <a href="assistantIA.html" class="flex flex-col items-center hover:text-primary transition">
+          <span class="material-symbols-outlined text-2xl">psychology</span>
+          Assistant
+        </a>
+        <a href="panier.html" class="flex flex-col items-center hover:text-primary transition">
+          <span class="material-symbols-outlined text-2xl">shopping_cart</span>
+          Panier
+        </a>
+        <a href="connexion.html" class="flex flex-col items-center hover:text-primary transition">
+          <span class="material-symbols-outlined text-2xl">person</span>
+          Profil
+        </a>
+      </div>
+
+      <!-- Ordinateur -->
+      <div class="hidden md:grid md:grid-cols-5 lg:grid-cols-10 gap-2 py-3 text-center text-gray-600 dark:text-gray-400 text-sm font-medium">
+        <a href="index.html" class="flex flex-col items-center hover:text-primary transition">
+          <span class="material-symbols-outlined text-2xl">home</span>
+          Accueil
+        </a>
+        <a href="produits.html" class="flex flex-col items-center hover:text-primary transition">
+          <span class="material-symbols-outlined text-2xl">local_mall</span>
+          Produits
+        </a>
+        <a href="produits2.html" class="flex flex-col items-center hover:text-primary transition">
+          <span class="material-symbols-outlined text-2xl">storefront</span>
+          Produits 2
+        </a>
+        <a href="assistantIA.html" class="flex flex-col items-center hover:text-primary transition">
+          <span class="material-symbols-outlined text-2xl">psychology</span>
+          Assistant
+        </a>
+        <a href="conseil.html" class="flex flex-col items-center hover:text-primary transition">
+          <span class="material-symbols-outlined text-2xl">tips_and_updates</span>
+          Conseil
+        </a>
+        <a href="panier.html" class="flex flex-col items-center hover:text-primary transition">
+          <span class="material-symbols-outlined text-2xl">shopping_cart</span>
+          Panier
+        </a>
+        <a href="connexion.html" class="flex flex-col items-center hover:text-primary transition">
+          <span class="material-symbols-outlined text-2xl">person</span>
+          Connexion
+        </a>
+        <a href="inscription.html" class="flex flex-col items-center text-primary">
+          <span class="material-symbols-outlined text-2xl">person_add</span>
+          Inscription
+        </a>
+        <a href="recupmotdepass.html" class="flex flex-col items-center hover:text-primary transition">
+          <span class="material-symbols-outlined text-2xl">lock_reset</span>
+          Mot de passe
+        </a>
+        <a href="confreinimotPass.html" class="flex flex-col items-center hover:text-primary transition">
+          <span class="material-symbols-outlined text-2xl">check_circle</span>
+          Confirmation
+        </a>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>
