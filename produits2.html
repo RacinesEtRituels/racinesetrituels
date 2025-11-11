@@ -56,7 +56,7 @@
   <div class="relative flex flex-col min-h-screen overflow-x-hidden">
 
     <!-- Header -->
-    <header class="flex items-center bg-background-light dark:bg-background-dark p-4 pb-2 justify-between sticky top-0 z-10 border-b border-text-light/20 dark:border-text-dark/20 backdrop-blur-sm">
+    <header class="flex items-center bg-background-light dark:bg-background-dark p-4 justify-between sticky top-0 z-10 border-b border-text-light/20 dark:border-text-dark/20 backdrop-blur-sm">
       <a href="produits.html" class="flex items-center justify-center text-text-light dark:text-text-dark size-12 hover:opacity-80 transition">
         <span class="material-symbols-outlined text-2xl">arrow_back</span>
       </a>
@@ -66,139 +66,118 @@
       </a>
     </header>
 
-    <!-- Galerie d’images -->
-    <div class="flex overflow-x-auto p-4 gap-4 snap-x snap-mandatory scroll-smooth">
-      <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAbiLDv41gIaCoUNn4oD1hDxiX4Z3Cgo-KLBPdxxIvcqWOoZXfjXL4rjdATUDkkGJaD2sZf2OhsykpWEeC0TH_Sv6nJ-KtdnHCLC4RlfG3YNgMS7zZbi0bH7ZOjGNMm5Q42v8dv4MwdApV8OO6TgoL3ua4qZ-yYDdO4XQjoW3IMbxPLFkjMRRdBe64kAzf5o7gjY_2P2UIntIhMVvcTQwGs3AnKWGYq3aa8rJE9TnuYO3wmipljuaYbtZ3VkpIwWMtwsryKPbPXMi7l"
-           alt="Coffret Découverte"
-           class="min-w-[300px] rounded-xl object-cover aspect-square snap-center"/>
-      <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAD4p5jVpDXpbBX_9NzlVXJOua_cJ2h1wf4yl_0vRECoi9VgQcvCICsFJOnFiVPTKeGSwCYMdfispQgioDnj7i5_q0New3fQ-sge0pZ8_6VlutNRkCeTtTNTRTS0lkXfJtQr66LeUxOwcgo_Bt0xA59HcRlUfb3O1o4MzPnJz77aw0lVaY5Q7lRm7XddwW2HOu8jvyAnhOov6mVpMo7ajyvfD3zYErY_0gPy77p6teZFyLFg6EovuJ2qbtytdudD8ScBU8nj88eQyMq"
-           alt="Tiges de Khamaré"
-           class="min-w-[300px] rounded-xl object-cover aspect-square snap-center"/>
-      <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnizX7yFp2bhqXZHBM2xkPxp_I07iDqjLGhd3EXQHkQAbOoSIAxQsjEcRdA0pmh1pNvo87SYv68XfJaZD5ZEYLXVd6t7lKGRTTQWt8C63EjwrGm8M8-vexDFvcDmFeyQTpdGqGS_UwIsaHO99RBEv6ZW_n_0kSeebVUNJKIJlMqJn0OHb6ICzo0hFYBkFtjy_TrPYQPHvyOOsZHWc6jKVqRzh9rQl-dwa-uTEdScePX3rALwiXn8o8osINMywrbGocRrcto6cq3izi"
-           alt="Fleurs d'Hibiscus rouges"
-           class="min-w-[300px] rounded-xl object-cover aspect-square snap-center"/>
-    </div>
+    <!-- Contenu centré -->
+    <main class="flex-1 w-full max-w-4xl mx-auto px-4 md:px-8 lg:px-10 py-6">
 
-    <!-- Description -->
-    <section class="px-4 py-4">
-      <h1 class="text-[32px] font-bold text-text-light dark:text-text-dark">Coffret Découverte</h1>
-      <p class="text-base text-text-light/80 dark:text-text-dark/80">L'essentiel pour votre bien-être au naturel.</p>
-    </section>
-
-    <!-- Onglets produits -->
-    <nav class="flex border-b border-text-light/20 dark:border-text-dark/20 px-4 gap-8">
-      <a href="#" class="border-b-[3px] border-b-primary text-primary font-bold pb-[13px] pt-4">Khamaré</a>
-      <a href="#" class="text-text-light/60 dark:text-text-dark/60 pb-[13px] pt-4 hover:text-primary">Hibiscus Rouge</a>
-      <a href="#" class="text-text-light/60 dark:text-text-dark/60 pb-[13px] pt-4 hover:text-primary">Hibiscus Blanc</a>
-    </nav>
-
-    <!-- Bienfaits -->
-    <section class="px-4 py-4 space-y-4">
-      <h3 class="text-lg font-bold">Bienfaits & Conseils</h3>
-      <p>Les tiges de vétiver, ou Khamaré, sont reconnues pour leurs propriétés purifiantes et apaisantes. Elles sont traditionnellement utilisées pour le bien-être intime féminin, aidant à nettoyer et à rafraîchir naturellement.</p>
-      <div class="flex flex-wrap items-center gap-4">
-        <div class="flex items-center gap-2">
-          <span class="material-symbols-outlined text-xl text-secondary">spa</span>
-          <span>Purifiant</span>
-        </div>
-        <div class="flex items-center gap-2">
-          <span class="material-symbols-outlined text-xl text-secondary">eco</span>
-          <span>Naturel</span>
-        </div>
-        <div class="flex items-center gap-2">
-          <span class="material-symbols-outlined text-xl text-secondary">female</span>
-          <span>Bien-être intime</span>
-        </div>
+      <!-- Galerie d’images -->
+      <div class="flex overflow-x-auto gap-4 p-2 md:p-4 snap-x snap-mandatory scroll-smooth">
+        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAbiLDv41gIaCoUNn4oD1hDxiX4Z3Cgo-KLBPdxxIvcqWOoZXfjXL4rjdATUDkkGJaD2sZf2OhsykpWEeC0TH_Sv6nJ-KtdnHCLC4RlfG3YNgMS7zZbi0bH7ZOjGNMm5Q42v8dv4MwdApV8OO6TgoL3ua4qZ-yYDdO4XQjoW3IMbxPLFkjMRRdBe64kAzf5o7gjY_2P2UIntIhMVvcTQwGs3AnKWGYq3aa8rJE9TnuYO3wmipljuaYbtZ3VkpIwWMtwsryKPbPXMi7l"
+             alt="Coffret Découverte"
+             class="min-w-[280px] md:min-w-[340px] rounded-xl object-cover aspect-square snap-center shadow-md"/>
+        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAD4p5jVpDXpbBX_9NzlVXJOua_cJ2h1wf4yl_0vRECoi9VgQcvCICsFJOnFiVPTKeGSwCYMdfispQgioDnj7i5_q0New3fQ-sge0pZ8_6VlutNRkCeTtTNTRTS0lkXfJtQr66LeUxOwcgo_Bt0xA59HcRlUfb3O1o4MzPnJz77aw0lVaY5Q7lRm7XddwW2HOu8jvyAnhOov6mVpMo7ajyvfD3zYErY_0gPy77p6teZFyLFg6EovuJ2qbtytdudD8ScBU8nj88eQyMq"
+             alt="Tiges de Khamaré"
+             class="min-w-[280px] md:min-w-[340px] rounded-xl object-cover aspect-square snap-center shadow-md"/>
+        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnizX7yFp2bhqXZHBM2xkPxp_I07iDqjLGhd3EXQHkQAbOoSIAxQsjEcRdA0pmh1pNvo87SYv68XfJaZD5ZEYLXVd6t7lKGRTTQWt8C63EjwrGm8M8-vexDFvcDmFeyQTpdGqGS_UwIsaHO99RBEv6ZW_n_0kSeebVUNJKIJlMqJn0OHb6ICzo0hFYBkFtjy_TrPYQPHvyOOsZHWc6jKVqRzh9rQl-dwa-uTEdScePX3rALwiXn8o8osINMywrbGocRrcto6cq3izi"
+             alt="Fleurs d'Hibiscus rouges"
+             class="min-w-[280px] md:min-w-[340px] rounded-xl object-cover aspect-square snap-center shadow-md"/>
       </div>
-      <p><strong>Conseil d'utilisation :</strong> Infuser une tige dans de l'eau froide pendant quelques heures. Boire tout au long de la journée.</p>
-    </section>
 
-    <!-- Recettes -->
-    <section class="px-4 py-6 border-t border-text-light/10 dark:border-text-dark/10">
-      <h3 class="text-lg font-bold mb-3">Nos idées recettes</h3>
-      <p class="mb-4">Découvrez des recettes exclusives pour profiter pleinement des bienfaits de votre coffret.</p>
-      <button class="flex w-full items-center justify-center rounded-xl h-12 bg-secondary text-white gap-2 text-base font-bold hover:bg-secondary/90 transition">
-        <span class="material-symbols-outlined">download</span>
-        Télécharger les recettes (PDF)
-      </button>
-    </section>
+      <!-- Description -->
+      <section class="px-2 py-4 text-center md:text-left">
+        <h1 class="text-[32px] font-bold text-text-light dark:text-text-dark">Coffret Découverte</h1>
+        <p class="text-base text-text-light/80 dark:text-text-dark/80">L'essentiel pour votre bien-être au naturel.</p>
+      </section>
 
-    <!-- Achat -->
-    <section class="sticky bottom-16 md:bottom-0 bg-background-light dark:bg-background-dark p-4 border-t border-text-light/10 dark:border-text-dark/10">
-      <div class="flex items-center justify-between mb-4">
-        <div class="flex items-center gap-4">
-          <p class="text-lg font-bold">Quantité</p>
-          <div class="flex items-center gap-2 rounded-full border border-text-light/30 dark:border-text-dark/30 p-1">
-            <button class="flex items-center justify-center size-8 rounded-full bg-text-light/10 dark:bg-text-dark/10">-</button>
-            <span class="px-2 text-lg font-bold">1</span>
-            <button class="flex items-center justify-center size-8 rounded-full bg-text-light/10 dark:bg-text-dark/10">+</button>
+      <!-- Onglets produits -->
+      <nav class="flex border-b border-text-light/20 dark:border-text-dark/20 px-4 gap-8 overflow-x-auto">
+        <a href="#" class="border-b-[3px] border-b-primary text-primary font-bold pb-[13px] pt-4">Khamaré</a>
+        <a href="#" class="text-text-light/60 dark:text-text-dark/60 pb-[13px] pt-4 hover:text-primary">Hibiscus Rouge</a>
+        <a href="#" class="text-text-light/60 dark:text-text-dark/60 pb-[13px] pt-4 hover:text-primary">Hibiscus Blanc</a>
+      </nav>
+
+      <!-- Bienfaits -->
+      <section class="px-4 py-6 space-y-4">
+        <h3 class="text-lg font-bold">Bienfaits & Conseils</h3>
+        <p>Les tiges de vétiver, ou Khamaré, sont reconnues pour leurs propriétés purifiantes et apaisantes. Elles sont traditionnellement utilisées pour le bien-être intime féminin, aidant à nettoyer et à rafraîchir naturellement.</p>
+
+        <div class="flex flex-wrap items-center gap-4">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-xl text-secondary">spa</span>
+            <span>Purifiant</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-xl text-secondary">eco</span>
+            <span>Naturel</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-xl text-secondary">female</span>
+            <span>Bien-être intime</span>
           </div>
         </div>
-        <p class="text-2xl font-bold text-primary">39,90€</p>
-      </div>
-      <a href="panier.html" class="flex w-full items-center justify-center rounded-xl h-14 bg-primary text-white text-lg font-bold hover:bg-primary/90 transition">
-        Ajouter au panier
-      </a>
-    </section>
+
+        <p><strong>Conseil d'utilisation :</strong> Infuser une tige dans de l'eau froide pendant quelques heures. Boire tout au long de la journée.</p>
+      </section>
+
+      <!-- Recettes -->
+      <section class="px-4 py-6 border-t border-text-light/10 dark:border-text-dark/10">
+        <h3 class="text-lg font-bold mb-3">Nos idées recettes</h3>
+        <p class="mb-4">Découvrez des recettes exclusives pour profiter pleinement des bienfaits de votre coffret.</p>
+        <button class="flex w-full max-w-sm mx-auto items-center justify-center rounded-xl h-12 bg-secondary text-white gap-2 text-base font-bold hover:bg-secondary/90 transition">
+          <span class="material-symbols-outlined">download</span>
+          Télécharger les recettes (PDF)
+        </button>
+      </section>
+
+      <!-- Achat -->
+      <section class="sticky bottom-20 md:bottom-0 bg-background-light dark:bg-background-dark p-4 border-t border-text-light/10 dark:border-text-dark/10">
+        <div class="flex flex-wrap justify-between items-center mb-4 gap-4">
+          <div class="flex items-center gap-4">
+            <p class="text-lg font-bold">Quantité</p>
+            <div class="flex items-center gap-2 rounded-full border border-text-light/30 dark:border-text-dark/30 p-1">
+              <button class="flex items-center justify-center size-8 rounded-full bg-text-light/10 dark:bg-text-dark/10">-</button>
+              <span class="px-2 text-lg font-bold">1</span>
+              <button class="flex items-center justify-center size-8 rounded-full bg-text-light/10 dark:bg-text-dark/10">+</button>
+            </div>
+          </div>
+          <p class="text-2xl font-bold text-primary">39,90€</p>
+        </div>
+        <a href="panier.html" class="flex w-full max-w-sm mx-auto items-center justify-center rounded-xl h-14 bg-primary text-white text-lg font-bold hover:bg-primary/90 transition">
+          Ajouter au panier
+        </a>
+      </section>
+    </main>
 
     <!-- 🚀 Footer adaptatif -->
     <footer class="sticky bottom-0 w-full bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm border-t border-gray-200 dark:border-gray-700">
       <!-- Mobile -->
       <div class="flex justify-around py-2 md:hidden text-gray-600 dark:text-gray-400 text-xs font-medium">
         <a href="index.html" class="flex flex-col items-center hover:text-primary transition">
-          <span class="material-symbols-outlined text-2xl">home</span>
-          Accueil
-        </a>
-        <a href="produits.html" class="flex flex-col items-center text-primary">
-          <span class="material-symbols-outlined text-2xl">local_mall</span>
-          Produits
-        </a>
-        <a href="assistantIA.html" class="flex flex-col items-center hover:text-primary transition">
-          <span class="material-symbols-outlined text-2xl">psychology</span>
-          Assistant
-        </a>
-        <a href="panier.html" class="flex flex-col items-center hover:text-primary transition">
-          <span class="material-symbols-outlined text-2xl">shopping_cart</span>
-          Panier
-        </a>
-        <a href="connexion.html" class="flex flex-col items-center hover:text-primary transition">
-          <span class="material-symbols-outlined text-2xl">person</span>
-          Profil
-        </a>
-      </div>
-
-      <!-- Desktop -->
-      <div class="hidden md:grid md:grid-cols-5 lg:grid-cols-10 gap-2 py-3 text-center text-gray-600 dark:text-gray-400 text-sm font-medium">
-        <a href="index.html" class="flex flex-col items-center hover:text-primary transition">
           <span class="material-symbols-outlined text-2xl">home</span>Accueil
         </a>
         <a href="produits.html" class="flex flex-col items-center text-primary">
           <span class="material-symbols-outlined text-2xl">local_mall</span>Produits
         </a>
-        <a href="produits2.html" class="flex flex-col items-center hover:text-primary transition">
-          <span class="material-symbols-outlined text-2xl">storefront</span>Produits 2
-        </a>
         <a href="assistantIA.html" class="flex flex-col items-center hover:text-primary transition">
           <span class="material-symbols-outlined text-2xl">psychology</span>Assistant
-        </a>
-        <a href="conseil.html" class="flex flex-col items-center hover:text-primary transition">
-          <span class="material-symbols-outlined text-2xl">tips_and_updates</span>Conseil
         </a>
         <a href="panier.html" class="flex flex-col items-center hover:text-primary transition">
           <span class="material-symbols-outlined text-2xl">shopping_cart</span>Panier
         </a>
         <a href="connexion.html" class="flex flex-col items-center hover:text-primary transition">
-          <span class="material-symbols-outlined text-2xl">person</span>Connexion
+          <span class="material-symbols-outlined text-2xl">person</span>Profil
         </a>
-        <a href="inscription.html" class="flex flex-col items-center hover:text-primary transition">
-          <span class="material-symbols-outlined text-2xl">person_add</span>Inscription
-        </a>
-        <a href="recupmotdepass.html" class="flex flex-col items-center hover:text-primary transition">
-          <span class="material-symbols-outlined text-2xl">lock_reset</span>Mot de passe
-        </a>
-        <a href="confreinimotPass.html" class="flex flex-col items-center hover:text-primary transition">
-          <span class="material-symbols-outlined text-2xl">check_circle</span>Confirmation
-        </a>
+      </div>
+
+      <!-- Desktop -->
+      <div class="hidden md:flex justify-center flex-wrap gap-8 py-3 text-gray-600 dark:text-gray-400 text-sm font-medium">
+        <a href="index.html" class="hover:text-primary transition flex items-center gap-1"><span class="material-symbols-outlined">home</span>Accueil</a>
+        <a href="produits.html" class="text-primary flex items-center gap-1"><span class="material-symbols-outlined">local_mall</span>Produits</a>
+        <a href="produits2.html" class="hover:text-primary transition flex items-center gap-1"><span class="material-symbols-outlined">storefront</span>Produits 2</a>
+        <a href="assistantIA.html" class="hover:text-primary transition flex items-center gap-1"><span class="material-symbols-outlined">psychology</span>Assistant</a>
+        <a href="conseil.html" class="hover:text-primary transition flex items-center gap-1"><span class="material-symbols-outlined">tips_and_updates</span>Conseil</a>
+        <a href="panier.html" class="hover:text-primary transition flex items-center gap-1"><span class="material-symbols-outlined">shopping_cart</span>Panier</a>
+        <a href="connexion.html" class="hover:text-primary transition flex items-center gap-1"><span class="material-symbols-outlined">person</span>Connexion</a>
+        <a href="inscription.html" class="hover:text-primary transition flex items-center gap-1"><span class="material-symbols-outlined">person_add</span>Inscription</a>
       </div>
     </footer>
   </div>
