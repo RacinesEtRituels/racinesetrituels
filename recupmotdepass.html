@@ -1,13 +1,17 @@
 <!DOCTYPE html>
+<html class="light" lang="fr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Récupération de mot de passe</title>
 
-<html class="light" lang="fr"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Récupération de mot de passe</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
-<script id="tailwind-config">
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+
+  <!-- Thème -->
+  <script id="tailwind-config">
     tailwind.config = {
       darkMode: "class",
       theme: {
@@ -16,55 +20,136 @@
             "primary": "#e64c19",
             "background-light": "#f8f6f6",
             "background-dark": "#211511",
+            "text-light": "#1b110e",
+            "text-dark": "#f8f6f6"
           },
           fontFamily: {
             "display": ["Epilogue", "sans-serif"]
           },
-          borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+          borderRadius: {
+            "DEFAULT": "0.5rem",
+            "lg": "1rem",
+            "xl": "1.5rem",
+            "full": "9999px"
+          },
         },
       },
     }
   </script>
-<style>
+
+  <style>
     body {
       font-family: 'Epilogue', sans-serif;
-    }
-  </style>
-<style>
-    body {
       min-height: max(884px, 100dvh);
     }
   </style>
-  </head>
-<body class="bg-background-light dark:bg-background-dark">
-<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
-<div class="flex items-center bg-background-light dark:bg-background-dark p-4 pb-2 justify-between">
-<div class="text-slate-800 dark:text-slate-200 flex size-12 shrink-0 items-center justify-center">
-<span class="material-symbols-outlined">arrow_back</span>
-</div>
-</div>
-<div class="flex flex-col flex-1 px-4 py-6">
-<h1 class="text-slate-800 dark:text-slate-200 tracking-tight text-[32px] font-bold leading-tight text-left pb-3 pt-6 font-display">Mot de passe oublié ?</h1>
-<p class="text-slate-600 dark:text-slate-400 text-base font-normal leading-normal pb-6 pt-1 font-display">
-        Saisissez votre adresse e-mail et nous vous enverrons un lien pour réinitialiser votre mot de passe.
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark">
+  <div class="relative flex flex-col min-h-screen w-full overflow-x-hidden">
+
+    <!-- Header -->
+    <header class="flex items-center bg-background-light dark:bg-background-dark p-4 pb-2 justify-between border-b border-gray-200 dark:border-gray-700">
+      <a href="connexion.html" class="text-text-light dark:text-text-dark flex items-center justify-center size-12 hover:opacity-80 transition">
+        <span class="material-symbols-outlined">arrow_back</span>
+      </a>
+      <h1 class="flex-1 text-center text-lg font-bold">Mot de passe oublié</h1>
+      <div class="w-12"></div>
+    </header>
+
+    <!-- Contenu principal -->
+    <main class="flex flex-col flex-1 px-4 py-6">
+      <h2 class="text-2xl md:text-[32px] font-bold leading-tight text-left pb-3 pt-6">Récupération de mot de passe</h2>
+      <p class="text-base font-normal leading-normal pb-6 text-gray-600 dark:text-gray-400">
+        Entrez votre adresse e-mail et nous vous enverrons un lien pour réinitialiser votre mot de passe.
       </p>
-<div class="flex max-w-[480px] flex-wrap items-end gap-4 py-3">
-<label class="flex flex-col min-w-40 flex-1">
-<p class="text-slate-800 dark:text-slate-200 text-base font-medium leading-normal pb-2 font-display">E-mail</p>
-<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-slate-800 dark:text-slate-200 focus:outline-0 focus:ring-0 border border-slate-300 dark:border-slate-700 bg-background-light dark:bg-background-dark focus:border-primary h-14 placeholder:text-slate-400 dark:placeholder:text-slate-500 p-[15px] text-base font-normal leading-normal font-display" placeholder="votre.email@exemple.com" value=""/>
-</label>
-</div>
-<div class="flex px-0 py-3 mt-4">
-<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 px-5 flex-1 bg-primary text-white text-base font-bold leading-normal tracking-[0.015em] font-display">
-<span class="truncate">Envoyer le lien</span>
-</button>
-</div>
-<div class="mt-8 p-4 bg-green-100 dark:bg-green-900/30 rounded-lg hidden">
-<p class="text-green-800 dark:text-green-200 text-sm font-medium font-display">Un lien de réinitialisation a été envoyé à votre adresse e-mail. Veuillez vérifier votre boîte de réception.</p>
-</div>
-</div>
-<div class="flex justify-center p-4">
-<a class="text-primary dark:text-primary/80 text-sm font-medium font-display" href="#">Retour à la connexion</a>
-</div>
-</div>
-</body></html>
+
+      <div class="max-w-[480px] w-full space-y-4">
+        <label class="block">
+          <p class="text-base font-medium pb-2">Adresse e-mail</p>
+          <input type="email" placeholder="votre.email@exemple.com"
+            class="form-input w-full rounded-xl border border-gray-300 dark:border-gray-700 bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-primary focus:ring-2 focus:ring-primary/30 h-14 p-4"/>
+        </label>
+
+        <a href="confreinimotPass.html"
+          class="flex justify-center items-center w-full rounded-xl h-12 bg-primary text-white text-base font-bold hover:bg-primary/90 transition">
+          Envoyer le lien
+        </a>
+
+        <div class="hidden mt-8 p-4 bg-green-100 dark:bg-green-900/30 rounded-lg">
+          <p class="text-green-800 dark:text-green-200 text-sm font-medium">
+            Un lien de réinitialisation a été envoyé à votre adresse e-mail. Veuillez vérifier votre boîte de réception.
+          </p>
+        </div>
+      </div>
+
+      <div class="flex justify-center mt-8">
+        <a href="connexion.html" class="text-primary hover:underline text-sm font-medium">
+          Retour à la connexion
+        </a>
+      </div>
+    </main>
+
+    <!-- 🚀 Footer adaptatif -->
+    <footer class="sticky bottom-0 w-full bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm border-t border-gray-200 dark:border-gray-700">
+      <!-- Version mobile -->
+      <div class="flex justify-around py-2 md:hidden text-gray-600 dark:text-gray-400 text-xs font-medium">
+        <a href="index.html" class="flex flex-col items-center hover:text-primary transition">
+          <span class="material-symbols-outlined text-2xl">home</span>
+          Accueil
+        </a>
+        <a href="produits.html" class="flex flex-col items-center hover:text-primary transition">
+          <span class="material-symbols-outlined text-2xl">local_mall</span>
+          Produits
+        </a>
+        <a href="assistantIA.html" class="flex flex-col items-center hover:text-primary transition">
+          <span class="material-symbols-outlined text-2xl">psychology</span>
+          Assistant
+        </a>
+        <a href="panier.html" class="flex flex-col items-center hover:text-primary transition">
+          <span class="material-symbols-outlined text-2xl">shopping_cart</span>
+          Panier
+        </a>
+        <a href="connexion.html" class="flex flex-col items-center text-primary">
+          <span class="material-symbols-outlined text-2xl">person</span>
+          Profil
+        </a>
+      </div>
+
+      <!-- Version desktop -->
+      <div class="hidden md:grid md:grid-cols-5 lg:grid-cols-10 gap-2 py-3 text-center text-gray-600 dark:text-gray-400 text-sm font-medium">
+        <a href="index.html" class="flex flex-col items-center hover:text-primary transition">
+          <span class="material-symbols-outlined text-2xl">home</span>Accueil
+        </a>
+        <a href="produits.html" class="flex flex-col items-center hover:text-primary transition">
+          <span class="material-symbols-outlined text-2xl">local_mall</span>Produits
+        </a>
+        <a href="produits2.html" class="flex flex-col items-center hover:text-primary transition">
+          <span class="material-symbols-outlined text-2xl">storefront</span>Produits 2
+        </a>
+        <a href="assistantIA.html" class="flex flex-col items-center hover:text-primary transition">
+          <span class="material-symbols-outlined text-2xl">psychology</span>Assistant
+        </a>
+        <a href="conseil.html" class="flex flex-col items-center hover:text-primary transition">
+          <span class="material-symbols-outlined text-2xl">tips_and_updates</span>Conseil
+        </a>
+        <a href="panier.html" class="flex flex-col items-center hover:text-primary transition">
+          <span class="material-symbols-outlined text-2xl">shopping_cart</span>Panier
+        </a>
+        <a href="connexion.html" class="flex flex-col items-center text-primary">
+          <span class="material-symbols-outlined text-2xl">person</span>Connexion
+        </a>
+        <a href="inscription.html" class="flex flex-col items-center hover:text-primary transition">
+          <span class="material-symbols-outlined text-2xl">person_add</span>Inscription
+        </a>
+        <a href="recupmotdepass.html" class="flex flex-col items-center text-primary">
+          <span class="material-symbols-outlined text-2xl">lock_reset</span>Mot de passe
+        </a>
+        <a href="confreinimotPass.html" class="flex flex-col items-center hover:text-primary transition">
+          <span class="material-symbols-outlined text-2xl">check_circle</span>Confirmation
+        </a>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>
