@@ -1,55 +1,47 @@
 <!DOCTYPE html>
 <html class="light" lang="fr">
+
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- 🧠 SEO -->
-  <title>Conseils Bien-Être – Racines & Rituels</title>
-  <meta name="description" content="Découvrez des conseils bien-être personnalisés grâce à nos produits naturels : Hibiscus rouge, Khamaré, infusions et rituels bien-être.">
+  <title>Conseils Bien-Être — Racines & Rituels</title>
+  <meta name="description" content="Découvrez nos conseils bien-être : utilisation du Khamaré, Hibiscus, recettes santé et astuces naturelles.">
+
   <meta name="robots" content="index, follow">
 
-  <!-- 🧠 OpenGraph -->
-  <meta property="og:title" content="Conseils Bien-Être – Racines & Rituels">
-  <meta property="og:description" content="Profitez d’astuces bien-être basées sur les plantes naturelles : Khamaré, Hibiscus et rituels relaxants.">
-  <meta property="og:image" content="https://tondomaine.com/og-image.webp">
+  <!-- OpenGraph -->
+  <meta property="og:title" content="Conseils Bien-Être — Racines & Rituels">
+  <meta property="og:description" content="Explorez les meilleurs conseils pour votre bien-être naturel.">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://tondomaine.com/conseil">
+  <meta property="og:image" content="https://tondomaine.com/images/conseils.webp">
 
-  <!-- 🧠 Twitter -->
+  <!-- Twitter Cards -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Conseils Bien-Être – Racines & Rituels">
-  <meta name="twitter:description" content="Conseils bien-être personnalisés, infusions naturelles et rituels holistiques.">
-  <meta name="twitter:image" content="https://tondomaine.com/og-image.webp">
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png">
-
-  <!-- Polices -->
-  <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet"/>
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
-
-  <!-- Tailwind -->
+  <!-- TailwindCSS -->
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 
-  <!-- Configuration Tailwind -->
+  <!-- Polices -->
+  <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+
+  <!-- Thème Tailwind -->
   <script>
     tailwind.config = {
       darkMode: "class",
       theme: {
         extend: {
           colors: {
-            "primary": "#e64c19",
-            "background-light": "#F5F5DC",
+            primary: "#e64c19",
+            "background-light": "#f8f6f6",
             "background-dark": "#211511",
-            "hibiscus-red": "#D82148",
-            "khamare-brown": "#8B4513",
-            "sage-green": "#9DC183",
-            "anthracite-gray": "#36454F"
+            terracotta: "#E2725B",
+            beige: "#F5F5DC",
           },
           fontFamily: {
-            "display": ["Playfair Display", "serif"],
-            "body": ["Epilogue", "sans-serif"]
+            display: ["Epilogue", "sans-serif"]
           }
         }
       }
@@ -58,70 +50,110 @@
 
   <style>
     body {
-      min-height: max(884px, 100dvh);
       font-family: 'Epilogue', sans-serif;
+      min-height: 100dvh;
     }
   </style>
 </head>
 
-<body class="bg-background-light dark:bg-background-dark font-body text-anthracite-gray dark:text-background-light">
+<body class="bg-background-light dark:bg-background-dark text-gray-800 dark:text-white">
 
-  <!-- 🔥 MAIN = CONTENU PRINCIPAL (SEO) -->
-  <main class="relative flex flex-col min-h-screen overflow-x-hidden" 
-        style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%239DC183\' fill-opacity=\'0.1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');">
+  <div class="min-h-screen flex flex-col">
 
     <!-- HEADER -->
-    <header class="flex items-center p-4 pb-2 justify-between sticky top-0 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm z-10 border-b border-gray-200 dark:border-gray-700">
-      <a href="index.html" class="text-anthracite-gray dark:text-background-light flex size-12 items-center justify-center hover:opacity-80 transition">
+    <header class="sticky top-0 z-20 flex items-center justify-between p-4 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-gray-300 dark:border-gray-700">
+      <a href="index.html" class="flex size-12 items-center justify-center hover:opacity-80 transition">
         <span class="material-symbols-outlined">arrow_back</span>
       </a>
-      <h1 class="text-hibiscus-red text-2xl font-display text-center flex-1 pr-12">Mes Conseils Bien-Être</h1>
+      <h1 class="text-lg font-bold flex-1 text-center pr-12">Conseils bien-être</h1>
     </header>
 
     <!-- CONTENU -->
-    <section class="flex-1">
+    <main class="flex-1 p-4 max-w-2xl w-full mx-auto space-y-6">
 
-      <p class="text-base leading-normal pb-3 pt-1 px-4">
-        Bonjour [Prénom], voici quelques conseils pour profiter pleinement de vos produits.
-      </p>
+      <!-- Section d'intro -->
+      <section class="text-center space-y-2">
+        <h2 class="text-2xl font-bold">Nos meilleurs conseils</h2>
+        <p class="text-gray-600 dark:text-gray-300">Découvrez comment profiter au mieux de nos plantes naturelles.</p>
+      </section>
 
-      <!-- BLOC DE CONSEILS -->
-      <div class="space-y-4 p-4">
-
-        <div class="p-4 rounded-xl shadow bg-background-light/90 dark:bg-background-dark/90">
-          <p class="text-lg">Pour un réveil plein d'énergie, savourez votre infusion d'hibiscus rouge le matin. 🌞</p>
+      <!-- Carte 1 : Khamaré -->
+      <section class="p-4 bg-white dark:bg-background-dark/40 rounded-xl shadow-md space-y-3">
+        <div class="flex items-center gap-3">
+          <span class="material-symbols-outlined text-3xl text-primary">spa</span>
+          <h3 class="text-lg font-bold">Bienfaits du Khamaré</h3>
         </div>
+        <p>
+          Le Khamaré est reconnu pour purifier, apaiser et rééquilibrer naturellement. Idéal pour les routines
+          bien-être quotidiennes.
+        </p>
+        <ul class="list-disc ml-6 space-y-1">
+          <li>Action purifiante naturelle</li>
+          <li>Apaise le corps et l’esprit</li>
+          <li>Parfait pour les infusions quotidiennes</li>
+        </ul>
+      </section>
 
-        <div class="p-4 rounded-xl shadow bg-background-light/90 dark:bg-background-dark/90">
-          <p class="text-lg">Le soir, une infusion de racines de khamaré vous offrira un moment de détente parfumé. 🌙</p>
+      <!-- Carte 2 : Hibiscus -->
+      <section class="p-4 bg-white dark:bg-background-dark/40 rounded-xl shadow-md space-y-3">
+        <div class="flex items-center gap-3">
+          <span class="material-symbols-outlined text-3xl text-terracotta">local_florist</span>
+          <h3 class="text-lg font-bold">Conseils autour de l’Hibiscus</h3>
         </div>
+        <p>
+          Riche en antioxydants, l’Hibiscus est idéal pour revitaliser, hydrater et soulager les tensions internes.
+        </p>
+        <ul class="list-disc ml-6 space-y-1">
+          <li>Réduit naturellement la fatigue</li>
+          <li>Délicieux en infusion chaude ou froide</li>
+          <li>Favorise le bien-être digestif</li>
+        </ul>
+      </section>
 
-        <div class="p-4 rounded-xl shadow bg-background-light/90 dark:bg-background-dark/90">
-          <p class="text-lg">Pensez à bien vous hydrater tout au long de la journée. Votre peau vous remerciera ! 💧</p>
+      <!-- Carte 3 : Recettes -->
+      <section class="p-4 bg-white dark:bg-background-dark/40 rounded-xl shadow-md space-y-3">
+        <div class="flex items-center gap-3">
+          <span class="material-symbols-outlined text-3xl text-primary">restaurant_menu</span>
+          <h3 class="text-lg font-bold">Recettes bien-être</h3>
         </div>
+        <p>Envie d’idées simples et naturelles ? Voici nos recettes favorites :</p>
 
-      </div>
+        <ul class="list-disc ml-6 space-y-1">
+          <li>Tisane relaxante au Khamaré</li>
+          <li>Jus d'Hibiscus glacé</li>
+          <li>Eau parfumée au vétiver</li>
+        </ul>
 
-      <!-- CTA -->
-      <div class="px-8 pt-8 pb-20">
-        <a href="assistantIA.html" class="flex w-full h-12 items-center justify-center rounded-xl bg-sage-green text-white text-base font-bold shadow-lg hover:bg-sage-green/90 transition">
-          Explorer d'autres rituels
+        <a href="#" class="inline-flex items-center gap-2 py-3 px-5 rounded-full bg-primary text-white font-bold hover:bg-primary/90 transition">
+          <span class="material-symbols-outlined">download</span>
+          Télécharger les recettes PDF
         </a>
-      </div>
+      </section>
 
-    </section>
+    </main>
 
-    <!-- FOOTER ADAPTATIF -->
-    <footer class="sticky bottom-0 w-full bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm border-t border-gray-200 dark:border-gray-700">
-      <div class="flex justify-around py-2 md:hidden text-gray-600 dark:text-gray-400 text-xs font-medium">
-        <a href="index.html" class="flex flex-col items-center"><span class="material-symbols-outlined text-2xl">home</span>Accueil</a>
-        <a href="produits.html" class="flex flex-col items-center"><span class="material-symbols-outlined text-2xl">local_mall</span>Produits</a>
-        <a href="assistantIA.html" class="flex flex-col items-center"><span class="material-symbols-outlined text-2xl">psychology</span>Assistant</a>
-        <a href="panier.html" class="flex flex-col items-center"><span class="material-symbols-outlined text-2xl">shopping_cart</span>Panier</a>
-        <a href="connexion.html" class="flex flex-col items-center"><span class="material-symbols-outlined text-2xl">person</span>Profil</a>
-      </div>
+    <!-- FOOTER NAVIGATION -->
+    <footer class="sticky bottom-0 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-t border-gray-300 dark:border-gray-700">
+      <nav class="flex justify-around py-2 md:hidden text-xs text-gray-600 dark:text-gray-400">
+        <a href="index.html" class="flex flex-col items-center hover:text-primary">
+          <span class="material-symbols-outlined text-2xl">home</span>Accueil
+        </a>
+        <a href="produits.html" class="flex flex-col items-center hover:text-primary">
+          <span class="material-symbols-outlined text-2xl">local_mall</span>Produits
+        </a>
+        <a href="assistantIA.html" class="flex flex-col items-center hover:text-primary">
+          <span class="material-symbols-outlined text-2xl">psychology</span>Assistant
+        </a>
+        <a href="panier.html" class="flex flex-col items-center hover:text-primary">
+          <span class="material-symbols-outlined text-2xl">shopping_cart</span>Panier
+        </a>
+        <a href="connexion.html" class="flex flex-col items-center hover:text-primary">
+          <span class="material-symbols-outlined text-2xl">person</span>Profil
+        </a>
+      </nav>
     </footer>
 
-  </main>
+  </div>
 </body>
+
 </html>
