@@ -1,38 +1,32 @@
 <!DOCTYPE html>
 <html class="light" lang="fr">
+
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- 🧠 SEO -->
-  <title>Mon Panier – Produits Naturels Khamaré & Hibiscus</title>
-  <meta name="description" content="Retrouvez vos produits naturels dans votre panier : Khamaré, Hibiscus, infusions bien-être et plantes traditionnelles. Paiement sécurisé et livraison rapide.">
+  <title>Mon Panier — Racines & Rituels</title>
+  <meta name="description" content="Retrouvez vos produits naturels : Khamaré, Hibiscus et coffrets bien-être dans votre panier. Paiement sécurisé et livraison rapide.">
   <meta name="robots" content="index, follow">
 
-  <!-- 🧠 OpenGraph -->
-  <meta property="og:title" content="Mon Panier – Produits Naturels">
-  <meta property="og:description" content="Votre panier Khamaré & Hibiscus. Produits bien-être naturels avec livraison rapide et paiement sécurisé.">
+  <!-- OpenGraph -->
+  <meta property="og:title" content="Mon Panier — Racines & Rituels">
+  <meta property="og:description" content="Consultez vos produits sélectionnés et finalisez votre commande en toute sécurité.">
   <meta property="og:type" content="website">
-  <meta property="og:image" content="https://tondomaine.com/panier.webp">
-  <meta property="og:url" content="https://tondomaine.com/panier">
+  <meta property="og:image" content="https://tondomaine.com/images/panier.webp">
 
-  <!-- 🐦 Twitter -->
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Mon Panier – Bien-Être Naturel">
-  <meta name="twitter:description" content="Découvrez vos produits dans votre panier bien-être.">
-  <meta name="twitter:image" content="https://tondomaine.com/panier.webp">
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
 
-  <!-- Favicon -->
-  <link rel="icon" href="favicon.png" type="image/png"/>
-
-  <!-- Tailwind -->
+  <!-- TailwindCSS -->
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 
   <!-- Polices -->
-  <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;700&display=swap" rel="stylesheet"/>
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
 
-  <!-- Thème -->
+  <!-- Thème Tailwind -->
   <script>
     tailwind.config = {
       darkMode: "class",
@@ -42,164 +36,157 @@
             primary: "#e64c19",
             "background-light": "#f8f6f6",
             "background-dark": "#211511",
-            beige: "#F5F5DC",
             terracotta: "#E2725B",
-            greenSoft: "#A9B6A9"
+            beige: "#F5F5DC",
+            greensoft: "#A9B6A9",
           },
           fontFamily: {
-            display: ["Epilogue", "sans-serif"]
-          }
+            display: ["Epilogue", "sans-serif"],
+          },
         },
       },
-    }
+    };
   </script>
 
   <style>
     body {
-      font-family: 'Epilogue', sans-serif;
-      min-height: max(884px, 100dvh);
+      font-family: "Epilogue", sans-serif;
+      min-height: 100dvh;
     }
   </style>
 </head>
 
 <body class="bg-beige dark:bg-background-dark text-gray-800 dark:text-white">
 
-  <main class="relative flex flex-col min-h-screen overflow-x-hidden">
+  <div class="min-h-screen flex flex-col">
 
     <!-- HEADER -->
-    <header class="flex items-center p-4 pb-2 justify-between bg-beige dark:bg-background-dark sticky top-0 z-20 border-b border-gray-200 dark:border-gray-700 backdrop-blur-sm">
-      <a href="produits.html" class="text-gray-800 dark:text-white flex size-12 items-center justify-center hover:opacity-80">
+    <header
+      class="sticky top-0 z-20 flex items-center justify-between p-4 bg-beige/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-gray-300 dark:border-gray-700">
+      <a href="produits.html" class="flex size-12 items-center justify-center hover:opacity-80 transition">
         <span class="material-symbols-outlined">arrow_back</span>
       </a>
       <h1 class="text-lg font-bold flex-1 text-center pr-12">Mon Panier</h1>
     </header>
 
-    <!-- CONTENU PRINCIPAL -->
-    <section class="flex-1 p-4 space-y-4 max-w-3xl mx-auto w-full">
+    <!-- CONTENU -->
+    <main class="flex-1 p-4 space-y-4 max-w-2xl mx-auto w-full">
 
       <!-- PRODUIT 1 -->
-      <article class="flex gap-4 bg-white dark:bg-background-dark/50 p-4 rounded-xl shadow-sm justify-between">
-
+      <div class="flex gap-4 bg-white dark:bg-background-dark/40 p-4 rounded-xl shadow-sm">
         <div class="flex items-start gap-4">
-          <div class="size-[70px] bg-center bg-cover rounded-lg"
-            style='background-image:url("https://lh3.googleusercontent.com/aida-public/AB6AXuCdEsc0-c6Lt1-Kn3gEbJz3NTiACGSOPAP1UgT93bFbboLheoHFXjhs6-vPUeNIf-KlBufikZ53OwWb--xY8bE_nCq0wYTS8ccYosburz-qPBfo75CtWsW3EJLjGJDgnjkcTsPzki0THvLQ3UlWvbN6LTSP3R1yWKSjvbDKJ-S6Hr-O7QJWfae5PoS13Rp-26_71rByDACfl7JCyf8BqAz8m4rWWJ93CACv99C1G4LoGgBpz1ZHdL7OYX9x55cpZ_PTsu_8AIANBpbc");'></div>
-
+          <div class="bg-center bg-cover rounded-lg aspect-square size-[70px]"
+            style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCdEsc0-c6Lt1-Kn3gEbJz3NTiACGSOPAP1UgT93bFbboLheoHFXjhs6-vPUeNIf-KlBufikZ53OwWb--xY8bE_nCq0wYTS8ccYosburz-qPBfo75CtWsW3EJLjGJDgnjkcTsPzki0THvLQ3UlWvbN6LTSP3R1yWKSjvbDKJ-S6Hr-O7QJWfae5PoS13Rp-26_71rByDACfl7JCyf8BqAz8m4rWWJ93CACv99C1G4LoGgBpz1ZHdL7OYX9x55cpZ_PTsu_8AIANBpbc');">
+          </div>
           <div class="flex flex-col justify-center">
-            <p class="text-base font-medium">Khamaré – Sachet de 10 tiges</p>
-            <p class="text-greenSoft text-sm">12,00 €</p>
+            <p class="text-base font-medium">Khamaré – Sachet 10 tiges</p>
+            <p class="text-greensoft text-sm">12,00 €</p>
           </div>
         </div>
 
-        <div class="flex flex-col justify-between items-end">
-          <button class="text-terracotta hover:opacity-80">
-            <span class="material-symbols-outlined">delete</span>
+        <div class="flex flex-col items-end justify-between">
+          <button class="text-terracotta hover:opacity-80 transition">
+            <span class="material-symbols-outlined text-xl">delete</span>
           </button>
 
           <div class="flex items-center gap-2">
-            <button class="h-7 w-7 flex justify-center items-center rounded-full bg-beige dark:bg-background-dark/80">-</button>
-            <input type="number" value="1" class="w-6 text-center bg-transparent border-none focus:outline-0"/>
-            <button class="h-7 w-7 flex justify-center items-center rounded-full bg-beige dark:bg-background-dark/80">+</button>
+            <button class="h-7 w-7 flex items-center justify-center rounded-full bg-beige/60 dark:bg-background-dark/60">-</button>
+            <input type="number" value="1"
+              class="w-6 text-center bg-transparent border-none focus:outline-0 [appearance:textfield]" />
+            <button class="h-7 w-7 flex items-center justify-center rounded-full bg-beige/60 dark:bg-background-dark/60">+</button>
           </div>
         </div>
-
-      </article>
+      </div>
 
       <!-- PRODUIT 2 -->
-      <article class="flex gap-4 bg-white dark:bg-background-dark/50 p-4 rounded-xl shadow-sm justify-between">
-
+      <div class="flex gap-4 bg-white dark:bg-background-dark/40 p-4 rounded-xl shadow-sm">
         <div class="flex items-start gap-4">
-          <div class="size-[70px] bg-center bg-cover rounded-lg"
-            style='background-image:url("https://lh3.googleusercontent.com/aida-public/AB6AXuAsueod0jJVlckVy7X1YSyre69GrPpNuImdsn9bxvILVeT4J2owflGvinHMRSskl4-whfO08rHNdrKkYKzKi2_NrCBjMJKsdkxxdQ5sm5aQ2YGYk5dj4ddBwBk6h74sF7eBDb5jX0n94VqjEybTOGC_QUVL8YFDMhpzexCY2TBLuI0fUDrNpT01hpF-syk1K07bcCmv5khJQX_e5hOMRPq5wiLt--xdaOL9TGXY5mmFF5eCwILiCon2HrEzQxu2_SYt0qBxN2EKciSP");'></div>
-
+          <div class="bg-center bg-cover rounded-lg aspect-square size-[70px]"
+            style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAsueod0jJVlckVy7X1YSyre69GrPpNuImdsn9bxvILVeT4J2owflGvinHMRSskl4-whfO08rHNdrKkYKzKi2_NrCBjMJKsdkxxdQ5sm5aQ2YGYk5dj4ddBwBk6h74sF7eBDb5jX0n94VqjEybTOGC_QUVL8YFDMhpzexCY2TBLuI0fUDrNpT01hpF-syk1K07bcCmv5khJQX_e5hOMRPq5wiLt--xdaOL9TGXY5mmFF5eCwILiCon2HrEzQxu2_SYt0qBxN2EKciSP');">
+          </div>
           <div class="flex flex-col justify-center">
-            <p class="text-base font-medium">Fleurs d'Hibiscus séchées Bio</p>
-            <p class="text-greenSoft text-sm">8,50 €</p>
+            <p class="text-base font-medium">Hibiscus bio – Fleurs séchées</p>
+            <p class="text-greensoft text-sm">8,50 €</p>
           </div>
         </div>
 
-        <div class="flex flex-col justify-between items-end">
-          <button class="text-terracotta hover:opacity-80">
-            <span class="material-symbols-outlined">delete</span>
+        <div class="flex flex-col items-end justify-between">
+          <button class="text-terracotta hover:opacity-80 transition">
+            <span class="material-symbols-outlined text-xl">delete</span>
           </button>
 
           <div class="flex items-center gap-2">
-            <button class="h-7 w-7 flex justify-center items-center rounded-full bg-beige dark:bg-background-dark/80">-</button>
-            <input type="number" value="2" class="w-6 text-center bg-transparent border-none focus:outline-0"/>
-            <button class="h-7 w-7 flex justify-center items-center rounded-full bg-beige dark:bg-background-dark/80">+</button>
+            <button class="h-7 w-7 flex items-center justify-center rounded-full bg-beige/60 dark:bg-background-dark/60">-</button>
+            <input type="number" value="2"
+              class="w-6 text-center bg-transparent border-none focus:outline-0 [appearance:textfield]" />
+            <button class="h-7 w-7 flex items-center justify-center rounded-full bg-beige/60 dark:bg-background-dark/60">+</button>
           </div>
         </div>
+      </div>
 
-      </article>
+      <!-- TOTAL -->
+      <div class="p-4 bg-white dark:bg-background-dark/40 rounded-xl space-y-4 shadow-sm">
 
-      <!-- CODE PROMO + TOTAL -->
-      <section class="p-4 space-y-4 bg-white dark:bg-background-dark/50 rounded-xl">
-
+        <!-- Code promo -->
         <div class="flex items-center gap-2">
-          <input type="text" placeholder="Entrez votre code promo"
-            class="flex-1 h-12 px-4 rounded-full border border-gray-300 dark:border-gray-700 bg-beige dark:bg-background-dark/80 focus:ring-2 focus:ring-terracotta/50 outline-none"/>
-          <button class="px-6 h-12 rounded-full bg-greenSoft text-white font-bold hover:bg-greenSoft/90">
+          <input type="text" placeholder="Code promo" class="flex-1 h-12 px-4 rounded-full border border-gray-300 dark:border-gray-700 bg-beige dark:bg-background-dark/80 focus:ring-2 focus:ring-primary/50 outline-none" />
+          <button class="h-12 px-6 rounded-full bg-greensoft text-white font-bold hover:bg-greensoft/90 transition">
             Appliquer
           </button>
         </div>
 
-        <div class="p-4 bg-beige/50 dark:bg-background-dark/30 rounded-xl space-y-2">
+        <!-- Résumé -->
+        <div class="p-4 bg-beige/40 dark:bg-background-dark/30 rounded-xl space-y-2">
           <div class="flex justify-between text-sm">
-            <p class="text-greenSoft">Sous-total</p><p>29,00 €</p>
+            <p>Sous-total</p>
+            <p>29,00 €</p>
           </div>
-
           <div class="flex justify-between text-sm">
-            <p class="text-greenSoft">Livraison</p><p>5,00 €</p>
+            <p>Livraison</p>
+            <p>5,00 €</p>
           </div>
-
-          <hr class="border-gray-300 dark:border-gray-700"/>
-
-          <div class="flex justify-between font-bold text-lg">
-            <p>Total</p><p>34,00 €</p>
+          <hr class="border-gray-300 dark:border-gray-700">
+          <div class="flex justify-between font-bold text-base">
+            <p>Total</p>
+            <p>34,00 €</p>
           </div>
         </div>
 
-        <button class="w-full h-14 rounded-full bg-terracotta text-white text-lg font-bold shadow-lg hover:bg-terracotta/90">
-          Valider mon panier et payer
+        <!-- Bouton -->
+        <button class="w-full h-14 rounded-full bg-terracotta text-white text-lg font-bold shadow-lg hover:bg-terracotta/90 transition">
+          Valider et payer
         </button>
 
-        <div class="flex items-center justify-center gap-2 text-greenSoft text-xs mt-1">
+        <div class="flex items-center justify-center gap-2 text-greensoft text-xs mt-2">
           <span class="material-symbols-outlined text-base">lock</span>
           Paiement sécurisé
         </div>
+      </div>
+    </main>
 
-      </section>
-
-    </section>
-
-    <!-- FOOTER ADAPTATIF -->
-    <footer class="sticky bottom-0 w-full bg-beige/80 dark:bg-background-dark/80 border-t border-gray-200 dark:border-gray-700 backdrop-blur-md z-20">
-
-      <!-- Mobile -->
-      <nav class="flex justify-around py-2 md:hidden text-gray-600 dark:text-gray-400 text-xs font-medium">
-        <a href="index.html" class="flex flex-col items-center"><span class="material-symbols-outlined text-2xl">home</span>Accueil</a>
-        <a href="produits.html" class="flex flex-col items-center"><span class="material-symbols-outlined text-2xl">local_mall</span>Produits</a>
-        <a href="assistantIA.html" class="flex flex-col items-center"><span class="material-symbols-outlined text-2xl">psychology</span>Assistant</a>
-        <a href="panier.html" class="flex flex-col items-center text-primary"><span class="material-symbols-outlined text-2xl">shopping_cart</span>Panier</a>
-        <a href="connexion.html" class="flex flex-col items-center"><span class="material-symbols-outlined text-2xl">person</span>Profil</span></a>
+    <!-- FOOTER -->
+    <footer
+      class="sticky bottom-0 bg-beige/80 dark:bg-background-dark/80 backdrop-blur-md border-t border-gray-300 dark:border-gray-700">
+      <nav class="flex justify-around py-2 md:hidden text-xs text-gray-600 dark:text-gray-400">
+        <a href="index.html" class="flex flex-col items-center hover:text-primary">
+          <span class="material-symbols-outlined text-2xl">home</span>Accueil
+        </a>
+        <a href="produits.html" class="flex flex-col items-center hover:text-primary">
+          <span class="material-symbols-outlined text-2xl">local_mall</span>Produits
+        </a>
+        <a href="assistantIA.html" class="flex flex-col items-center hover:text-primary">
+          <span class="material-symbols-outlined text-2xl">psychology</span>Assistant
+        </a>
+        <a href="panier.html" class="flex flex-col items-center text-primary">
+          <span class="material-symbols-outlined text-2xl">shopping_cart</span>Panier
+        </a>
+        <a href="connexion.html" class="flex flex-col items-center hover:text-primary">
+          <span class="material-symbols-outlined text-2xl">person</span>Profil
+        </a>
       </nav>
-
-      <!-- Desktop -->
-      <nav class="hidden md:grid md:grid-cols-5 lg:grid-cols-10 text-center text-gray-600 dark:text-gray-400 text-sm font-medium py-3">
-        <a href="index.html" class="flex flex-col items-center">Accueil</a>
-        <a href="produits.html" class="flex flex-col items-center">Produits</a>
-        <a href="produits2.html" class="flex flex-col items-center">Produits 2</a>
-        <a href="assistantIA.html" class="flex flex-col items-center">Assistant</a>
-        <a href="conseil.html" class="flex flex-col items-center">Conseil</a>
-        <a href="panier.html" class="flex flex-col items-center text-primary">Panier</a>
-        <a href="connexion.html" class="flex flex-col items-center">Connexion</a>
-        <a href="inscription.html" class="flex flex-col items-center">Inscription</a>
-        <a href="recupmotdepass.html" class="flex flex-col items-center">Mot de passe</a>
-        <a href="confreinimotPass.html" class="flex flex-col items-center">Confirmation</a>
-      </nav>
-
     </footer>
 
-  </main>
-
+  </div>
 </body>
+
 </html>
