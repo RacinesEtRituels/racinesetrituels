@@ -3,170 +3,105 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Fiche Produit - Khamaré</title>
 
-  <!-- Tailwind -->
+  <!-- 🧠 SEO optimisé -->
+  <title>Khamaré – Bienfaits, Origine & Achat | Racines & Rituels</title>
+  <meta name="description" content="Découvrez le Khamaré (vétiver) : bienfaits, préparation, origine et usages traditionnels. Produit naturel pour le bien-être féminin. Livraison rapide.">
+  <meta name="robots" content="index, follow">
+
+  <!-- 🧠 Open Graph -->
+  <meta property="og:title" content="Khamaré – Bienfaits & Préparation | Racines & Rituels">
+  <meta property="og:description" content="Herbe naturelle aux propriétés purifiantes et apaisantes. Découvrez le Khamaré, ses bienfaits et ses usages traditionnels.">
+  <meta property="og:image" content="https://tondomaine.com/images/khamare.webp">
+  <meta property="og:type" content="product">
+  <meta property="og:url" content="https://tondomaine.com/khamare">
+
+  <!-- 🐦 Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Khamaré – Herbe Bien-être">
+  <meta name="twitter:description" content="Découvrez les bienfaits et l'origine du Khamaré.">
+  <meta name="twitter:image" content="https://tondomaine.com/images/khamare.webp">
+
+  <!-- Favicon -->
+  <link rel="icon" href="favicon.png" type="image/png"/>
+
+  <!-- TailwindCSS -->
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 
   <!-- Polices -->
-  <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;700&display=swap" rel="stylesheet"/>
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;600;700&display=swap"/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"/>
 
-  <!-- Thème -->
+  <!-- Thème Tailwind -->
   <script>
     tailwind.config = {
       darkMode: "class",
       theme: {
         extend: {
           colors: {
-            "primary": "#E07A5F",
+            primary: "#E07A5F",
             "background-light": "#F5F5DC",
             "background-dark": "#211511",
             "text-light": "#3D405B",
             "text-dark": "#F4F1DE",
-            "accent": "#8FBC8F"
+            accent: "#8FBC8F"
           },
           fontFamily: {
-            "display": ["Epilogue", "sans-serif"]
-          },
-          borderRadius: {
-            "DEFAULT": "0.5rem",
-            "lg": "1rem",
-            "xl": "1.5rem",
-            "full": "9999px"
-          },
-        },
-      },
+            display: ["Epilogue", "sans-serif"]
+          }
+        }
+      }
     }
   </script>
 
   <style>
     body {
       font-family: 'Epilogue', sans-serif;
-      min-height: max(884px, 100dvh);
+      min-height: 100dvh;
     }
   </style>
 </head>
 
-<body class="bg-background-light dark:bg-background-dark font-display text-text-light dark:text-text-dark">
-  <div class="relative flex flex-col min-h-screen overflow-x-hidden">
+<body class="bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark">
+  <main class="relative flex flex-col min-h-screen overflow-x-hidden">
 
-    <!-- Header -->
-    <header class="flex items-center justify-between p-4 sticky top-0 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700 z-10">
-      <a href="produits.html" class="flex items-center justify-center size-12 text-text-light dark:text-text-dark hover:opacity-80 transition">
+    <!-- HEADER -->
+    <header class="flex items-center p-4 pb-2 justify-between sticky top-0 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm border-b border-gray-300 dark:border-gray-700 z-20">
+      <a href="produits.html" class="flex size-12 items-center justify-center">
         <span class="material-symbols-outlined">arrow_back</span>
       </a>
-      <h2 class="text-lg font-bold flex-1 text-center pr-12">Fiche Produit</h2>
+      <h1 class="text-lg font-bold text-center flex-1 pr-12">Khamaré</h1>
     </header>
 
-    <!-- Contenu centré -->
-    <main class="flex-1 w-full max-w-3xl mx-auto px-4 md:px-8 lg:px-10 py-6">
+    <!-- IMAGE PRODUIT -->
+    <section class="px-4 py-4">
+      <img 
+        src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgtq9a_iB5ErWpgi1ziSBthK8DUHoEwzFbfHNu8dhSRaTNDVwonoCdCluAPVoAIoVrNuzip3Cc0EttfkcX5NVNmdxlvWFrZLC48tTQdmuCTkiFxAwP5W6lHx2-nMYc_ML7_eDCvzIdZ7V_rVy7oIXZqsPyeKRsxrR6KfGTpv6SuBOLD-OmgvCRv2bBs63jrHesz3Nw1RfSYAcu2zpPB68i6UNhDgfDquIMkdF-tgkPODne5-NBAejIMV8jDu9eiNbCTTMDY0Iznek3"
+        alt="Photo du Khamaré (vétiver) – Racines & Rituels"
+        class="rounded-xl w-full max-h-[380px] object-cover shadow-md"
+      />
+    </section>
 
-      <!-- Image produit -->
-      <section class="mb-6">
-        <div class="w-full bg-center bg-cover rounded-xl min-h-80 shadow-lg"
-             style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAgtq9a_iB5ErWpgi1ziSBthK8DUHoEwzFbfHNu8dhSRaTNDVwonoCdCluAPVoAIoVrNuzip3Cc0EttfkcX5NVNmdxlvWFrZLC48tTQdmuCTkiFxAwP5W6lHx2-nMYc_ML7_eDCvzIdZ7V_rVy7oIXZqsPyeKRsxrR6KfGTpv6SuBOLD-OmgvCRv2bBs63jrHesz3Nw1RfSYAcu2zpPB68i6UNhDgfDquIMkdF-tgkPODne5-NBAejIMV8jDu9eiNbCTTMDY0Iznek3");'>
-        </div>
-      </section>
+    <!-- DESCRIPTION -->
+    <section class="px-4 py-2">
+      <h2 class="text-[32px] font-bold text-primary">Khamaré</h2>
+      <p class="mt-2 text-base leading-relaxed">
+        Le Khamaré, aussi appelé vétiver, est une plante traditionnelle reconnue pour ses propriétés purifiantes et apaisantes. 
+        Issu d’une culture artisanale en Afrique de l’Ouest, il accompagne le bien-être féminin depuis des générations.
+      </p>
+    </section>
 
-      <!-- Description -->
-      <section class="pb-4 text-center md:text-left">
-        <h1 class="text-[32px] font-bold text-primary leading-tight">Khamaré</h1>
-        <p class="pt-3 text-base leading-relaxed text-text-light dark:text-text-dark/90">
-          Découvrez les propriétés apaisantes et purifiantes du Khamaré, une herbe traditionnelle utilisée depuis des générations pour favoriser le bien-être et l'équilibre intérieur.
-        </p>
-      </section>
-
-      <!-- Détails -->
-      <section class="mt-6">
-        <details class="border-t border-accent/50 py-2 group" open>
-          <summary class="flex justify-between items-center cursor-pointer py-2">
-            <p class="text-primary text-sm font-medium">Bienfaits</p>
-            <span class="material-symbols-outlined text-primary transition-transform group-open:rotate-180">expand_more</span>
-          </summary>
-          <p class="text-sm leading-relaxed pb-2">
-            Le Khamaré est reconnu pour ses nombreux bienfaits, notamment pour favoriser une digestion saine, réduire le stress et améliorer la clarté de la peau. C’est une source naturelle d’antioxydants et de vitamines.
-          </p>
-        </details>
-
-        <details class="border-t border-accent/50 py-2 group">
-          <summary class="flex justify-between items-center cursor-pointer py-2">
-            <p class="text-primary text-sm font-medium">Préparation</p>
-            <span class="material-symbols-outlined text-primary transition-transform group-open:rotate-180">expand_more</span>
-          </summary>
-          <p class="text-sm leading-relaxed pb-2">
-            Infuser une tige dans de l’eau chaude pendant 5 à 7 minutes. Peut être dégusté chaud ou froid. Pour une saveur plus intense, laissez infuser plus longtemps.
-          </p>
-        </details>
-
-        <details class="border-t border-accent/50 py-2 group">
-          <summary class="flex justify-between items-center cursor-pointer py-2">
-            <p class="text-primary text-sm font-medium">Origine</p>
-            <span class="material-symbols-outlined text-primary transition-transform group-open:rotate-180">expand_more</span>
-          </summary>
-          <p class="text-sm leading-relaxed pb-2">
-            Notre Khamaré est récolté à la main dans les régions d’Afrique de l’Ouest, où il pousse à l’état sauvage. Nous travaillons directement avec des coopératives locales pour garantir un produit authentique et de la plus haute qualité.
-          </p>
-        </details>
-
-        <details class="border-t border-b border-accent/50 py-2 group">
-          <summary class="flex justify-between items-center cursor-pointer py-2">
-            <p class="text-primary text-sm font-medium">Anecdote culturelle</p>
-            <span class="material-symbols-outlined text-primary transition-transform group-open:rotate-180">expand_more</span>
-          </summary>
-          <p class="text-sm leading-relaxed pb-2">
-            Traditionnellement, le Khamaré est offert aux jeunes mariées pour favoriser la fertilité et le bien-être du couple. C’est un symbole de pureté et de santé.
-          </p>
-        </details>
-      </section>
-
-      <!-- Bouton d'achat -->
-      <div class="flex justify-center pt-8">
-        <a href="panier.html" class="flex w-full max-w-sm items-center justify-center rounded-xl h-12 bg-primary text-white text-base font-bold shadow-md hover:shadow-lg hover:bg-primary/90 transition">
-          Ajouter au panier
-        </a>
-      </div>
-    </main>
-
-    <!-- 🚀 Footer adaptatif -->
-    <footer class="sticky bottom-0 w-full bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm border-t border-gray-200 dark:border-gray-700 mt-auto">
-      <!-- Mobile -->
-      <div class="flex justify-around py-2 md:hidden text-gray-600 dark:text-gray-400 text-xs font-medium">
-        <a href="index.html" class="flex flex-col items-center hover:text-primary transition">
-          <span class="material-symbols-outlined text-2xl">home</span>
-          Accueil
-        </a>
-        <a href="produits.html" class="flex flex-col items-center text-primary">
-          <span class="material-symbols-outlined text-2xl">local_mall</span>
-          Produits
-        </a>
-        <a href="assistantIA.html" class="flex flex-col items-center hover:text-primary transition">
-          <span class="material-symbols-outlined text-2xl">psychology</span>
-          Assistant
-        </a>
-        <a href="panier.html" class="flex flex-col items-center hover:text-primary transition">
-          <span class="material-symbols-outlined text-2xl">shopping_cart</span>
-          Panier
-        </a>
-        <a href="connexion.html" class="flex flex-col items-center hover:text-primary transition">
-          <span class="material-symbols-outlined text-2xl">person</span>
-          Profil
-        </a>
-      </div>
-
-      <!-- Desktop -->
-      <div class="hidden md:flex justify-center flex-wrap gap-8 py-3 text-gray-600 dark:text-gray-400 text-sm font-medium">
-        <a href="index.html" class="hover:text-primary transition flex items-center gap-1"><span class="material-symbols-outlined">home</span>Accueil</a>
-        <a href="produits.html" class="text-primary flex items-center gap-1"><span class="material-symbols-outlined">local_mall</span>Produits</a>
-        <a href="produits2.html" class="hover:text-primary transition flex items-center gap-1"><span class="material-symbols-outlined">storefront</span>Produits 2</a>
-        <a href="assistantIA.html" class="hover:text-primary transition flex items-center gap-1"><span class="material-symbols-outlined">psychology</span>Assistant</a>
-        <a href="conseil.html" class="hover:text-primary transition flex items-center gap-1"><span class="material-symbols-outlined">tips_and_updates</span>Conseil</a>
-        <a href="panier.html" class="hover:text-primary transition flex items-center gap-1"><span class="material-symbols-outlined">shopping_cart</span>Panier</a>
-        <a href="connexion.html" class="hover:text-primary transition flex items-center gap-1"><span class="material-symbols-outlined">person</span>Connexion</a>
-        <a href="inscription.html" class="hover:text-primary transition flex items-center gap-1"><span class="material-symbols-outlined">person_add</span>Inscription</a>
-      </div>
-    </footer>
-
-  </div>
-</body>
-</html>
+    <!-- DETAILS PRODUIT -->
+    <section class="p-4 space-y-4">
+      
+      <details class="border-t border-accent/50 pt-3 group" open>
+        <summary class="flex justify-between cursor-pointer pb-2">
+          <span class="text-primary text-lg font-bold">Bienfaits</span>
+          <span class="material-symbols-outlined text-primary transition-transform group-open:rotate-180">expand_more</span>
+        </summary>
+        <p class="text-sm leading-relaxed">
+          🌿 Purifie naturellement  
+          🌿 Aide à réduire le stress  
+          🌿 Améliore la clarté de la peau  
+          🌿 Riche en antioxydants  
+          🌿 Fa
