@@ -5,31 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
   <!-- 🧠 SEO -->
-  <title>Assistant Bien-Être – Conseils Personnalisés</title>
-  <meta name="description" content="Discute avec ton conseiller bien-être pour trouver les plantes, infusions et rituels naturels adaptés : Khamaré, Hibiscus, détente, énergie, digestion.">
+  <title>Assistant Bien-Être – Racines & Rituels</title>
+  <meta name="description" content="Votre conseiller bien-être personnalisé : découvrez les plantes adaptées à votre humeur et vos besoins.">
+
   <meta name="robots" content="index, follow">
 
-  <!-- 🧠 OpenGraph -->
-  <meta property="og:title" content="Assistant Bien-Être – Conseils Personnalisés">
-  <meta property="og:description" content="Ton assistant bien-être basé sur les plantes naturelles : rituels, recommandations, infusions et détente.">
-  <meta property="og:image" content="https://tondomaine.com/assistant.webp">
+  <!-- OpenGraph -->
+  <meta property="og:title" content="Assistant Bien-Être – Racines & Rituels">
+  <meta property="og:description" content="Trouvez les plantes naturelles qui correspondent à votre énergie du moment.">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://tondomaine.com/assistantIA">
+  <meta property="og:image" content="https://tondomaine.com/images/assistant.webp">
 
-  <!-- 🧠 Twitter -->
+  <!-- Twitter Cards -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Assistant Bien-Être – Conseils Personnalisés">
-  <meta name="twitter:description" content="Obtiens des conseils bien-être adaptés grâce à notre assistant intelligent.">
-  <meta name="twitter:image" content="https://tondomaine.com/assistant.webp">
-
-  <!-- Favicon -->
-  <link rel="icon" href="favicon.png" type="image/png"/>
 
   <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 
   <!-- Polices -->
-  <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;600;700&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
 
   <!-- Thème -->
@@ -48,88 +42,128 @@
           fontFamily: {
             display: ["Epilogue", "sans-serif"]
           }
-        },
-      },
+        }
+      }
     }
   </script>
 
   <style>
     body {
       font-family: 'Epilogue', sans-serif;
-      min-height: max(884px, 100dvh);
+      min-height: 100dvh;
     }
   </style>
 </head>
 
 <body class="bg-background-light dark:bg-background-dark text-[#1b110e] dark:text-white">
 
-  <main class="relative flex flex-col min-h-screen overflow-x-hidden">
+  <div class="min-h-screen flex flex-col">
 
-    <!-- Header -->
-    <header class="sticky top-0 z-10 flex items-center bg-background-light dark:bg-background-dark p-4 pb-2 justify-between border-b border-gray-200 dark:border-gray-700">
-      <a href="index.html" class="flex size-12 items-center justify-center hover:opacity-80 transition">
+    <!-- HEADER -->
+    <header class="sticky top-0 z-20 flex items-center justify-between p-4 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-gray-300 dark:border-gray-700">
+      <a href="index.html" class="flex size-12 items-center justify-center hover:opacity-80">
         <span class="material-symbols-outlined">arrow_back</span>
       </a>
-      <h1 class="text-lg font-bold text-center flex-1">Ton conseiller bien-être</h1>
-      <button class="flex w-12 items-center justify-center hover:opacity-80 transition">
-        <span class="material-symbols-outlined">replay</span>
-      </button>
+      <h1 class="text-lg font-bold flex-1 text-center pr-12">Ton conseiller bien-être</h1>
     </header>
 
-    <!-- Zone de messages -->
-    <section class="flex flex-col gap-6 p-4 max-w-2xl mx-auto w-full">
+    <!-- CONTENU -->
+    <main class="flex-1 p-4 flex flex-col gap-6 max-w-2xl mx-auto w-full">
 
       <!-- Message intro -->
-      <div class="flex items-end gap-3">
-        <div class="bg-center bg-cover rounded-full w-10 h-10"
-             style='background-image:url("https://lh3.googleusercontent.com/aida-public/AB6AXuCtgWXtPt4-aIhuyOxotKFIf904fSnyZeprqlGITyGgILOfISbzBgacfDQjL2RPa8MCXG-okNzi4YmnhoFY0LtwwU7a-c8GhmcvZ8WJTWepHVy_0zqDmAPyAwpQkVH_10mKhe5JH90WzIv_phthLWM8VBbhM-BI2qNsRX7yQwsaVi8gfTVor1AF0ACIdOilq2nZUshR2UXVddvq5XcH7sc_Y0Z-bwkdSYjyFVdeBMKeZfifu9JM_KAb4hV8CkcOcL8b7adIQ61lchAz");'></div>
+      <section class="flex items-start gap-3">
+        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCtgWXtPt4-aIhuyOxotKFIf904fSnyZeprqlGITyGgILOfISbzBgacfDQjL2RPa8MCXG-okNzi4YmnhoFY0LtwwU7a-c8GhmcvZ8WJTWepHVy_0zqDmAPyAwpQkVH_10mKhe5JH90WzIv_phthLWM8VBbhM-BI2qNsRX7yQwsaVi8gfTVor1AF0ACIdOilq2nZUshR2UXVddvq5XcH7sc_Y0Z-bwkdSYjyFVdeBMKeZfifu9JM_KAb4hV8CkcOcL8b7adIQ61lchAz"
+             alt="Avatar conseiller"
+             class="w-10 h-10 rounded-full object-cover"/>
 
-        <div class="flex flex-col gap-1">
-          <p class="text-[#97604e] text-[13px]">Wellness Advisor</p>
-          <p class="text-base max-w-[360px] rounded-xl px-4 py-3 bg-advisor-bubble/50 dark:bg-advisor-bubble/20">
-            Bonjour ! Je suis là pour t'aider à trouver le soin naturel qui te correspond. Prêt(e) ?
+        <div>
+          <p class="text-[#97604e] dark:text-gray-400 text-xs mb-1">Wellness Advisor</p>
+
+          <p class="bg-advisor-bubble/50 dark:bg-advisor-bubble/20 rounded-xl p-3 leading-normal">
+            Bonjour ! Je suis là pour t’aider à trouver le soin naturel qui te correspond. Prêt(e) ? 🌿
           </p>
         </div>
-      </div>
+      </section>
 
-      <!-- Barre de progression -->
-      <div>
-        <p class="text-base font-medium mb-2">1/3</p>
-        <div class="rounded bg-user-bubble dark:bg-gray-700">
-          <div class="h-2 rounded bg-primary w-1/3"></div>
+      <!-- Progression -->
+      <section class="flex flex-col gap-2">
+        <span class="font-medium">1/3</span>
+        <div class="h-2 rounded bg-user-bubble dark:bg-gray-700">
+          <div class="h-full bg-primary rounded" style="width: 33%;"></div>
         </div>
-      </div>
+      </section>
 
-      <!-- Question -->
-      <div class="flex items-end gap-3">
-        <div class="bg-center bg-cover rounded-full w-10 h-10"
-             style='background-image:url("https://lh3.googleusercontent.com/aida-public/AB6AXuBT4G6vFQGH1dWUvgwSgKLBODTj3pb-kZccb-pBAS6xKBOunzV313CxVHHcRQC0gIwTq6Xe03eNoTxU_7SDui_sihVVmjKFqElzHwayYsITtUgPLXH335p7fM-2vMxO2CtGibvE3IRF8hRPnl6lS1g84BQ74mVze1oKTQ47jYz1-17qwCQLvatordEPmt5bEDhEitBroyLTmROyj8ahVA2RjQLO-C7KOl6qe0GM48DivwQTf3x99S8bVFa3sUnz0b72Aqk5z4IAjt3L");'></div>
+      <!-- Question 1 -->
+      <section class="flex items-start gap-3">
+        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBT4G6vFQGH1dWUvgwSgKLBODTj3pb-kZccb-pBAS6xKBOunzV313CxVHHcRQC0gIwTq6Xe03eNoTxU_7SDui_sihVVmjKFqElzHwayYsITtUgPLXH335p7fM-2vMxO2CtGibvE3IRF8hRPnl6lS1g84BQ74mVze1oKTQ47jYz1-17qwCQLvatordEPmt5bEDhEitBroyLTmROyj8ahVA2RjQLO-C7KOl6qe0GM48DivwQTf3x99S8bVFa3sUnz0b72Aqk5z4IAjt3L"
+             alt="Avatar conseiller 2"
+             class="w-10 h-10 rounded-full object-cover"/>
 
-        <div class="flex flex-col gap-1">
-          <p class="text-[#97604e] text-[13px]">Wellness Advisor</p>
-          <p class="text-base max-w-[360px] rounded-xl px-4 py-3 bg-advisor-bubble/50 dark:bg-advisor-bubble/20">
-            Comment te sens-tu aujourd'hui ou quel est ton objectif principal ?
+        <div>
+          <p class="text-[#97604e] dark:text-gray-400 text-xs mb-1">Wellness Advisor</p>
+          <p class="bg-advisor-bubble/50 dark:bg-advisor-bubble/20 p-3 rounded-xl">
+            Comment te sens-tu aujourd’hui ou quel est ton objectif principal ?
           </p>
         </div>
-      </div>
+      </section>
 
-      <!-- Choix -->
-      <div class="flex flex-col gap-3 max-w-[480px] mx-auto w-full">
-        <button class="w-full h-12 bg-user-bubble dark:bg-gray-700 rounded-xl font-bold hover:scale-105 transition">Besoin d'énergie</button>
-        <button class="w-full h-12 bg-primary text-white rounded-xl font-bold hover:scale-105 transition">Envie de me détendre</button>
-        <button class="w-full h-12 bg-user-bubble dark:bg-gray-700 rounded-xl font-bold hover:scale-105 transition">Améliorer ma digestion</button>
-      </div>
+      <!-- Choix 1 -->
+      <section class="flex flex-col gap-3 max-w-md w-full mx-auto">
+        <button class="h-12 rounded-xl bg-user-bubble dark:bg-gray-700 font-bold hover:scale-105 transition">Besoin d’énergie</button>
+        <button class="h-12 rounded-xl bg-primary text-white font-bold hover:scale-105 transition">Envie de me détendre</button>
+        <button class="h-12 rounded-xl bg-user-bubble dark:bg-gray-700 font-bold hover:scale-105 transition">Améliorer ma digestion</button>
+      </section>
 
-      <!-- Réponse -->
-      <div class="flex justify-end">
-        <p class="text-base max-w-[360px] rounded-xl px-4 py-3 bg-primary text-white">
+      <!-- Réponse utilisateur -->
+      <section class="flex justify-end">
+        <p class="bg-primary text-white rounded-xl p-3 max-w-[260px]">
           Envie de me détendre
         </p>
-      </div>
+      </section>
 
-    </section>
+      <!-- Question 2 -->
+      <section class="flex items-start gap-3">
+        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAOsEwLQMFoIBRKVeErHwdDo8QJ22mwcpUxMQ0pYzKNdc_x_D1-7FykZ5M23x4vCaiE-nxTDsPlM3pFoBoe9h04h72ObF7hbUkRIGcAWme_Owe6mzCDcK27SDBtv7dTlwLHKMDuKgxc5Ax8p5K4fM9SvBncLvf9JuQHThvrVggLhMVGT267Bc5tw-e22l5jbF34KnoLKpxN6aaXAgsz9ZZz8ky6xaNPlfuDMZ-k72p_qqSB6Tyfw-ThmGcul_I77rnhPVyv-BMCI2FI"
+             alt="Avatar conseiller 3"
+             class="w-10 h-10 rounded-full object-cover"/>
 
-  </main>
+        <div>
+          <p class="text-[#97604e] dark:text-gray-400 text-xs mb-1">Wellness Advisor</p>
+          <p class="bg-advisor-bubble/50 dark:bg-advisor-bubble/20 p-3 rounded-xl">
+            Super ! Et pour ce moment de détente, tu es plutôt…
+          </p>
+        </div>
+      </section>
 
+      <!-- Choix 2 -->
+      <section class="flex flex-col sm:flex-row gap-3 max-w-md w-full mx-auto">
+        <button class="flex-1 h-12 rounded-xl bg-user-bubble dark:bg-gray-700 font-bold hover:scale-105 transition">Thé chaud</button>
+        <button class="flex-1 h-12 rounded-xl bg-user-bubble dark:bg-gray-700 font-bold hover:scale-105 transition">Infusion froide</button>
+      </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="sticky bottom-0 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-t border-gray-300 dark:border-gray-700">
+      <nav class="flex justify-around py-2 md:hidden text-xs text-gray-600 dark:text-gray-400">
+        <a href="index.html" class="flex flex-col items-center">
+          <span class="material-symbols-outlined text-2xl">home</span>Accueil
+        </a>
+        <a href="produits.html" class="flex flex-col items-center">
+          <span class="material-symbols-outlined text-2xl">local_mall</span>Produits
+        </a>
+        <a href="assistantIA.html" class="flex flex-col items-center text-primary">
+          <span class="material-symbols-outlined text-2xl">psychology</span>Assistant
+        </a>
+        <a href="panier.html" class="flex flex-col items-center">
+          <span class="material-symbols-outlined text-2xl">shopping_cart</span>Panier
+        </a>
+        <a href="connexion.html" class="flex flex-col items-center">
+          <span class="material-symbols-outlined text-2xl">person</span>Profil
+        </a>
+      </nav>
+    </footer>
+
+  </div>
 </body>
 </html>
