@@ -3,16 +3,36 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Mes Conseils Bien-Être</title>
 
-  <!-- TailwindCSS -->
-  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <!-- 🧠 SEO -->
+  <title>Conseils Bien-Être – Racines & Rituels</title>
+  <meta name="description" content="Découvrez des conseils bien-être personnalisés grâce à nos produits naturels : Hibiscus rouge, Khamaré, infusions et rituels bien-être.">
+  <meta name="robots" content="index, follow">
+
+  <!-- 🧠 OpenGraph -->
+  <meta property="og:title" content="Conseils Bien-Être – Racines & Rituels">
+  <meta property="og:description" content="Profitez d’astuces bien-être basées sur les plantes naturelles : Khamaré, Hibiscus et rituels relaxants.">
+  <meta property="og:image" content="https://tondomaine.com/og-image.webp">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://tondomaine.com/conseil">
+
+  <!-- 🧠 Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Conseils Bien-Être – Racines & Rituels">
+  <meta name="twitter:description" content="Conseils bien-être personnalisés, infusions naturelles et rituels holistiques.">
+  <meta name="twitter:image" content="https://tondomaine.com/og-image.webp">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png">
 
   <!-- Polices -->
   <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
 
-  <!-- Thème Tailwind -->
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+  <!-- Configuration Tailwind -->
   <script>
     tailwind.config = {
       darkMode: "class",
@@ -30,125 +50,78 @@
           fontFamily: {
             "display": ["Playfair Display", "serif"],
             "body": ["Epilogue", "sans-serif"]
-          },
-          borderRadius: {
-            "DEFAULT": "0.5rem",
-            "lg": "1rem",
-            "xl": "1.5rem",
-            "full": "9999px"
-          },
-        },
-      },
+          }
+        }
+      }
     }
   </script>
 
   <style>
     body {
-      font-family: 'Epilogue', sans-serif;
       min-height: max(884px, 100dvh);
+      font-family: 'Epilogue', sans-serif;
     }
   </style>
 </head>
 
 <body class="bg-background-light dark:bg-background-dark font-body text-anthracite-gray dark:text-background-light">
-  <div class="relative flex flex-col min-h-screen overflow-x-hidden bg-background-light dark:bg-background-dark"
-       style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%239DC183\' fill-opacity=\'0.1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');">
+
+  <!-- 🔥 MAIN = CONTENU PRINCIPAL (SEO) -->
+  <main class="relative flex flex-col min-h-screen overflow-x-hidden" 
+        style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%239DC183\' fill-opacity=\'0.1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');">
 
     <!-- HEADER -->
-    <header class="flex items-center justify-between p-4 sticky top-0 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm z-10 border-b border-gray-200 dark:border-gray-700">
+    <header class="flex items-center p-4 pb-2 justify-between sticky top-0 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm z-10 border-b border-gray-200 dark:border-gray-700">
       <a href="index.html" class="text-anthracite-gray dark:text-background-light flex size-12 items-center justify-center hover:opacity-80 transition">
         <span class="material-symbols-outlined">arrow_back</span>
       </a>
       <h1 class="text-hibiscus-red text-2xl font-display text-center flex-1 pr-12">Mes Conseils Bien-Être</h1>
     </header>
 
-    <!-- CONTENEUR CENTRAL -->
-    <main class="flex-1 w-full max-w-3xl mx-auto px-4 md:px-8 lg:px-10 py-6">
-      <p class="text-base leading-relaxed pb-4">
+    <!-- CONTENU -->
+    <section class="flex-1">
+
+      <p class="text-base leading-normal pb-3 pt-1 px-4">
         Bonjour [Prénom], voici quelques conseils pour profiter pleinement de vos produits.
       </p>
 
-      <!-- LISTE DE CONSEILS -->
-      <div class="space-y-4">
-        <!-- Conseil -->
-        <div class="p-5 rounded-xl shadow bg-white/90 dark:bg-background-dark/90 backdrop-blur-sm">
-          <p class="text-lg leading-relaxed">🌞 Pour un réveil plein d'énergie, savourez votre infusion d'hibiscus rouge le matin.</p>
-          <div class="flex items-center justify-between pt-2">
-            <p class="text-khamare-brown text-sm">Aujourd'hui</p>
-            <div class="flex gap-2">
-              <button class="h-8 w-8 flex items-center justify-center rounded-full bg-sage-green/20 text-sage-green hover:bg-sage-green/30 transition">
-                <span class="material-symbols-outlined">thumb_up</span>
-              </button>
-              <button class="h-8 w-8 flex items-center justify-center rounded-full bg-hibiscus-red/20 text-hibiscus-red hover:bg-hibiscus-red/30 transition">
-                <span class="material-symbols-outlined">thumb_down</span>
-              </button>
-            </div>
-          </div>
+      <!-- BLOC DE CONSEILS -->
+      <div class="space-y-4 p-4">
+
+        <div class="p-4 rounded-xl shadow bg-background-light/90 dark:bg-background-dark/90">
+          <p class="text-lg">Pour un réveil plein d'énergie, savourez votre infusion d'hibiscus rouge le matin. 🌞</p>
         </div>
 
-        <div class="p-5 rounded-xl shadow bg-white/90 dark:bg-background-dark/90 backdrop-blur-sm">
-          <p class="text-lg leading-relaxed">🌙 Le soir, une infusion de racines de khamaré vous offrira un moment de détente parfumé.</p>
-          <div class="flex items-center justify-between pt-2">
-            <p class="text-khamare-brown text-sm">Aujourd'hui</p>
-            <div class="flex gap-2">
-              <button class="h-8 w-8 flex items-center justify-center rounded-full bg-sage-green/20 text-sage-green hover:bg-sage-green/30 transition">
-                <span class="material-symbols-outlined">thumb_up</span>
-              </button>
-              <button class="h-8 w-8 flex items-center justify-center rounded-full bg-hibiscus-red/20 text-hibiscus-red hover:bg-hibiscus-red/30 transition">
-                <span class="material-symbols-outlined">thumb_down</span>
-              </button>
-            </div>
-          </div>
+        <div class="p-4 rounded-xl shadow bg-background-light/90 dark:bg-background-dark/90">
+          <p class="text-lg">Le soir, une infusion de racines de khamaré vous offrira un moment de détente parfumé. 🌙</p>
         </div>
 
-        <div class="p-5 rounded-xl shadow bg-white/90 dark:bg-background-dark/90 backdrop-blur-sm">
-          <p class="text-lg leading-relaxed">💧 Pensez à bien vous hydrater tout au long de la journée. Votre peau vous remerciera !</p>
-          <div class="flex items-center justify-between pt-2">
-            <p class="text-khamare-brown text-sm">Aujourd'hui</p>
-            <div class="flex gap-2">
-              <button class="h-8 w-8 flex items-center justify-center rounded-full bg-sage-green/20 text-sage-green hover:bg-sage-green/30 transition">
-                <span class="material-symbols-outlined">thumb_up</span>
-              </button>
-              <button class="h-8 w-8 flex items-center justify-center rounded-full bg-hibiscus-red/20 text-hibiscus-red hover:bg-hibiscus-red/30 transition">
-                <span class="material-symbols-outlined">thumb_down</span>
-              </button>
-            </div>
-          </div>
+        <div class="p-4 rounded-xl shadow bg-background-light/90 dark:bg-background-dark/90">
+          <p class="text-lg">Pensez à bien vous hydrater tout au long de la journée. Votre peau vous remerciera ! 💧</p>
         </div>
+
       </div>
 
-      <!-- BOUTON -->
-      <div class="pt-8 pb-20">
-        <a href="assistantIA.html" class="flex w-full h-12 items-center justify-center rounded-xl bg-sage-green text-white text-base font-bold shadow-lg shadow-sage-green/30 hover:bg-sage-green/90 transition">
+      <!-- CTA -->
+      <div class="px-8 pt-8 pb-20">
+        <a href="assistantIA.html" class="flex w-full h-12 items-center justify-center rounded-xl bg-sage-green text-white text-base font-bold shadow-lg hover:bg-sage-green/90 transition">
           Explorer d'autres rituels
         </a>
       </div>
-    </main>
 
-    <!-- FOOTER -->
+    </section>
+
+    <!-- FOOTER ADAPTATIF -->
     <footer class="sticky bottom-0 w-full bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm border-t border-gray-200 dark:border-gray-700">
-      <!-- Mobile -->
       <div class="flex justify-around py-2 md:hidden text-gray-600 dark:text-gray-400 text-xs font-medium">
-        <a href="index.html" class="flex flex-col items-center hover:text-primary transition"><span class="material-symbols-outlined text-2xl">home</span>Accueil</a>
-        <a href="produits.html" class="flex flex-col items-center hover:text-primary transition"><span class="material-symbols-outlined text-2xl">local_mall</span>Produits</a>
-        <a href="assistantIA.html" class="flex flex-col items-center hover:text-primary transition"><span class="material-symbols-outlined text-2xl">psychology</span>Assistant</a>
-        <a href="panier.html" class="flex flex-col items-center hover:text-primary transition"><span class="material-symbols-outlined text-2xl">shopping_cart</span>Panier</a>
-        <a href="connexion.html" class="flex flex-col items-center hover:text-primary transition"><span class="material-symbols-outlined text-2xl">person</span>Profil</a>
-      </div>
-
-      <!-- Desktop -->
-      <div class="hidden md:flex justify-center flex-wrap gap-8 py-3 text-gray-600 dark:text-gray-400 text-sm font-medium">
-        <a href="index.html" class="hover:text-primary transition flex items-center gap-1"><span class="material-symbols-outlined">home</span>Accueil</a>
-        <a href="produits.html" class="hover:text-primary transition flex items-center gap-1"><span class="material-symbols-outlined">local_mall</span>Produits</a>
-        <a href="produits2.html" class="hover:text-primary transition flex items-center gap-1"><span class="material-symbols-outlined">storefront</span>Produits 2</a>
-        <a href="assistantIA.html" class="hover:text-primary transition flex items-center gap-1"><span class="material-symbols-outlined">psychology</span>Assistant</a>
-        <a href="conseil.html" class="text-primary flex items-center gap-1"><span class="material-symbols-outlined">tips_and_updates</span>Conseil</a>
-        <a href="panier.html" class="hover:text-primary transition flex items-center gap-1"><span class="material-symbols-outlined">shopping_cart</span>Panier</a>
-        <a href="connexion.html" class="hover:text-primary transition flex items-center gap-1"><span class="material-symbols-outlined">person</span>Connexion</a>
-        <a href="inscription.html" class="hover:text-primary transition flex items-center gap-1"><span class="material-symbols-outlined">person_add</span>Inscription</a>
+        <a href="index.html" class="flex flex-col items-center"><span class="material-symbols-outlined text-2xl">home</span>Accueil</a>
+        <a href="produits.html" class="flex flex-col items-center"><span class="material-symbols-outlined text-2xl">local_mall</span>Produits</a>
+        <a href="assistantIA.html" class="flex flex-col items-center"><span class="material-symbols-outlined text-2xl">psychology</span>Assistant</a>
+        <a href="panier.html" class="flex flex-col items-center"><span class="material-symbols-outlined text-2xl">shopping_cart</span>Panier</a>
+        <a href="connexion.html" class="flex flex-col items-center"><span class="material-symbols-outlined text-2xl">person</span>Profil</a>
       </div>
     </footer>
 
-  </div>
+  </main>
 </body>
 </html>
