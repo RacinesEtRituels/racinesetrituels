@@ -3,40 +3,43 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Confirmation d’e-mail envoyé</title>
+  <title>Mot de passe réinitialisé - Racines & Rituels</title>
+
+  <!-- Meta SEO -->
+  <meta name="description" content="Votre mot de passe a été réinitialisé avec succès. Connectez-vous à votre espace Racines & Rituels pour accéder à votre compte.">
+  <meta name="robots" content="noindex, follow"/>
 
   <!-- TailwindCSS -->
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 
   <!-- Polices -->
-  <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;700&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
 
-  <!-- Thème Tailwind -->
+  <!-- Thème -->
   <script>
     tailwind.config = {
       darkMode: "class",
       theme: {
         extend: {
           colors: {
-            "primary": "#A12B32",
-            "accent": "#7E8B74",
-            "background-light": "#F8F6F4",
+            primary: "#e64c19",
+            "background-light": "#f8f6f6",
             "background-dark": "#211511",
-            "text-light": "#3D352E",
-            "text-dark": "#F8F6F4"
+            "beige-light": "#F5F5DC",
+            terracotta: "#E2725B"
           },
           fontFamily: {
-            "display": ["Epilogue", "sans-serif"]
+            display: ["Epilogue", "sans-serif"]
           },
           borderRadius: {
-            "DEFAULT": "0.5rem",
-            "lg": "1rem",
-            "xl": "1.5rem",
-            "full": "9999px"
-          },
-        },
-      },
+            DEFAULT: "0.5rem",
+            lg: "1rem",
+            xl: "1.5rem",
+            full: "9999px"
+          }
+        }
+      }
     }
   </script>
 
@@ -45,116 +48,84 @@
       font-family: 'Epilogue', sans-serif;
       min-height: max(884px, 100dvh);
     }
-    .material-symbols-outlined {
-      font-variation-settings:
-      'FILL' 1,
-      'wght' 400,
-      'GRAD' 0,
-      'opsz' 48
-    }
   </style>
 </head>
 
-<body class="bg-background-light dark:bg-background-dark font-display text-text-light dark:text-text-dark">
-  <div class="relative flex flex-col min-h-screen w-full overflow-x-hidden">
+<body class="bg-background-light dark:bg-background-dark text-gray-900 dark:text-white">
+  <div class="min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="flex items-center p-4 sticky top-0 bg-background-light dark:bg-background-dark border-b border-gray-300 dark:border-gray-700 z-10">
+      <a href="connexion.html" class="flex items-center justify-center size-12 hover:opacity-80 transition">
+        <span class="material-symbols-outlined text-2xl">arrow_back</span>
+      </a>
+      <h1 class="text-lg font-bold flex-1 text-center pr-12">Confirmation</h1>
+    </header>
 
     <!-- Contenu principal -->
-    <main class="flex flex-col items-center justify-center flex-1 p-4">
-      <div class="flex flex-col items-center justify-center w-full max-w-md space-y-6">
-        <div class="flex items-center justify-center h-24 w-24 rounded-full bg-accent/20 dark:bg-accent/30">
-          <span class="material-symbols-outlined text-accent text-5xl">mark_email_read</span>
+    <main class="flex-1 p-4 flex justify-center items-center">
+      <div class="bg-white dark:bg-background-dark/30 rounded-xl p-8 w-full max-w-[420px] text-center shadow-md">
+
+        <div class="flex justify-center mb-6">
+          <div class="flex items-center justify-center w-20 h-20 rounded-full bg-primary/20 dark:bg-primary/30">
+            <span class="material-symbols-outlined text-primary text-4xl">check_circle</span>
+          </div>
         </div>
-        <h1 class="tracking-tight text-3xl font-bold text-center text-text-light dark:text-text-dark">
-          E-mail envoyé !
-        </h1>
-        <p class="text-base font-normal leading-relaxed text-center">
-          Si un compte existe pour votre adresse e-mail, vous recevrez un lien pour réinitialiser votre mot de passe sous peu.
+
+        <h2 class="text-2xl font-bold mb-3">Mot de passe réinitialisé</h2>
+
+        <p class="text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">
+          Votre mot de passe a bien été mis à jour.<br>
+          Vous pouvez maintenant vous connecter à votre compte.
         </p>
-        <div class="bg-primary/10 dark:bg-primary/20 p-4 rounded-lg w-full">
-          <p class="text-primary dark:text-primary/90 text-sm text-center">
-            Pensez à vérifier votre dossier de courriers indésirables ou spams.
-          </p>
-        </div>
-        <div class="flex px-4 py-3 justify-center w-full">
-          <a href="connexion.html"
-             class="flex w-full justify-center items-center h-12 px-5 rounded-xl bg-primary text-white text-base font-bold hover:bg-primary/90 transition">
-            Retour à la connexion
-          </a>
-        </div>
+
+        <!-- Bouton retour connexion -->
+        <a href="connexion.html"
+           class="block w-full h-12 rounded-xl bg-primary text-white font-bold text-lg flex items-center justify-center hover:bg-primary/90 transition">
+          Retour à la connexion
+        </a>
+
       </div>
     </main>
 
-    <!-- 🚀 Footer adaptatif -->
+    <!-- Footer adaptatif -->
     <footer class="sticky bottom-0 w-full bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm border-t border-gray-200 dark:border-gray-700">
 
-      <!-- Version mobile -->
-      <div class="flex justify-around py-2 md:hidden text-gray-600 dark:text-gray-400 text-xs font-medium">
-        <a href="index.html" class="flex flex-col items-center hover:text-primary transition">
-          <span class="material-symbols-outlined text-2xl">home</span>
-          Accueil
+      <!-- Mobile -->
+      <div class="flex justify-around py-2 md:hidden text-gray-600 dark:text-gray-300 text-xs font-medium">
+        <a href="index.html" class="flex flex-col items-center">
+          <span class="material-symbols-outlined text-2xl">home</span>Accueil
         </a>
-        <a href="produits.html" class="flex flex-col items-center hover:text-primary transition">
-          <span class="material-symbols-outlined text-2xl">local_mall</span>
-          Produits
+        <a href="produits.html" class="flex flex-col items-center">
+          <span class="material-symbols-outlined text-2xl">local_mall</span>Produits
         </a>
-        <a href="assistantIA.html" class="flex flex-col items-center hover:text-primary transition">
-          <span class="material-symbols-outlined text-2xl">psychology</span>
-          Assistant
+        <a href="assistantIA.html" class="flex flex-col items-center">
+          <span class="material-symbols-outlined text-2xl">psychology</span>Assistant
         </a>
-        <a href="panier.html" class="flex flex-col items-center hover:text-primary transition">
-          <span class="material-symbols-outlined text-2xl">shopping_cart</span>
-          Panier
+        <a href="panier.html" class="flex flex-col items-center">
+          <span class="material-symbols-outlined text-2xl">shopping_cart</span>Panier
         </a>
         <a href="connexion.html" class="flex flex-col items-center hover:text-primary transition">
-          <span class="material-symbols-outlined text-2xl">person</span>
-          Profil
+          <span class="material-symbols-outlined text-2xl">person</span>Profil
         </a>
       </div>
 
-      <!-- Version ordinateur -->
+      <!-- Desktop -->
       <div class="hidden md:grid md:grid-cols-5 lg:grid-cols-10 gap-2 py-3 text-center text-gray-600 dark:text-gray-400 text-sm font-medium">
-        <a href="index.html" class="flex flex-col items-center hover:text-primary transition">
-          <span class="material-symbols-outlined text-2xl">home</span>
-          Accueil
-        </a>
-        <a href="produits.html" class="flex flex-col items-center hover:text-primary transition">
-          <span class="material-symbols-outlined text-2xl">local_mall</span>
-          Produits
-        </a>
-        <a href="produits2.html" class="flex flex-col items-center hover:text-primary transition">
-          <span class="material-symbols-outlined text-2xl">storefront</span>
-          Produits 2
-        </a>
-        <a href="assistantIA.html" class="flex flex-col items-center hover:text-primary transition">
-          <span class="material-symbols-outlined text-2xl">psychology</span>
-          Assistant
-        </a>
-        <a href="conseil.html" class="flex flex-col items-center hover:text-primary transition">
-          <span class="material-symbols-outlined text-2xl">tips_and_updates</span>
-          Conseil
-        </a>
-        <a href="panier.html" class="flex flex-col items-center hover:text-primary transition">
-          <span class="material-symbols-outlined text-2xl">shopping_cart</span>
-          Panier
-        </a>
-        <a href="connexion.html" class="flex flex-col items-center hover:text-primary transition">
-          <span class="material-symbols-outlined text-2xl">person</span>
-          Connexion
-        </a>
-        <a href="inscription.html" class="flex flex-col items-center hover:text-primary transition">
-          <span class="material-symbols-outlined text-2xl">person_add</span>
-          Inscription
-        </a>
-        <a href="recupmotdepass.html" class="flex flex-col items-center hover:text-primary transition">
-          <span class="material-symbols-outlined text-2xl">lock_reset</span>
-          Mot de passe
-        </a>
-        <a href="confreinimotPass.html" class="flex flex-col items-center text-primary">
-          <span class="material-symbols-outlined text-2xl">check_circle</span>
-          Confirmation
-        </a>
+        <a href="index.html" class="flex flex-col items-center"><span class="material-symbols-outlined">home</span>Accueil</a>
+        <a href="produits.html" class="flex flex-col items-center"><span class="material-symbols-outlined">local_mall</span>Produits</a>
+        <a href="produits2.html" class="flex flex-col items-center"><span class="material-symbols-outlined">storefront</span>Produits 2</a>
+        <a href="assistantIA.html" class="flex flex-col items-center"><span class="material-symbols-outlined">psychology</span>Assistant</a>
+        <a href="conseil.html" class="flex flex-col items-center"><span class="material-symbols-outlined">tips_and_updates</span>Conseil</a>
+        <a href="panier.html" class="flex flex-col items-center"><span class="material-symbols-outlined">shopping_cart</span>Panier</a>
+        <a href="connexion.html" class="flex flex-col items-center"><span class="material-symbols-outlined">person</span>Connexion</a>
+        <a href="inscription.html" class="flex flex-col items-center"><span class="material-symbols-outlined">person_add</span>Inscription</a>
+        <a href="recupmotdepass.html" class="flex flex-col items-center"><span class="material-symbols-outlined">lock_reset</span>Mot de passe</a>
+        <a href="confreinimotPass.html" class="flex flex-col items-center text-primary"><span class="material-symbols-outlined">check_circle</span>Confirmation</a>
       </div>
+
     </footer>
+
   </div>
 </body>
 </html>
