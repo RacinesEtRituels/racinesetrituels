@@ -60,15 +60,34 @@
 </head>
 
 <body class="bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark">
-  <main class="relative flex flex-col min-h-screen overflow-x-hidden">
 
-    <!-- HEADER -->
-    <header class="flex items-center p-4 pb-2 justify-between sticky top-0 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm border-b border-gray-300 dark:border-gray-700 z-20">
-      <a href="index.html" class="flex size-12 items-center justify-center">
-        <span class="material-symbols-outlined">arrow_back</span>
+  <!-- 🌿 MENU HAUT -->
+  <header class="fixed top-0 left-0 right-0 z-30 bg-black/40 backdrop-blur-md border-b border-white/10">
+    <nav class="max-w-4xl mx-auto flex items-center justify-between px-4 py-3 text-sm font-medium text-white">
+      <a href="index.html" class="text-white font-bold tracking-wide hover:text-primary transition">
+        Racines & Rituels
       </a>
-      <h1 class="text-lg font-bold text-center flex-1 pr-12">Khamaré</h1>
-    </header>
+      <div class="hidden md:flex items-center gap-6 text-white">
+        <a href="index.html" class="hover:text-primary transition flex items-center gap-1">
+          <span class="material-symbols-outlined text-base">home</span>Accueil
+        </a>
+        <a href="produits.html" class="hover:text-primary transition flex items-center gap-1">
+          <span class="material-symbols-outlined text-base">shopping_bag</span>Produits
+        </a>
+        <a href="conseil.html" class="hover:text-primary transition flex items-center gap-1">
+          <span class="material-symbols-outlined text-base">tips_and_updates</span>Conseils
+        </a>
+        <a href="inscription.html" class="hover:text-primary transition flex items-center gap-1">
+          <span class="material-symbols-outlined text-base">person_add</span>S’inscrire
+        </a>
+        <a href="connexion.html" class="hover:text-primary transition flex items-center gap-1">
+          <span class="material-symbols-outlined text-base">login</span>Connexion
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="relative flex flex-col min-h-screen overflow-x-hidden pt-20">
 
     <!-- CONTENEUR GLOBAL CENTRÉ -->
     <div class="w-full max-w-3xl mx-auto px-6 py-6">
@@ -157,17 +176,6 @@
       </section>
 
     </div>
-
-    <!-- FOOTER -->
-    <footer class="sticky bottom-0 w-full bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm border-t border-gray-300 dark:border-gray-700">
-      <div class="flex justify-around py-2 md:hidden text-gray-600 dark:text-gray-400 text-xs font-medium">
-        <a href="index.html" class="flex flex-col items-center"><span class="material-symbols-outlined text-2xl">home</span>Accueil</a>
-        <a href="produits.html" class="flex flex-col items-center text-primary"><span class="material-symbols-outlined text-2xl">local_mall</span>Produits</a>
-        <a href="assistantIA.html" class="flex flex-col items-center"><span class="material-symbols-outlined text-2xl">psychology</span>Assistant</a>
-        <a href="panier.html" class="flex flex-col items-center"><span class="material-symbols-outlined text-2xl">shopping_cart</span>Panier</a>
-        <a href="connexion.html" class="flex flex-col items-center"><span class="material-symbols-outlined text-2xl">person</span>Profil</a>
-      </div>
-    </footer>
 
   </main>
 </body>
