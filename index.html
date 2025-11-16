@@ -50,35 +50,37 @@
 <body class="bg-background-light dark:bg-background-dark text-white">
 
   <!-- 🌿 MENU HAUT ÉLÉGANT -->
-  <header class="fixed top-0 left-0 right-0 z-30 bg-background-light/60 dark:bg-background-dark/60 backdrop-blur-md border-b border-white/10">
-    <nav class="max-w-4xl mx-auto flex items-center justify-between px-4 py-3 text-sm font-medium text-white">
+  <!-- 🌿 MENU HAUT ÉLÉGANT **AMÉLIORÉ** -->
+<header class="fixed top-0 left-0 right-0 z-30 bg-black/40 backdrop-blur-md border-b border-white/10">
+  <nav class="max-w-4xl mx-auto flex items-center justify-between px-4 py-3 text-sm font-medium text-white">
 
-      <!-- Logo -->
-      <a href="index.html" class="text-primary font-bold tracking-wide hover:opacity-75 transition">
-        Racines & Rituels
+    <!-- Logo -->
+    <a href="index.html" class="text-white font-bold tracking-wide hover:text-primary transition">
+      Racines & Rituels
+    </a>
+
+    <!-- Liens desktop -->
+    <div class="hidden md:flex items-center gap-6 text-white">
+      <a href="index.html" class="hover:text-primary transition flex items-center gap-1">
+        <span class="material-symbols-outlined text-base">home</span>Accueil
       </a>
+      <a href="produits.html" class="hover:text-primary transition flex items-center gap-1">
+        <span class="material-symbols-outlined text-base">shopping_bag</span>Produits
+      </a>
+      <a href="conseil.html" class="hover:text-primary transition flex items-center gap-1">
+        <span class="material-symbols-outlined text-base">tips_and_updates</span>Conseils
+      </a>
+      <a href="inscription.html" class="hover:text-primary transition flex items-center gap-1">
+        <span class="material-symbols-outlined text-base">person_add</span>S’inscrire
+      </a>
+      <a href="connexion.html" class="hover:text-primary transition flex items-center gap-1">
+        <span class="material-symbols-outlined text-base">login</span>Connexion
+      </a>
+    </div>
 
-      <!-- Liens -->
-      <div class="hidden md:flex items-center gap-6 text-white/90">
-        <a href="index.html" class="hover:text-primary transition flex items-center gap-1">
-          <span class="material-symbols-outlined text-base">home</span>Accueil
-        </a>
-        <a href="produits.html" class="hover:text-primary transition flex items-center gap-1">
-          <span class="material-symbols-outlined text-base">shopping_bag</span>Produits
-        </a>
-        <a href="conseil.html" class="hover:text-primary transition flex items-center gap-1">
-          <span class="material-symbols-outlined text-base">tips_and_updates</span>Conseils
-        </a>
-        <a href="inscription.html" class="hover:text-primary transition flex items-center gap-1">
-          <span class="material-symbols-outlined text-base">person_add</span>S’inscrire
-        </a>
-        <a href="connexion.html" class="hover:text-primary transition flex items-center gap-1">
-          <span class="material-symbols-outlined text-base">login</span>Connexion
-        </a>
-      </div>
+  </nav>
+</header>
 
-    </nav>
-  </header>
 
   <!-- Décalage pour ne pas passer sous le menu -->
   <div class="h-[64px]"></div>
