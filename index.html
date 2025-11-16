@@ -48,9 +48,45 @@
 </head>
 
 <body class="bg-background-light dark:bg-background-dark text-white">
-  <div class="relative min-h-screen flex flex-col">
 
-    <!-- Img + overlay -->
+  <!-- 🌿 MENU HAUT ÉLÉGANT -->
+  <header class="fixed top-0 left-0 right-0 z-30 bg-background-light/60 dark:bg-background-dark/60 backdrop-blur-md border-b border-white/10">
+    <nav class="max-w-4xl mx-auto flex items-center justify-between px-4 py-3 text-sm font-medium text-white">
+
+      <!-- Logo -->
+      <a href="index.html" class="text-primary font-bold tracking-wide hover:opacity-75 transition">
+        Racines & Rituels
+      </a>
+
+      <!-- Liens -->
+      <div class="hidden md:flex items-center gap-6 text-white/90">
+        <a href="index.html" class="hover:text-primary transition flex items-center gap-1">
+          <span class="material-symbols-outlined text-base">home</span>Accueil
+        </a>
+        <a href="produits.html" class="hover:text-primary transition flex items-center gap-1">
+          <span class="material-symbols-outlined text-base">shopping_bag</span>Produits
+        </a>
+        <a href="conseil.html" class="hover:text-primary transition flex items-center gap-1">
+          <span class="material-symbols-outlined text-base">tips_and_updates</span>Conseils
+        </a>
+        <a href="inscription.html" class="hover:text-primary transition flex items-center gap-1">
+          <span class="material-symbols-outlined text-base">person_add</span>S’inscrire
+        </a>
+        <a href="connexion.html" class="hover:text-primary transition flex items-center gap-1">
+          <span class="material-symbols-outlined text-base">login</span>Connexion
+        </a>
+      </div>
+
+    </nav>
+  </header>
+
+  <!-- Décalage pour ne pas passer sous le menu -->
+  <div class="h-[64px]"></div>
+
+
+  <!-- 🌸 IMAGE + OVERLAY -->
+  <div class="relative min-h-screen flex flex-col items-center justify-center text-center px-6">
+
     <div class="absolute inset-0">
       <img 
         src="https://lh3.googleusercontent.com/aida-public/AB6AXuD5W9U2nSfZUz71LHBjhaN09sZDhCvVtO5KWwYiwwswmNDae-uDaMISrCPB8MeHjL9jz58Zkc_SkeHP_x-p7nomH09ZHYAom3Fw8Rjr3HIl3LmDNdZyDyKHv3LqmXFAMzV-coAiXGaiZNeAhB4FJ8bZ2qPO7wOhsnDwn7sTbkHsXF6myEPlQRaPGYkAJYwFNZHQjmeHY9Dovx5eo4mEiaOV7ICv05ELoyjMzbzDqaI2WvU8c7CbrTiRnjZ-0vPRjtDePGUv0jsMGz0e"
@@ -60,95 +96,24 @@
       <div class="absolute inset-0 bg-black/40"></div>
     </div>
 
-    <!-- CONTENU -->
-    <main class="relative flex flex-col items-center justify-center flex-1 p-6 text-center">
-      <h1 class="text-4xl md:text-6xl font-black mb-4">
+    <!-- TEXTE + BOUTON -->
+    <main class="relative z-10">
+      <h1 class="text-4xl md:text-6xl font-black mb-4 text-white">
         Découvre ton rituel bien-être naturel 🌿
       </h1>
+
       <p class="text-lg text-white/90 mb-8">
         Réponds à quelques questions et laisse notre assistant IA te guider.
       </p>
 
       <a 
         href="assistantIA.html"
-        class="rounded-full bg-accent px-8 h-12 flex items-center justify-center text-base font-bold shadow-lg hover:scale-105 transition"
+        class="rounded-full bg-accent px-8 h-12 inline-flex items-center justify-center text-base font-bold shadow-lg hover:scale-105 transition"
       >
         Trouver mon rituel bien-être
       </a>
     </main>
-
-    <!-- FOOTER -->
-    <footer class="relative z-10 bg-background-light/80 dark:bg-background-dark/80 border-t border-white/10 backdrop-blur-sm">
-
-      <!-- Mobile -->
-      <div class="flex justify-around py-2 md:hidden text-xs text-white/80">
-        <a href="index.html" class="flex flex-col items-center hover:text-primary transition">
-          <span class="material-symbols-outlined text-2xl">home</span>
-          Accueil
-        </a>
-        <a href="produits.html" class="flex flex-col items-center hover:text-primary transition">
-          <span class="material-symbols-outlined text-2xl">local_mall</span>
-          Produits
-        </a>
-        <a href="assistantIA.html" class="flex flex-col items-center hover:text-primary transition">
-          <span class="material-symbols-outlined text-2xl">psychology</span>
-          Assistant
-        </a>
-        <a href="panier.html" class="flex flex-col items-center hover:text-primary transition">
-          <span class="material-symbols-outlined text-2xl">shopping_cart</span>
-          Panier
-        </a>
-        <a href="connexion.html" class="flex flex-col items-center hover:text-primary transition">
-          <span class="material-symbols-outlined text-2xl">person</span>
-          Profil
-        </a>
-      </div>
-
-      <!-- Desktop -->
-      <div class="hidden md:grid grid-cols-5 lg:grid-cols-10 gap-2 py-3 text-center text-sm text-white/70">
-        <a href="index.html" class="flex flex-col items-center hover:text-primary transition">
-          <span class="material-symbols-outlined">home</span>
-          Accueil
-        </a>
-        <a href="produits.html" class="flex flex-col items-center hover:text-primary transition">
-          <span class="material-symbols-outlined">local_mall</span>
-          Produits
-        </a>
-        <a href="produits2.html" class="flex flex-col items-center hover:text-primary transition">
-          <span class="material-symbols-outlined">storefront</span>
-          Produits 2
-        </a>
-        <a href="assistantIA.html" class="flex flex-col items-center hover:text-primary transition">
-          <span class="material-symbols-outlined">psychology</span>
-          Assistant
-        </a>
-        <a href="conseil.html" class="flex flex-col items-center hover:text-primary transition">
-          <span class="material-symbols-outlined">tips_and_updates</span>
-          Conseil
-        </a>
-        <a href="panier.html" class="flex flex-col items-center hover:text-primary transition">
-          <span class="material-symbols-outlined">shopping_cart</span>
-          Panier
-        </a>
-        <a href="connexion.html" class="flex flex-col items-center hover:text-primary transition">
-          <span class="material-symbols-outlined">person</span>
-          Connexion
-        </a>
-        <a href="inscription.html" class="flex flex-col items-center hover:text-primary transition">
-          <span class="material-symbols-outlined">person_add</span>
-          Inscription
-        </a>
-        <a href="recupmotdepass.html" class="flex flex-col items-center hover:text-primary transition">
-          <span class="material-symbols-outlined">lock_reset</span>
-          Mot de passe
-        </a>
-        <a href="confreinimotPass.html" class="flex flex-col items-center hover:text-primary transition">
-          <span class="material-symbols-outlined">check_circle</span>
-          Confirmation
-        </a>
-      </div>
-
-    </footer>
   </div>
+
 </body>
 </html>
