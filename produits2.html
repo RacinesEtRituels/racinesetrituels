@@ -109,7 +109,7 @@
         <li>🌿 Une plante mise à l'honneur</li>
         <li>🍵 Une recette d’infusion exclusive</li>
         <li>🔬 Une fiche scientifique vulgarisée</li>
-        <li>🧘‍♀️ Un rituel bien-être simple</li>
+        <li>🧘‍♀️ Un rituel bien-être simple à pratiquer</li>
         <li>🎧 Un petit audio d’encouragement</li>
       </ul>
 
@@ -133,18 +133,52 @@
       <p class="mt-4 text-sm">Accès immédiat après inscription.</p>
     </section>
 
-    <!-- ⭐ BOUTON ACHAT (centré) -->
-    <section class="sticky bottom-20 bg-backgroundLight dark:bg-backgroundDark p-4 border-t border-white/10">
-      <div class="flex items-center justify-between mb-4">
-        <p class="text-2xl font-bold text-primary">7,00€ / mois</p>
-        <p class="font-semibold text-sm">Sans engagement</p>
+    <!-- ⭐ OFFRES D’ABONNEMENT -->
+    <section class="px-4 py-10 space-y-8">
+
+      <h3 class="text-2xl font-bold text-center mb-6">Choisissez votre formule</h3>
+
+      <!-- ⭐ OFFRE ANNUELLE – LE PLUS CHOISI -->
+      <div class="relative bg-white/80 dark:bg-backgroundDark/60 p-6 rounded-2xl shadow-xl border border-primary/40">
+
+        <!-- Badge -->
+        <span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-xs font-bold px-3 py-1 rounded-full shadow">
+          Le plus choisi
+        </span>
+
+        <h4 class="text-xl font-bold mb-2">Abonnement Annuel</h4>
+
+        <p class="text-sm text-textLight/70 dark:text-textDark/70 mb-4">
+          Économisez <strong>15€</strong> – soit plus de 2 mois offerts
+        </p>
+
+        <p class="text-3xl font-extrabold text-primary mb-2">69 € / an</p>
+        <p class="text-xs mb-6">Paiement en une fois · Accès immédiat</p>
+
+        <a href="paiement_cercle_annuel.html"
+           class="flex items-center justify-center w-full bg-primary text-white h-14 rounded-xl font-bold hover:bg-primary/90 transition">
+          Choisir l’offre annuelle
+        </a>
       </div>
 
-      <!-- ⭐ BOUTON CORRIGÉ : TEXTE CENTRÉ PARFAITEMENT -->
-      <a href="paiement_cercle.html"
-        class="flex items-center justify-center w-full bg-primary text-white h-14 rounded-xl font-bold hover:bg-primary/90 transition">
-        Rejoindre le Cercle
-      </a>
+      <!-- ⭐ OFFRE MENSUELLE -->
+      <div class="bg-white/60 dark:bg-backgroundDark/40 p-6 rounded-2xl shadow border border-white/20 dark:border-white/10">
+
+        <h4 class="text-xl font-bold mb-2">Abonnement Mensuel</h4>
+
+        <p class="text-sm text-textLight/70 dark:text-textDark/70 mb-4">
+          Sans engagement – parfait pour commencer en douceur
+        </p>
+
+        <p class="text-3xl font-extrabold text-primary mb-2">7 € / mois</p>
+        <p class="text-xs mb-6">Paiement chaque mois · Résiliable à tout moment</p>
+
+        <a href="paiement_cercle.html"
+           class="flex items-center justify-center w-full bg-primary text-white h-14 rounded-xl font-bold hover:bg-primary/90 transition">
+          Choisir l’offre mensuelle
+        </a>
+      </div>
+
     </section>
 
   </main>
@@ -178,3 +212,4 @@
 
 </body>
 </html>
+
