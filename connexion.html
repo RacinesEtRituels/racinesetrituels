@@ -42,18 +42,16 @@
 
 <body class="bg-background-light dark:bg-background-dark text-[#1b110e] dark:text-white">
 
-  <!-- 🌿 MENU HAUT GLOBAL (uniformisé) -->
+  <!-- 🌿 MENU HAUT GLOBAL -->
   <header class="fixed top-0 left-0 right-0 z-30 bg-black/40 backdrop-blur-md border-b border-white/10">
     <nav class="max-w-4xl mx-auto flex items-center justify-between px-4 py-3 text-sm font-medium text-white">
       
-      <!-- Logo -->
       <a href="index.html" class="text-white font-bold tracking-wide hover:text-primary transition">
         Racines & Rituels
       </a>
 
-      <!-- Menu desktop -->
       <div class="hidden md:flex items-center gap-6">
-        
+
         <a href="index.html" class="hover:text-primary transition flex items-center gap-1">
           <span class="material-symbols-outlined text-base">home</span>Accueil
         </a>
@@ -62,11 +60,9 @@
           <span class="material-symbols-outlined text-base">shopping_bag</span>Produits
         </a>
 
-        <!-- ⭐ Ajout : bouton Abonnement -->
         <a href="produits2.html" class="hover:text-primary transition flex items-center gap-1">
           <span class="material-symbols-outlined text-base">auto_awesome</span>Abonnement
         </a>
-        <!-- ⭐ Fin ajout -->
 
         <a href="conseil.html" class="hover:text-primary transition flex items-center gap-1">
           <span class="material-symbols-outlined text-base">tips_and_updates</span>Conseils
@@ -84,7 +80,6 @@
     </nav>
   </header>
 
-  <!-- Décalage pour éviter le chevauchement -->
   <div class="h-[64px]"></div>
 
   <!-- 📌 CONTENU PRINCIPAL -->
@@ -102,14 +97,14 @@
           <!-- Email -->
           <div class="mb-5">
             <label class="block font-medium mb-1">Adresse e-mail</label>
-            <input type="email" placeholder="votre.email@exemple.com"
+            <input id="email" type="email" placeholder="votre.email@exemple.com"
               class="w-full h-12 px-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-background-light dark:bg-background-dark focus:ring-2 focus:ring-primary focus:outline-none">
           </div>
 
           <!-- Mot de passe -->
           <div class="mb-5">
             <label class="block font-medium mb-1">Mot de passe</label>
-            <input type="password" placeholder="Votre mot de passe"
+            <input id="password" type="password" placeholder="Votre mot de passe"
               class="w-full h-12 px-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-background-light dark:bg-background-dark focus:ring-2 focus:ring-primary focus:outline-none">
           </div>
 
@@ -121,14 +116,13 @@
           </div>
 
           <!-- Bouton connexion -->
-          <button class="w-full h-12 rounded-xl bg-primary text-white font-bold hover:bg-primary/90 transition">
+          <button id="loginBtn" class="w-full h-12 rounded-xl bg-primary text-white font-bold hover:bg-primary/90 transition">
             Se connecter
           </button>
 
           <!-- Séparateur -->
           <div class="my-6 h-px bg-gray-300 dark:bg-gray-600"></div>
 
-          <!-- Lien inscription -->
           <p class="text-center text-sm">
             Pas encore de compte ?
             <a href="inscription.html" class="text-primary font-semibold hover:underline">Créer un compte</a>
@@ -139,6 +133,38 @@
     </main>
 
   </div>
+
+  <!-- 🌿 SCRIPT SUPABASE -->
+  <script type="module">
+    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+    const supabase = createClient(
+      "https://tjqaprfpgwmsavjtgoml.supabase.co",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqYXBxcmZwZ3dtc2F2anRnb21sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMzNzgwMTAsImV4cCI6MjA3ODk1NDAxMH0.lVNkXrzwAaYpm3COxe6zWCQ6y6kz3fjRmZW1FNCy0Lo"
+    );
+
+    document.getElementById("loginBtn").addEventListener("click", async () => {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      if (!email || !password) {
+        alert("Merci de remplir tous les champs.");
+        return;
+      }
+
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (error) {
+        alert("Erreur : " + error.message);
+      } else {
+        alert("Connexion réussie !");
+        window.location.href = "index.html"; // 🔥 Change si tu veux un dashboard
+      }
+    });
+  </script>
 
 </body>
 </html>
