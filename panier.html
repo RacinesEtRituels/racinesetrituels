@@ -60,13 +60,46 @@
 
   <div class="min-h-screen flex flex-col">
 
-    <!-- HEADER -->
+    <!-- HEADER MODIFIÉ AVEC ABONNEMENT -->
     <header
       class="sticky top-0 z-20 flex items-center justify-between p-4 bg-beige/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-gray-300 dark:border-gray-700">
+      
       <a href="produits.html" class="flex size-12 items-center justify-center hover:opacity-80 transition">
         <span class="material-symbols-outlined">arrow_back</span>
       </a>
+      
       <h1 class="text-lg font-bold flex-1 text-center pr-12">Mon Panier</h1>
+
+      <!-- MENU DESKTOP -->
+      <nav class="hidden md:flex items-center gap-6 text-sm font-medium absolute right-4 top-4">
+
+        <a href="index.html" class="hover:text-primary transition flex items-center gap-1 text-white">
+          <span class="material-symbols-outlined text-base">home</span>Accueil
+        </a>
+
+        <a href="produits.html" class="hover:text-primary transition flex items-center gap-1 text-white">
+          <span class="material-symbols-outlined text-base">shopping_bag</span>Produits
+        </a>
+
+        <!-- ⭐ AJOUT : ABONNEMENT -->
+        <a href="produits2.html" class="hover:text-primary transition flex items-center gap-1 text-white">
+          <span class="material-symbols-outlined text-base">auto_awesome</span>Abonnement
+        </a>
+        <!-- ⭐ FIN AJOUT -->
+
+        <a href="conseil.html" class="hover:text-primary transition flex items-center gap-1 text-white">
+          <span class="material-symbols-outlined text-base">tips_and_updates</span>Conseils
+        </a>
+
+        <a href="inscription.html" class="hover:text-primary transition flex items-center gap-1 text-white">
+          <span class="material-symbols-outlined text-base">person_add</span>S’inscrire
+        </a>
+
+        <a href="connexion.html" class="hover:text-primary transition flex items-center gap-1 text-white">
+          <span class="material-symbols-outlined text-base">login</span>Connexion
+        </a>
+      </nav>
+
     </header>
 
     <!-- CONTENU -->
@@ -168,21 +201,31 @@
     <footer
       class="sticky bottom-0 bg-beige/80 dark:bg-background-dark/80 backdrop-blur-md border-t border-gray-300 dark:border-gray-700">
       <nav class="flex justify-around py-2 md:hidden text-xs text-gray-600 dark:text-gray-400">
+        
         <a href="index.html" class="flex flex-col items-center hover:text-primary">
           <span class="material-symbols-outlined text-2xl">home</span>Accueil
         </a>
+
         <a href="produits.html" class="flex flex-col items-center hover:text-primary">
           <span class="material-symbols-outlined text-2xl">local_mall</span>Produits
         </a>
+
+        <a href="produits2.html" class="flex flex-col items-center hover:text-primary">
+          <span class="material-symbols-outlined text-2xl">auto_awesome</span>Abonnement
+        </a>
+
         <a href="assistantIA.html" class="flex flex-col items-center hover:text-primary">
           <span class="material-symbols-outlined text-2xl">psychology</span>Assistant
         </a>
+
         <a href="panier.html" class="flex flex-col items-center text-primary">
           <span class="material-symbols-outlined text-2xl">shopping_cart</span>Panier
         </a>
+
         <a href="connexion.html" class="flex flex-col items-center hover:text-primary">
           <span class="material-symbols-outlined text-2xl">person</span>Profil
         </a>
+
       </nav>
     </footer>
 
