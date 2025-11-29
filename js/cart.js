@@ -1,178 +1,113 @@
-// js/cart.js
 import { supabase } from "./supabase.js";
 
-const LOCAL_KEY = "rr_cart";
-
-// ----------- LOCAL STORAGE (VISITEUR) ----------- //
-
-function loadLocalCart() {
-  try {
-    const raw = localStorage.getItem(LOCAL_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    return [];
-  }
+/* 🧪 Vérifie si l’utilisateur est connecté */
+export async function getUser() {
+  const { data } = await supabase.auth.getUser();
+  return data?.user || null;
 }
 
-function saveLocalCart(items) {
-  localStorage.setItem(LOCAL_KEY, JSON.stringify(items));
-}
 
-export function addToCartLocal(productId, qty = 1) {
-  const items = loadLocalCart();
-  const existing = items.find(i => i.product_id === productId);
-  if (existing) {
-    existing.quantity += qty;
-  } else {
-    items.push({ product_id: productId, quantity: qty });
-  }
-  saveLocalCart(items);
-}
-
-function updateLocal(productId, qty) {
-  let items = loadLocalCart();
-  if (qty <= 0) {
-    items = items.filter(i => i.product_id !== productId);
-  } else {
-    const existing = items.find(i => i.product_id === productId);
-    if (existing) {
-      existing.quantity = qty;
-    } else {
-      items.push({ product_id: productId, quantity: qty });
-    }
-  }
-  saveLocalCart(items);
-}
-
-export function removeFromCartLocal(productId) {
-  updateLocal(productId, 0);
-}
-
-// ----------- SUPABASE + FUSION ----------- //
-
-// appelé quand la personne se connecte / s'inscrit
-export async function syncLocalCartToSupabase() {
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return;
-
-  const localItems = loadLocalCart();
-  if (!localItems.length) return;
-
-  const { data: remoteItems = [] } = await supabase
-    .from("cart")
-    .select("*")
-    .eq("user_id", user.id);
-
-  for (const localItem of localItems) {
-    const existing = remoteItems.find(r => r.product_id === localItem.product_id);
-    if (existing) {
-      await supabase
-        .from("cart")
-        .update({ quantity: existing.quantity + localItem.quantity })
-        .eq("id", existing.id);
-    } else {
-      await supabase.from("cart").insert({
-        user_id: user.id,
-        product_id: localItem.product_id,
-        quantity: localItem.quantity
-      });
-    }
-  }
-
-  // une fois fusionné, on vide le panier visiteur
-  localStorage.removeItem(LOCAL_KEY);
-}
-
-// ajoute au panier (local ou supabase selon connexion)
-export async function addToCart(productId, qty = 1) {
-  const { data: { user } } = await supabase.auth.getUser();
+/* 📥 Récupérer le panier (supabase si connecté, localStorage sinon) */
+export async function getCart() {
+  const user = await getUser();
 
   if (!user) {
-    addToCartLocal(productId, qty);
-    return { source: "local" };
+    // Panier invité
+    return JSON.parse(localStorage.getItem("cart") || "[]");
   }
 
+  // Panier connecté → Supabase
+  const { data } = await supabase.from("cart").select("*").eq("user_id", user.id);
+  return data || [];
+}
+
+
+/* ➕ Ajouter au panier */
+export async function addToCart(product) {
+  const user = await getUser();
+
+  if (!user) {
+    // invité → localStorage
+    let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+
+    const item = cart.find(i => i.id === product.id);
+    if (item) item.quantity++;
+    else cart.push({ ...product, quantity: 1 });
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+    return;
+  }
+
+  // utilisateur connecté → Supabase
   const { data: existing } = await supabase
     .from("cart")
     .select("*")
     .eq("user_id", user.id)
-    .eq("product_id", productId)
+    .eq("product_id", product.id)
     .maybeSingle();
 
   if (existing) {
     await supabase
       .from("cart")
-      .update({ quantity: existing.quantity + qty })
+      .update({ quantity: existing.quantity + 1 })
       .eq("id", existing.id);
   } else {
     await supabase.from("cart").insert({
       user_id: user.id,
-      product_id: productId,
-      quantity: qty
+      product_id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.image,
+      quantity: 1
     });
   }
-
-  return { source: "supabase" };
 }
 
-// retourne le panier pour affichage
-export async function getCart() {
-  const { data: { user } } = await supabase.auth.getUser();
+
+/* ➖ Modifier quantité */
+export async function updateQuantity(id, diff) {
+  const user = await getUser();
 
   if (!user) {
-    const items = loadLocalCart();
-    return { source: "local", items };
-  }
+    // invité
+    let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+    const item = cart.find(i => i.id == id);
 
-  const { data, error } = await supabase
-    .from("cart")
-    .select("*")
-    .eq("user_id", user.id);
+    if (!item) return;
 
-  if (error) {
-    console.error(error);
-    return { source: "supabase", items: [] };
-  }
+    item.quantity += diff;
+    if (item.quantity <= 0) {
+      cart = cart.filter(i => i.id != id);
+    }
 
-  return { source: "supabase", items: data || [] };
-}
-
-export async function updateQuantity(productId, qty) {
-  const { data: { user } } = await supabase.auth.getUser();
-
-  if (!user) {
-    updateLocal(productId, qty);
+    localStorage.setItem("cart", JSON.stringify(cart));
     return;
   }
 
-  if (qty <= 0) {
-    await supabase
-      .from("cart")
-      .delete()
-      .eq("user_id", user.id)
-      .eq("product_id", productId);
-    return;
-  }
+  // connecté
+  const { data } = await supabase.from("cart").select("*").eq("id", id).maybeSingle();
+  if (!data) return;
 
-  const { data: existing } = await supabase
-    .from("cart")
-    .select("*")
-    .eq("user_id", user.id)
-    .eq("product_id", productId)
-    .maybeSingle();
+  const newQty = data.quantity + diff;
 
-  if (existing) {
-    await supabase
-      .from("cart")
-      .update({ quantity: qty })
-      .eq("id", existing.id);
+  if (newQty <= 0) {
+    await supabase.from("cart").delete().eq("id", id);
   } else {
-    await supabase
-      .from("cart")
-      .insert({ user_id: user.id, product_id: productId, quantity: qty });
+    await supabase.from("cart").update({ quantity: newQty }).eq("id", id);
   }
 }
 
-export async function removeFromCart(productId) {
-  await updateQuantity(productId, 0);
+
+/* 🗑️ Supprimer */
+export async function removeFromCart(id) {
+  const user = await getUser();
+
+  if (!user) {
+    let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+    cart = cart.filter(i => i.id != id);
+    localStorage.setItem("cart", JSON.stringify(cart));
+    return;
+  }
+
+  await supabase.from("cart").delete().eq("id", id);
 }
