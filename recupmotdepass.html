@@ -75,6 +75,7 @@
         <label class="block mb-4">
           <span class="text-sm font-medium">Adresse e-mail</span>
           <input 
+            id="email"
             type="email"
             placeholder="votre.email@exemple.com"
             class="mt-2 w-full h-12 px-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-background-light dark:bg-background-dark focus:ring-2 focus:ring-primary/50 outline-none"
@@ -82,14 +83,17 @@
         </label>
 
         <!-- Bouton -->
-        <button class="w-full h-12 rounded-xl bg-primary text-white font-bold text-lg hover:bg-primary/90 transition">
+        <button id="resetBtn" class="w-full h-12 rounded-xl bg-primary text-white font-bold text-lg hover:bg-primary/90 transition">
           Envoyer le lien
         </button>
 
-        <!-- Message succès (caché par défaut) -->
-        <div class="mt-6 hidden p-3 rounded-lg bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 text-sm">
-          Un lien de réinitialisation a été envoyé à votre adresse e-mail.
+        <!-- Message succès -->
+        <div id="successMsg" class="mt-6 hidden p-3 rounded-lg bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 text-sm">
+          ✔ Un lien de réinitialisation a été envoyé à votre adresse e-mail.
         </div>
+
+        <!-- Message erreur -->
+        <div id="errorMsg" class="mt-6 hidden p-3 rounded-lg bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200 text-sm"></div>
 
         <div class="mt-6 text-center">
           <a href="connexion.html" class="text-primary font-medium hover:underline">
@@ -116,7 +120,7 @@
       <div class="hidden md:grid md:grid-cols-5 lg:grid-cols-10 gap-2 py-3 text-center text-gray-600 dark:text-gray-400 text-sm font-medium">
         <a href="index.html" class="flex flex-col items-center"><span class="material-symbols-outlined">home</span>Accueil</a>
         <a href="produits.html" class="flex flex-col items-center"><span class="material-symbols-outlined">local_mall</span>Produits</a>
-        <a href="produits2.html" class="flex flex-col items-center"><span class="material-symbols-outlined">storefront</span>Produits 2</a>
+        <a href="produits2.html" class="flex flex-col items-center"><span class="material-symbols-outlined">storefront</span>Abonnement</a>
         <a href="assistantIA.html" class="flex flex-col items-center"><span class="material-symbols-outlined">psychology</span>Assistant</a>
         <a href="conseil.html" class="flex flex-col items-center"><span class="material-symbols-outlined">tips_and_updates</span>Conseil</a>
         <a href="panier.html" class="flex flex-col items-center"><span class="material-symbols-outlined">shopping_cart</span>Panier</a>
@@ -129,5 +133,44 @@
     </footer>
 
   </div>
+
+  <!-- SCRIPT SUPABASE -->
+  <script type="module">
+    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+    const supabase = createClient(
+      "https://tjqaprfpgwmsavjtgoml.supabase.co",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqYXBxcmZwZ3dtc2F2anRnb21sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMzNzgwMTAsImV4cCI6MjA3ODk1NDAxMH0.lVNkXrzwAaYpm3COxe6zWCQ6y6kz3fjRmZW1FNCy0Lo"
+    );
+
+    const emailInput = document.getElementById("email");
+    const successMsg = document.getElementById("successMsg");
+    const errorMsg = document.getElementById("errorMsg");
+
+    document.getElementById("resetBtn").addEventListener("click", async () => {
+      const email = emailInput.value.trim();
+
+      if (!email) {
+        errorMsg.textContent = "Veuillez entrer une adresse e-mail.";
+        errorMsg.classList.remove("hidden");
+        successMsg.classList.add("hidden");
+        return;
+      }
+
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin + "/confreinimotPass.html"
+      });
+
+      if (error) {
+        errorMsg.textContent = error.message;
+        errorMsg.classList.remove("hidden");
+        successMsg.classList.add("hidden");
+      } else {
+        errorMsg.classList.add("hidden");
+        successMsg.classList.remove("hidden");
+      }
+    });
+  </script>
+
 </body>
 </html>
