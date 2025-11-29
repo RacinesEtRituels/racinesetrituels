@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html class="light" lang="fr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <title>Mon Profil - Racines & Rituels</title>
+
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+
+  <style>
+    body { font-family: "Epilogue", sans-serif; }
+  </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-gray-900 dark:text-white">
+
+  <!-- HEADER -->
+  <header class="fixed top-0 left-0 right-0 z-30 bg-black/40 backdrop-blur-md border-b border-white/10">
+    <nav class="max-w-4xl mx-auto flex items-center justify-between px-4 py-3 text-sm font-medium text-white">
+      <a href="index.html" class="text-white font-bold tracking-wide hover:text-primary transition">Racines & Rituels</a>
+
+      <div class="hidden md:flex items-center gap-6">
+        <a href="index.html" class="hover:text-primary flex items-center gap-1">
+          <span class="material-symbols-outlined text-base">home</span>Accueil
+        </a>
+        <a href="produits.html" class="hover:text-primary flex items-center gap-1">
+          <span class="material-symbols-outlined text-base">shopping_bag</span>Produits
+        </a>
+        <a href="produits2.html" class="hover:text-primary flex items-center gap-1">
+          <span class="material-symbols-outlined text-base">auto_awesome</span>Abonnement
+        </a>
+        <a href="panier.html" class="hover:text-primary flex items-center gap-1">
+          <span class="material-symbols-outlined text-base">shopping_cart</span>Panier
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <div class="h-[70px]"></div>
+
+  <!-- CONTENU -->
+  <main class="max-w-xl mx-auto p-4 space-y-8">
+
+    <h1 class="text-3xl font-bold text-center">Mon Profil</h1>
+
+    <!-- PHOTO DE PROFIL -->
+    <section class="bg-white dark:bg-background-dark/40 p-6 rounded-xl shadow-md text-center">
+      <img id="avatarImage" src="default-avatar.png" 
+           class="w-28 h-28 mx-auto rounded-full object-cover shadow-md mb-4" />
+
+      <label class="block mb-3">
+        <input type="file" id="avatarUpload" accept="image/*" class="hidden">
+        <button onclick="document.getElementById('avatarUpload').click()" 
+                class="px-4 py-2 bg-primary text-white rounded-lg text-sm font-semibold">
+          Changer ma photo
+        </button>
+      </label>
+    </section>
+
+    <!-- INFOS UTILISATEUR -->
+    <section class="p-6 bg-white dark:bg-background-dark/40 rounded-xl shadow-md">
+      <h2 class="text-xl font-bold mb-4">Informations personnelles</h2>
+
+      <p class="mb-2"><strong>Prénom :</strong> <span id="prenomDisplay">...</span></p>
+      <p class="mb-2"><strong>Email :</strong> <span id="emailDisplay">...</span></p>
+      <p class="mb-4"><strong>ID :</strong> <span id="idDisplay">...</span></p>
+
+      <button id="logoutBtn"
+              class="w-full h-12 rounded-xl bg-primary text-white font-bold hover:bg-primary/90 transition">
+        Se déconnecter
+      </button>
+    </section>
+
+    <!-- MODIFIER LE PROFIL -->
+    <section class="p-6 bg-white dark:bg-background-dark/40 rounded-xl shadow-md">
+      <h2 class="text-xl font-bold mb-4">Modifier mon profil</h2>
+
+      <label class="block mb-3">
+        <span class="text-sm font-medium">Nouveau prénom</span>
+        <input id="newPrenom" type="text" 
+               class="mt-1 w-full h-12 px-4 rounded-xl border bg-background-light dark:bg-background-dark">
+      </label>
+
+      <label class="block mb-3">
+        <span class="text-sm font-medium">Nouvel email</span>
+        <input id="newEmail" type="email"
+               class="mt-1 w-full h-12 px-4 rounded-xl border bg-background-light dark:bg-background-dark">
+      </label>
+
+      <button id="updateProfileBtn"
+              class="w-full h-12 rounded-xl bg-primary text-white font-bold hover:bg-primary/90 transition">
+        Mettre à jour
+      </button>
+    </section>
+
+    <!-- CHANGER LE MOT DE PASSE -->
+    <section class="p-6 bg-white dark:bg-background-dark/40 rounded-xl shadow-md">
+      <h2 class="text-xl font-bold mb-4">Sécurité</h2>
+
+      <label class="block mb-3">
+        <span class="text-sm font-medium">Nouveau mot de passe</span>
+        <input id="newPassword" type="password"
+               class="mt-1 w-full h-12 px-4 rounded-xl border bg-background-light dark:bg-background-dark">
+      </label>
+
+      <button id="updatePasswordBtn"
+              class="w-full h-12 rounded-xl bg-primary text-white font-bold hover:bg-primary/90 transition">
+        Modifier le mot de passe
+      </button>
+    </section>
+
+    <!-- COMMANDES -->
+    <section class="bg-white dark:bg-background-dark/40 p-6 rounded-xl shadow-md">
+      <h2 class="text-xl font-bold mb-4">Mes commandes</h2>
+      <ul id="ordersList" class="space-y-3 text-sm"></ul>
+    </section>
+
+    <!-- ABONNEMENTS -->
+    <section class="bg-white dark:bg-background-dark/40 p-6 rounded-xl shadow-md">
+      <h2 class="text-xl font-bold mb-4">Mes abonnements</h2>
+      <ul id="subsList" class="space-y-3 text-sm"></ul>
+    </section>
+
+    <!-- SUPPRIMER LE COMPTE -->
+    <section class="bg-red-50 dark:bg-red-900/30 p-6 rounded-xl shadow-md border border-red-300 dark:border-red-700">
+      <h2 class="text-xl font-bold text-red-700 dark:text-red-300 mb-4">Danger ⚠️</h2>
+
+      <button id="deleteAccountBtn"
+              class="w-full h-12 rounded-xl bg-red-600 text-white font-bold hover:bg-red-700 transition">
+        Supprimer définitivement mon compte
+      </button>
+    </section>
+
+  </main>
+
+  <!-- SCRIPT -->
+  <script type="module">
+    import { supabase } from "./supabase.js";
+
+    // Vérifier si user connecté
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) window.location.href = "connexion.html";
+
+    // Charger infos
+    document.getElementById("prenomDisplay").textContent = user.user_metadata?.prenom ?? "Non renseigné";
+    document.getElementById("emailDisplay").textContent = user.email;
+    document.getElementById("idDisplay").textContent = user.id;
+
+    /* ------------------ PHOTO DE PROFIL ------------------ */
+    async function loadAvatar() {
+      const { data } = supabase.storage.from("avatars").getPublicUrl(`${user.id}.jpg`);
+      document.getElementById("avatarImage").src = data.publicUrl;
+    }
+    loadAvatar();
+
+    document.getElementById("avatarUpload").addEventListener("change", async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      await supabase.storage.from("avatars").upload(`${user.id}.jpg`, file, { upsert: true });
+      loadAvatar();
+    });
+
+    /* ------------------ MODIFIER PROFIL ------------------ */
+    document.getElementById("updateProfileBtn").addEventListener("click", async () => {
+      const newPrenom = document.getElementById("newPrenom").value.trim();
+      const newEmail = document.getElementById("newEmail").value.trim();
+
+      const { error } = await supabase.auth.updateUser({
+        email: newEmail || undefined,
+        data: newPrenom ? { prenom: newPrenom } : undefined
+      });
+
+      if (error) return alert("Erreur : " + error.message);
+
+      alert("Profil mis à jour !");
+      location.reload();
+    });
+
+    /* ------------------ CHANGER MOT DE PASSE ------------------ */
+    document.getElementById("updatePasswordBtn").addEventListener("click", async () => {
+      const newPassword = document.getElementById("newPassword").value.trim();
+      if (!newPassword) return alert("Veuillez entrer un mot de passe.");
+
+      const { error } = await supabase.auth.updateUser({ password: newPassword });
+
+      if (error) return alert("Erreur : " + error.message);
+
+      alert("Mot de passe mis à jour !");
+    });
+
+    /* ------------------ COMMANDES ------------------ */
+    const { data: orders } = await supabase
+      .from("orders")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false });
+
+    const ordersList = document.getElementById("ordersList");
+    if (!orders || orders.length === 0) {
+      ordersList.innerHTML = "<li>Aucune commande.</li>";
+    } else {
+      orders.forEach(order => {
+        ordersList.innerHTML += `
+          <li class="border-b pb-2">
+            <strong>Commande #${order.id.slice(0, 8)}</strong><br>
+            Total : ${order.total} €<br>
+            Date : ${new Date(order.created_at).toLocaleDateString()}
+          </li>`;
+      });
+    }
+
+    /* ------------------ ABONNEMENTS ------------------ */
+    const { data: subs } = await supabase
+      .from("subscriptions")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("renew_at", { ascending: true });
+
+    const subsList = document.getElementById("subsList");
+    if (!subs || subs.length === 0) {
+      subsList.innerHTML = "<li>Aucun abonnement.</li>";
+    } else {
+      subs.forEach(sub => {
+        subsList.innerHTML += `
+          <li class="border-b pb-2">
+            <strong>${sub.plan}</strong><br>
+            Statut : ${sub.status}<br>
+            Renouvellement : ${new Date(sub.renew_at).toLocaleDateString()}
+          </li>`;
+      });
+    }
+
+    /* ------------------ SUPPRIMER LE COMPTE ------------------ */
+    document.getElementById("deleteAccountBtn").addEventListener("click", async () => {
+      if (!confirm("Certain de vouloir supprimer votre compte ?")) return;
+
+      const { error } = await supabase.auth.admin.deleteUser(user.id);
+
+      if (error) return alert("Erreur : " + error.message);
+
+      alert("Compte supprimé.");
+      window.location.href = "index.html";
+    });
+
+    /* ------------------ DÉCONNEXION ------------------ */
+    document.getElementById("logoutBtn").addEventListener("click", async () => {
+      await supabase.auth.signOut();
+      window.location.href = "connexion.html";
+    });
+
+  </script>
+
+</body>
+</html>
