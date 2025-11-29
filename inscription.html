@@ -16,7 +16,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;700&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
 
-  <!-- Thème -->
   <script>
     tailwind.config = {
       darkMode: "class",
@@ -25,13 +24,9 @@
           colors: {
             primary: "#e64c19",
             "background-light": "#f8f6f6",
-            "background-dark": "#211511",
-            "beige-light": "#F5F5DC",
-            "terracotta": "#E2725B",
+            "background-dark": "#211511"
           },
-          fontFamily: {
-            display: ["Epilogue", "sans-serif"],
-          }
+          fontFamily: { display: ["Epilogue", "sans-serif"] }
         }
       }
     }
@@ -44,104 +39,95 @@
 
 <body class="bg-background-light dark:bg-background-dark text-gray-900 dark:text-white">
 
-  <!-- 🌿 MENU HAUT -->
+  <!-- MENU -->
   <header class="fixed top-0 left-0 right-0 z-30 bg-black/40 backdrop-blur-md border-b border-white/10">
     <nav class="max-w-4xl mx-auto flex items-center justify-between px-4 py-3 text-sm font-medium text-white">
-      
-      <a href="index.html" class="text-white font-bold tracking-wide hover:text-primary transition">
-        Racines & Rituels
-      </a>
+      <a href="index.html" class="text-white font-bold hover:text-primary transition">Racines & Rituels</a>
 
-      <div class="hidden md:flex items-center gap-6 text-white">
+      <div class="hidden md:flex items-center gap-6">
 
         <a href="index.html" class="hover:text-primary transition flex items-center gap-1">
-          <span class="material-symbols-outlined text-base">home</span>Accueil
+          <span class="material-symbols-outlined">home</span>Accueil
         </a>
 
         <a href="produits.html" class="hover:text-primary transition flex items-center gap-1">
-          <span class="material-symbols-outlined text-base">shopping_bag</span>Produits
+          <span class="material-symbols-outlined">shopping_bag</span>Produits
         </a>
 
         <a href="produits2.html" class="hover:text-primary transition flex items-center gap-1">
-          <span class="material-symbols-outlined text-base">auto_awesome</span>Abonnement
+          <span class="material-symbols-outlined">auto_awesome</span>Abonnement
         </a>
 
         <a href="conseil.html" class="hover:text-primary transition flex items-center gap-1">
-          <span class="material-symbols-outlined text-base">tips_and_updates</span>Conseils
+          <span class="material-symbols-outlined">tips_and_updates</span>Conseils
         </a>
 
-        <a href="inscription.html" class="hover:text-primary transition flex items-center gap-1 text-primary">
-          <span class="material-symbols-outlined text-base">person_add</span>S’inscrire
+        <a href="inscription.html" class="text-primary flex items-center gap-1">
+          <span class="material-symbols-outlined">person_add</span>S'inscrire
         </a>
 
         <a href="connexion.html" class="hover:text-primary transition flex items-center gap-1">
-          <span class="material-symbols-outlined text-base">login</span>Connexion
+          <span class="material-symbols-outlined">login</span>Connexion
         </a>
       </div>
     </nav>
   </header>
 
-  <!-- CONTENU PRINCIPAL -->
-  <div class="min-h-screen flex flex-col pt-24">
+  <!-- ESPACE -->
+  <div class="h-[72px]"></div>
 
-    <main class="flex-1">
-      <div class="w-full px-4 py-8 flex justify-center">
+  <!-- FORMULAIRE -->
+  <main class="flex justify-center px-4 py-10">
+    <div class="w-full max-w-[480px] bg-white dark:bg-background-dark/40 p-6 rounded-xl shadow-md">
 
-        <div class="w-full max-w-[480px] bg-white dark:bg-background-dark/40 p-6 rounded-xl shadow-md">
+      <h1 class="text-3xl font-bold text-center mb-3">Créer un compte</h1>
+      <p class="text-center text-sm text-gray-600 dark:text-gray-300 mb-6">Rejoignez l’univers Racines & Rituels 🌿</p>
 
-          <h1 class="text-3xl font-bold text-center mb-4">Créer un compte</h1>
-          <p class="text-center text-sm text-gray-600 dark:text-gray-300 mb-6">
-            Rejoignez l’univers Racines & Rituels 🌿
-          </p>
+      <!-- MESSAGE -->
+      <div id="message" class="hidden mb-4 p-3 rounded-xl text-sm font-medium"></div>
 
-          <!-- Prénom -->
-          <div class="mb-4">
-            <label class="block font-medium mb-1">Prénom</label>
-            <input id="prenom" type="text" placeholder="Votre prénom"
-              class="w-full h-12 px-4 rounded-xl border border-gray-300 dark:border-gray-700 bg-background-light dark:bg-background-dark focus:ring-2 focus:ring-primary outline-none">
-          </div>
+      <!-- PRENOM -->
+      <label class="block mb-4">
+        <span class="font-medium">Prénom</span>
+        <input id="prenom" type="text" placeholder="Votre prénom"
+          class="mt-1 w-full h-12 px-4 rounded-xl border border-gray-300 dark:border-gray-700 bg-background-light dark:bg-background-dark focus:ring-primary focus:ring-2 outline-none">
+      </label>
 
-          <!-- Email -->
-          <div class="mb-4">
-            <label class="block font-medium mb-1">Adresse e-mail</label>
-            <input id="email" type="email" placeholder="votre.email@exemple.com"
-              class="w-full h-12 px-4 rounded-xl border border-gray-300 dark:border-gray-700 bg-background-light dark:bg-background-dark focus:ring-2 focus:ring-primary outline-none">
-          </div>
+      <!-- EMAIL -->
+      <label class="block mb-4">
+        <span class="font-medium">Adresse e-mail</span>
+        <input id="email" type="email" placeholder="votre.email@exemple.com"
+          class="mt-1 w-full h-12 px-4 rounded-xl border border-gray-300 dark:border-gray-700 bg-background-light dark:bg-background-dark focus:ring-primary focus:ring-2 outline-none">
+      </label>
 
-          <!-- Mot de passe -->
-          <div class="mb-4">
-            <label class="block font-medium mb-1">Mot de passe</label>
-            <input id="password" type="password" placeholder="Créer un mot de passe"
-              class="w-full h-12 px-4 rounded-xl border border-gray-300 dark:border-gray-700 bg-background-light dark:bg-background-dark focus:ring-2 focus:ring-primary outline-none">
-          </div>
+      <!-- PASSWORD -->
+      <label class="block mb-4">
+        <span class="font-medium">Mot de passe</span>
+        <input id="password" type="password" placeholder="Créer un mot de passe"
+          class="mt-1 w-full h-12 px-4 rounded-xl border border-gray-300 dark:border-gray-700 bg-background-light dark:bg-background-dark focus:ring-primary focus:ring-2 outline-none">
+      </label>
 
-          <!-- Confirmation -->
-          <div class="mb-6">
-            <label class="block font-medium mb-1">Confirmer le mot de passe</label>
-            <input id="password2" type="password" placeholder="Répétez votre mot de passe"
-              class="w-full h-12 px-4 rounded-xl border border-gray-300 dark:border-gray-700 bg-background-light dark:bg-background-dark focus:ring-2 focus:ring-primary outline-none">
-          </div>
+      <!-- PASSWORD 2 -->
+      <label class="block mb-6">
+        <span class="font-medium">Confirmez le mot de passe</span>
+        <input id="password2" type="password" placeholder="Répétez votre mot de passe"
+          class="mt-1 w-full h-12 px-4 rounded-xl border border-gray-300 dark:border-gray-700 bg-background-light dark:bg-background-dark focus:ring-primary focus:ring-2 outline-none">
+      </label>
 
-          <!-- Bouton inscription -->
-          <button id="inscriptionBtn" class="w-full h-12 rounded-xl bg-primary text-white font-bold hover:bg-primary/90 transition">
-            Créer mon compte
-          </button>
+      <button id="inscriptionBtn" class="w-full h-12 rounded-xl bg-primary text-white font-bold hover:bg-primary/90 transition">
+        Créer mon compte
+      </button>
 
-          <!-- Divider -->
-          <div class="my-6 h-px bg-gray-300 dark:bg-gray-600"></div>
+      <div class="my-6 h-px bg-gray-300 dark:bg-gray-700"></div>
 
-          <p class="text-center text-sm">
-            Vous avez déjà un compte ?
-            <a href="connexion.html" class="text-primary font-semibold hover:underline">Se connecter</a>
-          </p>
+      <p class="text-center text-sm">Vous avez déjà un compte ?  
+        <a href="connexion.html" class="text-primary font-semibold hover:underline">Se connecter</a>
+      </p>
 
-        </div>
-      </div>
-    </main>
+    </div>
+  </main>
 
-  </div>
-
-  <!-- 📌 Script SUPABASE -->
+  <!-- SCRIPT SUPABASE -->
   <script type="module">
     import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
@@ -150,6 +136,19 @@
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqYXBxcmZwZ3dtc2F2anRnb21sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMzNzgwMTAsImV4cCI6MjA3ODk1NDAxMH0.lVNkXrzwAaYpm3COxe6zWCQ6y6kz3fjRmZW1FNCy0Lo"
     );
 
+    const msg = document.getElementById("message");
+
+    function showMessage(text, type="error") {
+      msg.textContent = text;
+      msg.classList.remove("hidden");
+
+      if (type === "error") {
+        msg.className = "mb-4 p-3 rounded-xl bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300";
+      } else {
+        msg.className = "mb-4 p-3 rounded-xl bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300";
+      }
+    }
+
     document.getElementById("inscriptionBtn").addEventListener("click", async () => {
       const prenom = document.getElementById("prenom").value.trim();
       const email = document.getElementById("email").value.trim();
@@ -157,29 +156,32 @@
       const password2 = document.getElementById("password2").value.trim();
 
       if (!prenom || !email || !password) {
-        alert("Merci de remplir tous les champs.");
-        return;
+        return showMessage("Merci de remplir tous les champs.");
       }
 
       if (password !== password2) {
-        alert("Les mots de passe ne correspondent pas.");
-        return;
+        return showMessage("Les mots de passe ne correspondent pas.");
       }
 
-      const { data, error } = await supabase.auth.signUp({
+      if (password.length < 6) {
+        return showMessage("Votre mot de passe doit contenir au moins 6 caractères.");
+      }
+
+      const { error } = await supabase.auth.signUp({
         email,
         password,
-        options: {
-          data: { prenom }
-        }
+        options: { data: { prenom } }
       });
 
       if (error) {
-        alert("Erreur : " + error.message);
-      } else {
-        alert("Compte créé ! Vérifiez votre e-mail pour confirmer votre inscription.");
-        window.location.href = "connexion.html";
+        return showMessage("Erreur : " + error.message);
       }
+
+      showMessage("Compte créé ! Vérifiez votre e-mail pour confirmer votre inscription.", "success");
+
+      setTimeout(() => {
+        window.location.href = "connexion.html";
+      }, 2000);
     });
   </script>
 
