@@ -14,7 +14,6 @@
   <meta property="og:description" content="Herbe naturelle purifiante et apaisante, utilisée pour le bien-être féminin. Découvrez comment l’utiliser au quotidien."/>
   <meta property="og:image" content="https://tondomaine.com/images/khamare.webp"/>
   <meta property="og:type" content="product"/>
-  <meta property="og:url" content="https://tondomaine.com/khamare"/>
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image"/>
@@ -22,7 +21,7 @@
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
-  <!-- Tailwind -->
+  <!-- TailwindCSS -->
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 
   <!-- Polices -->
@@ -52,15 +51,6 @@
   </script>
 
   <style>
-    <script type="module">
-  import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
-  window.supabase = createClient(
-    "https://tjqaprfpgwmsavjtgoml.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqYXBxcmZwZ3dtc2F2anRnb21sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMzNzgwMTAsImV4cCI6MjA3ODk1NDAxMH0.lVNkXrzwAaYpm3COxe6zWCQ6y6kz3fjRmZW1FNCy0Lo"
-  );
-</script>
-
     body {
       font-family: 'Epilogue', sans-serif;
       min-height: 100dvh;
@@ -70,15 +60,15 @@
 
 <body class="bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark">
 
-  <!-- 🌿 MENU HAUT (MODIFIÉ AVEC ABONNEMENT) -->
+  <!-- 🌿 MENU -->
   <header class="fixed top-0 left-0 right-0 z-30 bg-black/40 backdrop-blur-md border-b border-white/10">
     <nav class="max-w-4xl mx-auto flex items-center justify-between px-4 py-3 text-sm font-medium text-white">
 
-      <a href="index.html" class="text-white font-bold tracking-wide hover:text-primary transition">
+      <a href="index.html" class="font-bold tracking-wide hover:text-primary transition">
         Racines & Rituels
       </a>
 
-      <div class="hidden md:flex items-center gap-6 text-white">
+      <div class="hidden md:flex items-center gap-6">
 
         <a href="index.html" class="hover:text-primary transition flex items-center gap-1">
           <span class="material-symbols-outlined text-base">home</span>Accueil
@@ -88,11 +78,9 @@
           <span class="material-symbols-outlined text-base">shopping_bag</span>Produits
         </a>
 
-        <!-- ⭐ AJOUT : bouton Abonnement -->
         <a href="produits2.html" class="hover:text-primary transition flex items-center gap-1">
           <span class="material-symbols-outlined text-base">auto_awesome</span>Abonnement
         </a>
-        <!-- ⭐ FIN AJOUT -->
 
         <a href="conseil.html" class="hover:text-primary transition flex items-center gap-1">
           <span class="material-symbols-outlined text-base">tips_and_updates</span>Conseils
@@ -105,101 +93,103 @@
         <a href="connexion.html" class="hover:text-primary transition flex items-center gap-1">
           <span class="material-symbols-outlined text-base">login</span>Connexion
         </a>
+
       </div>
 
     </nav>
   </header>
 
-  <main class="relative flex flex-col min-h-screen overflow-x-hidden pt-20">
+  <main class="pt-24 max-w-3xl mx-auto px-6">
 
-    <!-- CONTENEUR GLOBAL CENTRÉ -->
-    <div class="w-full max-w-3xl mx-auto px-6 py-6">
+    <!-- IMAGE PRODUIT -->
+    <section class="flex justify-center mb-6">
+      <img 
+        src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgtq9a_iB5ErWpgi1ziSBthK8DUHoEwzFbfHNu8dhSRaTNDVwonoCdCluAPVoAIoVrNuzip3Cc0EttfkcX5NVNmdxlvWFrZLC48tTQdmuCTkiFxAwP5W6lHx2-nMYc_ML7_eDCvzIdZ7V_rVy7oIXZqsPyeKRsxrR6KfGTpv6SuBOLD-OmgvCRv2bBs63jrHesz3Nw1RfSYAcu2zpPB68i6UNhDgfDquIMkdF-tgkPODne5-NBAejIMV8jDu9eiNbCTTMDY0Iznek3"
+        alt="Photo du Khamaré (vétiver)"
+        class="rounded-xl w-full max-w-lg object-cover shadow-md"
+      />
+    </section>
 
-      <!-- IMAGE PRODUIT -->
-      <section class="flex justify-center mb-6">
-        <img 
-          src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgtq9a_iB5ErWpgi1ziSBthK8DUHoEwzFbfHNu8dhSRaTNDVwonoCdCluAPVoAIoVrNuzip3Cc0EttfkcX5NVNmdxlvWFrZLC48tTQdmuCTkiFxAwP5W6lHx2-nMYc_ML7_eDCvzIdZ7V_rVy7oIXZqsPyeKRsxrR6KfGTpv6SuBOLD-OmgvCRv2bBs63jrHesz3Nw1RfSYAcu2zpPB68i6UNhDgfDquIMkdF-tgkPODne5-NBAejIMV8jDu9eiNbCTTMDY0Iznek3"
-          alt="Photo du Khamaré (vétiver)"
-          class="rounded-xl w-full max-w-lg object-cover shadow-md"
-        />
-      </section>
+    <!-- DESCRIPTION -->
+    <section class="text-center mb-8">
+      <h2 class="text-[32px] font-bold text-primary">Khamaré</h2>
+      <p class="mt-3 text-base leading-relaxed">
+        Le Khamaré, ou vétiver, est une plante traditionnelle reconnue pour ses propriétés purifiantes et apaisantes.  
+        Utilisé depuis des générations, il accompagne naturellement le bien-être féminin.
+      </p>
+    </section>
 
-      <!-- DESCRIPTION -->
-      <section class="text-center mb-8">
-        <h2 class="text-[32px] font-bold text-primary">Khamaré</h2>
-        <p class="mt-3 text-base leading-relaxed">
-          Le Khamaré, ou vétiver, est une plante traditionnelle reconnue pour ses propriétés purifiantes et apaisantes.  
-          Utilisé depuis des générations, il accompagne naturellement le bien-être féminin.
+    <!-- INFORMATIONS PRODUIT -->
+    <section class="space-y-6">
+
+      <details class="border-b border-accent/40 pb-4 group" open>
+        <summary class="flex justify-between cursor-pointer py-3">
+          <span class="text-primary text-lg font-bold">Bienfaits</span>
+          <span class="material-symbols-outlined text-primary transition-transform group-open:rotate-180">expand_more</span>
+        </summary>
+        <p class="text-sm leading-relaxed">
+          🌿 Purifie naturellement<br>
+          🌿 Aide à réduire le stress<br>
+          🌿 Améliore la clarté de la peau<br>
+          🌿 Source d’antioxydants<br>
+          🌿 Favorise l’équilibre féminin
         </p>
-      </section>
+      </details>
 
-      <!-- DETAILS PRODUIT -->
-      <section class="space-y-6">
+      <details class="border-b border-accent/40 pb-4 group">
+        <summary class="flex justify-between cursor-pointer py-3">
+          <span class="text-primary text-lg font-bold">Préparation</span>
+          <span class="material-symbols-outlined text-primary transition-transform group-open:rotate-180">expand_more</span>
+        </summary>
+        <p class="text-sm leading-relaxed">
+          Infuser une tige dans de l’eau chaude pendant 5 à 7 minutes.  
+          Peut se boire chaud ou froid.
+        </p>
+      </details>
 
-        <!-- Bienfaits -->
-        <details class="border-b border-accent/40 pb-4 group" open>
-          <summary class="flex justify-between cursor-pointer py-3">
-            <span class="text-primary text-lg font-bold">Bienfaits</span>
-            <span class="material-symbols-outlined text-primary transition-transform group-open:rotate-180">expand_more</span>
-          </summary>
-          <p class="text-sm leading-relaxed">
-            🌿 Purifie naturellement<br>
-            🌿 Aide à réduire le stress<br>
-            🌿 Améliore la clarté de la peau<br>
-            🌿 Source d’antioxydants<br>
-            🌿 Favorise l’équilibre féminin
-          </p>
-        </details>
+      <details class="border-b border-accent/40 pb-4 group">
+        <summary class="flex justify-between cursor-pointer py-3">
+          <span class="text-primary text-lg font-bold">Origine</span>
+          <span class="material-symbols-outlined text-primary transition-transform group-open:rotate-180">expand_more</span>
+        </summary>
+        <p class="text-sm leading-relaxed">
+          Récolté à la main en Afrique de l’Ouest.  
+          Produit 100% naturel, sauvage et artisanal.
+        </p>
+      </details>
 
-        <!-- Préparation -->
-        <details class="border-b border-accent/40 pb-4 group">
-          <summary class="flex justify-between cursor-pointer py-3">
-            <span class="text-primary text-lg font-bold">Préparation</span>
-            <span class="material-symbols-outlined text-primary transition-transform group-open:rotate-180">expand_more</span>
-          </summary>
-          <p class="text-sm leading-relaxed">
-            Infuser une tige dans de l’eau chaude pendant 5 à 7 minutes.  
-            Peut se boire chaud ou froid.  
-            Pour un goût plus intense, laissez infuser davantage.
-          </p>
-        </details>
+    </section>
 
-        <!-- Origine -->
-        <details class="border-b border-accent/40 pb-4 group">
-          <summary class="flex justify-between cursor-pointer py-3">
-            <span class="text-primary text-lg font-bold">Origine</span>
-            <span class="material-symbols-outlined text-primary transition-transform group-open:rotate-180">expand_more</span>
-          </summary>
-          <p class="text-sm leading-relaxed">
-            Issu d’une culture artisanale d’Afrique de l’Ouest.  
-            Récolté à la main et séché naturellement.  
-            Produit 100% sauvage et authentique.
-          </p>
-        </details>
-
-        <!-- Anecdote -->
-        <details class="border-b border-accent/40 pb-4 group">
-          <summary class="flex justify-between cursor-pointer py-3">
-            <span class="text-primary text-lg font-bold">Anecdote culturelle</span>
-            <span class="material-symbols-outlined text-primary transition-transform group-open:rotate-180">expand_more</span>
-          </summary>
-          <p class="text-sm leading-relaxed">
-            Traditionnellement, le Khamaré est offert aux jeunes mariées comme symbole de santé, de pureté et d’harmonie du couple.
-          </p>
-        </details>
-
-      </section>
-
-      <!-- BOUTON AJOUTER AU PANIER -->
-      <section class="py-6">
-        <a href="panier.html" 
-           class="flex items-center justify-center w-full h-14 rounded-full bg-primary text-white text-lg font-bold shadow-lg hover:bg-primary/90 transition">
-          Ajouter au panier
-        </a>
-      </section>
-
-    </div>
+    <!-- BOUTON PANIER -->
+    <section class="py-6">
+      <button 
+        id="addToCartBtn"
+        data-product-id="khamare_10tiges"
+        class="flex items-center justify-center w-full h-14 rounded-full bg-primary text-white text-lg font-bold shadow-lg hover:bg-primary/90 transition">
+        Ajouter au panier
+      </button>
+    </section>
 
   </main>
+
+  <!-- SCRIPT : PANIER + SUPABASE -->
+  <script type="module">
+    import { addToCart } from "./js/cart.js";
+
+    const btn = document.getElementById("addToCartBtn");
+
+    btn.addEventListener("click", async () => {
+      const productId = btn.dataset.productId;
+
+      const result = await addToCart(productId, 1);
+
+      if (result.source === "local") {
+        alert("Produit ajouté au panier (mode invité). Connectez-vous pour le sauvegarder.");
+      } else {
+        alert("Produit ajouté à votre panier !");
+      }
+    });
+  </script>
+
 </body>
 </html>
