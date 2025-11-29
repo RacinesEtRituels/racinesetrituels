@@ -35,23 +35,20 @@
   <style>
     body {
       font-family: 'Epilogue', sans-serif;
-      min-height: max(884px, 100dvh);
     }
   </style>
 </head>
 
 <body class="bg-backgroundLight dark:bg-backgroundDark text-textLight dark:text-textDark">
 
-  <!-- ⭐ HEADER / MENU GLOBAL -->
+  <!-- ⭐ MENU GLOBAL -->
   <header class="fixed top-0 left-0 right-0 z-30 bg-backgroundLight/80 dark:bg-backgroundDark/80 backdrop-blur-md border-b border-white/20 dark:border-white/10">
     <nav class="max-w-4xl mx-auto flex items-center justify-between px-4 py-3 text-sm font-medium">
 
-      <!-- Logo -->
       <a href="index.html" class="font-bold tracking-wide hover:text-primary transition">
         Racines & Rituels
       </a>
 
-      <!-- MENU DESKTOP -->
       <div class="hidden md:flex items-center gap-6">
         <a href="index.html" class="hover:text-primary transition flex items-center gap-1">
           <span class="material-symbols-outlined text-base">home</span>Accueil
@@ -81,20 +78,23 @@
     </nav>
   </header>
 
-  <div class="h-[72px]"></div>
+  <!-- 🔧 FIX : sécurise l'espace sous le menu -->
+  <div class="pt-28"></div>
 
-  <!-- ⭐ MAIN -->
+  <!-- ⭐ MAIN CONTENT -->
   <main class="flex-1 w-full max-w-3xl mx-auto px-4 md:px-8 py-6">
 
-    <!-- Galerie -->
+    <!-- GALERIE -->
     <div class="flex overflow-x-auto gap-4 snap-x snap-mandatory p-2 scroll-smooth">
-      <img src="https://images.unsplash.com/photo-1502740438-59ddac4ef7f9?auto=format&fit=crop&w=400&q=80"
+      <img src="https://images.unsplash.com/photo-1502740438-59ddac4ef7f9?auto=format&fit=crop&w=600&q=80"
            alt="Infusion bien-être"
            class="min-w-[280px] md:min-w-[360px] aspect-square object-cover rounded-xl shadow-md snap-center"/>
-      <img src="https://images.unsplash.com/photo-1524594081293-190a2fe0baae?auto=format&fit=crop&w=400&q=80"
+
+      <img src="https://images.unsplash.com/photo-1524594081293-190a2fe0baae?auto=format&fit=crop&w=600&q=80"
            alt="Plantes naturelles"
            class="min-w-[280px] md:min-w-[360px] aspect-square object-cover rounded-xl shadow-md snap-center"/>
-      <img src="https://images.unsplash.com/photo-1586201375761-83865001e31b?auto=format&fit=crop&w=400&q=80"
+
+      <img src="https://images.unsplash.com/photo-1586201375761-83865001e31b?auto=format&fit=crop&w=600&q=80"
            alt="Rituel bien-être"
            class="min-w-[280px] md:min-w-[360px] aspect-square object-cover rounded-xl shadow-md snap-center"/>
     </div>
@@ -115,7 +115,7 @@
         <li>🌿 Une plante mise à l'honneur</li>
         <li>🍵 Une recette d’infusion exclusive</li>
         <li>🔬 Une fiche scientifique vulgarisée</li>
-        <li>🧘‍♀️ Un rituel bien-être simple à pratiquer</li>
+        <li>🧘‍♀️ Un rituel bien-être simple</li>
         <li>🎧 Un petit audio d’encouragement</li>
       </ul>
 
@@ -126,17 +126,17 @@
 
     <!-- Mois 1 -->
     <section class="px-4 py-6 border-t border-white/10">
-      <h3 class="text-lg font-bold mb-3">✨ Contenu du mois 1 : “Immunité & Recentrage”</h3>
+      <h3 class="text-lg font-bold mb-3">✨ Mois 1 : “Immunité & Recentrage”</h3>
 
       <ul class="space-y-2">
-        <li>🌺 Plante du mois : <strong>Hibiscus Rouge</strong></li>
-        <li>🍵 Recette : Infusion Immunité Rouge</li>
-        <li>🔬 Fiche scientifique : antioxydants & défenses naturelles</li>
-        <li>🧘 Rituel : Le rituel de la tasse chaude</li>
-        <li>🎧 Audio du mois : message de reconnexion</li>
+        <li>🌺 Plante : <strong>Hibiscus Rouge</strong></li>
+        <li>🍵 Infusion Immunité Rouge</li>
+        <li>🔬 Antioxydants & défenses naturelles</li>
+        <li>🧘 Rituel : la tasse chaude</li>
+        <li>🎧 Audio de reconnexion</li>
       </ul>
 
-      <p class="mt-4 text-sm">Contenu accessible immédiatement après inscription.</p>
+      <p class="mt-4 text-sm">Accès immédiat après inscription.</p>
     </section>
 
     <!-- Achat -->
@@ -154,7 +154,7 @@
 
   </main>
 
-  <!-- ⭐ FOOTER MOBILE -->
+  <!-- FOOTER MOBILE -->
   <footer class="sticky bottom-0 bg-backgroundLight dark:bg-backgroundDark border-t border-white/20 dark:border-white/10 md:hidden">
     <div class="flex justify-around py-2 text-xs text-textLight dark:text-textDark">
 
