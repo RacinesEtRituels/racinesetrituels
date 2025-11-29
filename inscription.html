@@ -62,11 +62,9 @@
           <span class="material-symbols-outlined text-base">shopping_bag</span>Produits
         </a>
 
-        <!-- ⭐ AJOUT : ABONNEMENT -->
         <a href="produits2.html" class="hover:text-primary transition flex items-center gap-1">
           <span class="material-symbols-outlined text-base">auto_awesome</span>Abonnement
         </a>
-        <!-- ⭐ FIN AJOUT -->
 
         <a href="conseil.html" class="hover:text-primary transition flex items-center gap-1">
           <span class="material-symbols-outlined text-base">tips_and_updates</span>Conseils
@@ -99,40 +97,39 @@
           <!-- Prénom -->
           <div class="mb-4">
             <label class="block font-medium mb-1">Prénom</label>
-            <input type="text" placeholder="Votre prénom"
+            <input id="prenom" type="text" placeholder="Votre prénom"
               class="w-full h-12 px-4 rounded-xl border border-gray-300 dark:border-gray-700 bg-background-light dark:bg-background-dark focus:ring-2 focus:ring-primary outline-none">
           </div>
 
           <!-- Email -->
           <div class="mb-4">
             <label class="block font-medium mb-1">Adresse e-mail</label>
-            <input type="email" placeholder="votre.email@exemple.com"
+            <input id="email" type="email" placeholder="votre.email@exemple.com"
               class="w-full h-12 px-4 rounded-xl border border-gray-300 dark:border-gray-700 bg-background-light dark:bg-background-dark focus:ring-2 focus:ring-primary outline-none">
           </div>
 
           <!-- Mot de passe -->
           <div class="mb-4">
             <label class="block font-medium mb-1">Mot de passe</label>
-            <input type="password" placeholder="Créer un mot de passe"
+            <input id="password" type="password" placeholder="Créer un mot de passe"
               class="w-full h-12 px-4 rounded-xl border border-gray-300 dark:border-gray-700 bg-background-light dark:bg-background-dark focus:ring-2 focus:ring-primary outline-none">
           </div>
 
           <!-- Confirmation -->
           <div class="mb-6">
             <label class="block font-medium mb-1">Confirmer le mot de passe</label>
-            <input type="password" placeholder="Répétez votre mot de passe"
+            <input id="password2" type="password" placeholder="Répétez votre mot de passe"
               class="w-full h-12 px-4 rounded-xl border border-gray-300 dark:border-gray-700 bg-background-light dark:bg-background-dark focus:ring-2 focus:ring-primary outline-none">
           </div>
 
           <!-- Bouton inscription -->
-          <button class="w-full h-12 rounded-xl bg-primary text-white font-bold hover:bg-primary/90 transition">
+          <button id="inscriptionBtn" class="w-full h-12 rounded-xl bg-primary text-white font-bold hover:bg-primary/90 transition">
             Créer mon compte
           </button>
 
           <!-- Divider -->
           <div class="my-6 h-px bg-gray-300 dark:bg-gray-600"></div>
 
-          <!-- Déjà un compte ? -->
           <p class="text-center text-sm">
             Vous avez déjà un compte ?
             <a href="connexion.html" class="text-primary font-semibold hover:underline">Se connecter</a>
@@ -143,6 +140,48 @@
     </main>
 
   </div>
+
+  <!-- 📌 Script SUPABASE -->
+  <script type="module">
+    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+    const supabase = createClient(
+      "https://tjqaprfpgwmsavjtgoml.supabase.co",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqYXBxcmZwZ3dtc2F2anRnb21sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMzNzgwMTAsImV4cCI6MjA3ODk1NDAxMH0.lVNkXrzwAaYpm3COxe6zWCQ6y6kz3fjRmZW1FNCy0Lo"
+    );
+
+    document.getElementById("inscriptionBtn").addEventListener("click", async () => {
+      const prenom = document.getElementById("prenom").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const password2 = document.getElementById("password2").value.trim();
+
+      if (!prenom || !email || !password) {
+        alert("Merci de remplir tous les champs.");
+        return;
+      }
+
+      if (password !== password2) {
+        alert("Les mots de passe ne correspondent pas.");
+        return;
+      }
+
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { prenom }
+        }
+      });
+
+      if (error) {
+        alert("Erreur : " + error.message);
+      } else {
+        alert("Compte créé ! Vérifiez votre e-mail pour confirmer votre inscription.");
+        window.location.href = "connexion.html";
+      }
+    });
+  </script>
 
 </body>
 </html>
