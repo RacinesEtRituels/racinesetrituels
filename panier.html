@@ -8,8 +8,10 @@
   <title>Mon Panier — Racines & Rituels</title>
   <meta name="description" content="Retrouvez vos produits naturels : Khamaré, Hibiscus et coffrets bien-être dans votre panier. Paiement sécurisé et livraison rapide.">
 
+  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 
+  <!-- Polices -->
   <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;700&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
 
@@ -28,10 +30,10 @@
           },
           fontFamily: {
             display: ["Epilogue", "sans-serif"],
-          },
-        },
-      },
-    };
+          }
+        }
+      }
+    }
   </script>
 
   <style>
@@ -45,15 +47,15 @@
 
   <div class="min-h-screen flex flex-col">
 
-    <!-- 🌿 HEADER HARMONISÉ -->
+    <!-- 🌿 HEADER -->
     <header class="fixed top-0 left-0 right-0 z-30 bg-black/40 backdrop-blur-md border-b border-white/10">
       <nav class="max-w-4xl mx-auto flex items-center justify-between px-4 py-3 text-sm font-medium text-white">
 
-        <a href="index.html" class="text-white font-bold tracking-wide hover:text-primary transition">
+        <a href="index.html" class="font-bold tracking-wide hover:text-primary transition">
           Racines & Rituels
         </a>
 
-        <div class="hidden md:flex items-center gap-6 text-white">
+        <div class="hidden md:flex items-center gap-6">
 
           <a href="index.html" class="hover:text-primary transition flex items-center gap-1">
             <span class="material-symbols-outlined text-base">home</span>Accueil
@@ -63,7 +65,6 @@
             <span class="material-symbols-outlined text-base">shopping_bag</span>Produits
           </a>
 
-          <!-- ⭐ ABONNEMENT -->
           <a href="produits2.html" class="hover:text-primary transition flex items-center gap-1">
             <span class="material-symbols-outlined text-base">auto_awesome</span>Abonnement
           </a>
@@ -79,6 +80,7 @@
           <a href="connexion.html" class="hover:text-primary transition flex items-center gap-1">
             <span class="material-symbols-outlined text-base">login</span>Connexion
           </a>
+
         </div>
 
       </nav>
@@ -87,10 +89,136 @@
     <div class="h-[70px]"></div>
 
     <!-- 🧺 CONTENU PANIER -->
-    <main class="flex-1 p-4 space-y-4 max-w-2xl mx-auto w-full">
-      <!-- ton contenu panier est inchangé -->
-      <!-- ⭐⭐⭐⭐⭐ JE N’AI RIEN TOUCHE AU CODE DU PANIER ⭐⭐⭐⭐⭐ -->
-      <!-- Il reste identique et propre -->
-      
-      <!-- (tout ton contenu ici) -->
+    <main class="flex-1 p-4 max-w-2xl mx-auto w-full space-y-6">
 
+      <h1 class="text-3xl font-bold text-center mb-4">Mon Panier</h1>
+
+      <!-- 🧊 Liste dynamique -->
+      <div id="cartItems" class="space-y-4"></div>
+
+      <!-- Si panier vide -->
+      <div id="emptyCart" class="hidden text-center py-20 text-gray-600 dark:text-gray-400">
+        <p class="text-lg">Votre panier est vide 🧺</p>
+        <a href="produits.html" class="text-primary font-semibold underline mt-2 inline-block">Voir les produits</a>
+      </div>
+
+      <!-- 🧮 RÉCAP TOTAL -->
+      <div id="cartSummary" class="hidden p-4 bg-white dark:bg-background-dark/40 rounded-xl shadow space-y-3">
+
+        <div class="flex justify-between">
+          <span>Sous-total</span>
+          <span id="subtotal">0 €</span>
+        </div>
+
+        <div class="flex justify-between">
+          <span>Livraison</span>
+          <span id="shipping">5,00 €</span>
+        </div>
+
+        <hr class="border-gray-300 dark:border-gray-700">
+
+        <div class="flex justify-between font-bold text-lg">
+          <span>Total</span>
+          <span id="total">0 €</span>
+        </div>
+
+        <button id="payBtn" class="w-full h-14 rounded-full bg-terracotta text-white text-lg font-bold hover:bg-terracotta/90 transition">
+          Valider et payer
+        </button>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- 📌 CHARGEMENT DU PANIER -->
+  <script type="module">
+    import { getCart, removeFromCart, updateQuantity } from "./js/cart.js";
+
+    const cartItemsEl = document.getElementById("cartItems");
+    const emptyCartEl = document.getElementById("emptyCart");
+    const summaryEl = document.getElementById("cartSummary");
+
+    async function loadCart() {
+      const cart = await getCart();
+
+      cartItemsEl.innerHTML = "";
+
+      if (!cart || cart.length === 0) {
+        emptyCartEl.classList.remove("hidden");
+        summaryEl.classList.add("hidden");
+        return;
+      }
+
+      emptyCartEl.classList.add("hidden");
+      summaryEl.classList.remove("hidden");
+
+      let subtotal = 0;
+
+      cart.forEach(item => {
+        subtotal += item.price * item.quantity;
+
+        const div = document.createElement("div");
+        div.className = "flex gap-4 bg-white dark:bg-background-dark/40 p-4 rounded-xl shadow";
+
+        div.innerHTML = `
+          <img src="${item.image}" class="size-[70px] rounded-lg object-cover">
+
+          <div class="flex flex-col justify-between flex-1">
+            <p class="font-medium">${item.name}</p>
+            <p class="text-greensoft text-sm">${item.price.toFixed(2)} €</p>
+          </div>
+
+          <div class="flex flex-col justify-between items-end">
+
+            <button data-id="${item.id}" class="deleteBtn text-terracotta">
+              <span class="material-symbols-outlined text-xl">delete</span>
+            </button>
+
+            <div class="flex items-center gap-2">
+              <button data-id="${item.id}" class="minusBtn h-7 w-7 flex items-center justify-center rounded-full bg-beige/60 dark:bg-background-dark/60">-</button>
+              <span>${item.quantity}</span>
+              <button data-id="${item.id}" class="plusBtn h-7 w-7 flex items-center justify-center rounded-full bg-beige/60 dark:bg-background-dark/60">+</button>
+            </div>
+
+          </div>
+        `;
+
+        cartItemsEl.appendChild(div);
+      });
+
+      document.getElementById("subtotal").textContent = subtotal.toFixed(2) + " €";
+      document.getElementById("total").textContent = (subtotal + 5).toFixed(2) + " €";
+
+      enableButtons();
+    }
+
+    function enableButtons() {
+      document.querySelectorAll(".deleteBtn").forEach(btn => {
+        btn.onclick = async () => {
+          await removeFromCart(btn.dataset.id);
+          loadCart();
+        };
+      });
+
+      document.querySelectorAll(".plusBtn").forEach(btn => {
+        btn.onclick = async () => {
+          await updateQuantity(btn.dataset.id, +1);
+          loadCart();
+        };
+      });
+
+      document.querySelectorAll(".minusBtn").forEach(btn => {
+        btn.onclick = async () => {
+          await updateQuantity(btn.dataset.id, -1);
+          loadCart();
+        };
+      });
+    }
+
+    loadCart();
+  </script>
+
+</body>
+</html>
