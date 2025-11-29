@@ -1,33 +1,41 @@
-<!DOCTYPE html>
+modifie sur la page directement "<!DOCTYPE html>
 <html lang="fr" class="light">
-
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-  <title>Le Cercle des Infusions Sacrées | Racines & Rituels</title>
-  <meta name="description"
-    content="Rejoignez le Cercle des Infusions Sacrées – votre abonnement bien-être mensuel ou annuel : plantes, infusions, rituels et énergie douce.">
+  <!-- SEO -->
+  <title>Rituels Bien-être – Khamaré & Hibiscus</title>
+  <meta name="description" content="Découvrez votre rituel bien-être naturel : Khamaré, Hibiscus rouge & blanc, conseils, produits et assistant IA pour vous guider.">
 
+  <!-- Open Graph -->
+  <meta property="og:title" content="Rituels Bien-être – Khamaré & Hibiscus">
+  <meta property="og:description" content="Découvrez votre rituel bien-être naturel : Khamaré, Hibiscus, conseils, produits et assistant IA personnalisé.">
+  <meta property="og:type" content="website">
+
+  <!-- TailwindCSS -->
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;700&display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
 
+  <!-- Polices -->
+  <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;700;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+
+  <!-- Thème Tailwind -->
   <script>
     tailwind.config = {
       darkMode: "class",
       theme: {
         extend: {
           colors: {
-            primary: "#E07A5F",
-            secondary: "#A3B18A",
-            backgroundLight: "#F5F5DC",
-            backgroundDark: "#3D2B1F",
-            textLight: "#582F0E",
-            textDark: "#F5F5DC",
+            primary: "#e64c19",
+            accent: "#e2725b",
+            "background-light": "#f8f6f6",
+            "background-dark": "#211511",
           },
-          fontFamily: { display: ["Epilogue", "sans-serif"] },
-        }
+          fontFamily: {
+            display: ["Epilogue", "sans-serif"],
+          },
+        },
       },
     };
   </script>
@@ -39,177 +47,82 @@
   </style>
 </head>
 
-<body class="bg-backgroundLight dark:bg-backgroundDark text-textLight dark:text-textDark">
+<body class="bg-background-light dark:bg-background-dark text-white">
 
-  <!-- ⭐ HEADER (identique à produits2) -->
-  <header class="fixed top-0 left-0 right-0 z-30 bg-black/40 backdrop-blur-md border-b border-white/10">
-    <nav class="max-w-4xl mx-auto flex items-center justify-between px-4 py-3 text-sm font-medium text-white">
+<header class="fixed top-0 left-0 right-0 z-30 bg-black/40 backdrop-blur-md border-b border-white/10">
+  <nav class="max-w-4xl mx-auto flex items-center justify-between px-4 py-3 text-sm font-medium text-white">
 
-      <a href="index.html" class="text-white font-bold tracking-wide hover:text-primary transition">
-        Racines & Rituels
+    <a href="index.html" class="text-white font-bold tracking-wide hover:text-primary transition">
+      Racines & Rituels
+    </a>
+
+    <div class="hidden md:flex items-center gap-6 text-white">
+      <a href="index.html" class="hover:text-primary transition flex items-center gap-1">
+        <span class="material-symbols-outlined text-base">home</span>Accueil
       </a>
-
-      <div class="hidden md:flex items-center gap-6 text-white">
-        <a href="index.html" class="hover:text-primary transition flex items-center gap-1">
-          <span class="material-symbols-outlined text-base">home</span>Accueil
-        </a>
-
-        <a href="produits.html" class="hover:text-primary transition flex items-center gap-1">
-          <span class="material-symbols-outlined text-base">shopping_bag</span>Produits
-        </a>
-
-        <a href="produits2.html" class="hover:text-primary transition flex items-center gap-1">
-          <span class="material-symbols-outlined text-base">auto_awesome</span>Abonnement
-        </a>
-
-        <a href="conseil.html" class="hover:text-primary transition flex items-center gap-1">
-          <span class="material-symbols-outlined text-base">tips_and_updates</span>Conseils
-        </a>
-
-        <a href="inscription.html" class="hover:text-primary transition flex items-center gap-1">
-          <span class="material-symbols-outlined text-base">person_add</span>S’inscrire
-        </a>
-
-        <a href="connexion.html" class="hover:text-primary transition flex items-center gap-1">
-          <span class="material-symbols-outlined text-base">login</span>Connexion
-        </a>
-      </div>
-
-    </nav>
-  </header>
-
-  <!-- ESPACE SOUS LE MENU -->
-  <div class="pt-28"></div>
-
-  <!-- ⭐ CONTENU PRINCIPAL -->
-  <main class="flex-1 w-full max-w-3xl mx-auto px-4 md:px-8 py-6">
-
-    <!-- ⭐ IMAGE UNIQUE -->
-    <div class="flex justify-center p-2">
-      <img
-        src="https://images.pexels.com/photos/1417945/pexels-photo-1417945.jpeg?auto=compress&cs=tinysrgb&w=900"
-        alt="Infusion bien-être"
-        class="w-full max-w-md rounded-2xl shadow-xl object-cover" />
+      <a href="produits.html" class="hover:text-primary transition flex items-center gap-1">
+        <span class="material-symbols-outlined text-base">shopping_bag</span>Produits
+      </a>
+      <a href="conseil.html" class="hover:text-primary transition flex items-center gap-1">
+        <span class="material-symbols-outlined text-base">tips_and_updates</span>Conseils
+      </a>
+      <a href="inscription.html" class="hover:text-primary transition flex items-center gap-1">
+        <span class="material-symbols-outlined text-base">person_add</span>S’inscrire
+      </a>
+      <a href="connexion.html" class="hover:text-primary transition flex items-center gap-1">
+        <span class="material-symbols-outlined text-base">login</span>Connexion
+      </a>
     </div>
 
-    <!-- Intro -->
-    <section class="py-6 px-2 text-center">
-      <h2 class="text-3xl font-bold mb-1">Le Cercle des Infusions Sacrées</h2>
-      <p class="text-textLight/80 dark:text-textDark/80 max-w-xl mx-auto">
-        Votre rituel bien-être : plantes, infusions, rituels, énergie douce. Sans engagement. Accessible à tous.
-      </p>
-    </section>
+  </nav>
+</header>
 
-    <!-- Description -->
-    <section class="px-4 py-6 space-y-4">
-      <h3 class="text-lg font-bold">Chaque mois, vous recevez :</h3>
+<div class="h-[64px]"></div>
 
-      <ul class="space-y-2">
-        <li>🌿 Une plante mise à l'honneur</li>
-        <li>🍵 Une recette d’infusion exclusive</li>
-        <li>🔬 Une fiche scientifique vulgarisée</li>
-        <li>🧘‍♀️ Un rituel bien-être simple à pratiquer</li>
-        <li>🎧 Un audio d’encouragement</li>
-      </ul>
+<!-- 🌸 IMAGE + TEXTE D'ACCUEIL -->
+<div class="relative min-h-screen flex flex-col items-center justify-center text-center px-6">
 
-      <p class="pt-2 text-textLight/80 dark:text-textDark/80">
-        Un abonnement pensé pour vous apaiser, vous recentrer et prendre soin de vous.
-      </p>
-    </section>
+  <div class="absolute inset-0">
+    <img 
+      src="https://lh3.googleusercontent.com/aida-public/AB6AXuD5W9U2nSfZUz71LHBjhaN09sZDhCvVtO5KWwYiwwswmNDae-uDaMISrCPB8MeHjL9jz58Zkc_SkeHP_x-p7nomH09ZHYAom3Fw8Rjr3HIl3LmDNdZyDyKHv3LqmXFAMzV-coAiXGaiZNeAhB4FJ8bZ2qPO7wOhsnDwn7sTbkHsXF6myEPlQRaPGYkAJYwFNZHQjmeHY9Dovx5eo4mEiaOV7ICv05ELoyjMzbzDqaI2WvU8c7CbrTiRnjZ-0vPRjtDePGUv0jsMGz0e"
+      alt="Tasse de thé à l'hibiscus"
+      class="w-full h-full object-cover"
+    />
+    <div class="absolute inset-0 bg-black/40"></div>
+  </div>
 
-    <!-- Mois 1 -->
-    <section class="px-4 py-6 border-t border-white/10">
-      <h3 class="text-lg font-bold mb-3">✨ Mois 1 : “Immunité & Recentrage”</h3>
+  <main class="relative z-10">
+    <h1 class="text-4xl md:text-6xl font-black mb-4 text-white">
+      Découvre ton rituel bien-être naturel 🌿
+    </h1>
 
-      <ul class="space-y-2">
-        <li>🌺 Plante : <strong>Hibiscus Rouge</strong></li>
-        <li>🍵 Infusion Immunité Rouge</li>
-        <li>🔬 Antioxydants & défenses naturelles</li>
-        <li>🧘 Rituel : La tasse chaude</li>
-        <li>🎧 Audio : Reconnexion & ancrage</li>
-      </ul>
+    <p class="text-lg text-white/90 mb-8">
+      Réponds à quelques questions et laisse notre assistant IA te guider.
+    </p>
 
-      <p class="mt-4 text-sm">Accès immédiat après inscription.</p>
-    </section>
-
-    <!-- ⭐ OFFRES D’ABONNEMENT — 2 COLONNES -->
-    <section class="px-4 py-10">
-      <h3 class="text-2xl font-bold text-center mb-10">Choisissez votre formule</h3>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-        <!-- ⭐ OFFRE ANNUELLE – LE PLUS CHOISI -->
-        <div class="relative bg-white/80 dark:bg-backgroundDark/60 p-6 rounded-2xl shadow-xl border border-primary/40">
-
-          <span
-            class="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-xs font-bold px-3 py-1 rounded-full shadow">
-            Le plus choisi
-          </span>
-
-          <h4 class="text-xl font-bold mb-2">Abonnement Annuel</h4>
-
-          <p class="text-sm text-textLight/70 dark:text-textDark/70 mb-4">
-            Économisez <strong>15€</strong> – soit 2 mois offerts
-          </p>
-
-          <p class="text-3xl font-extrabold text-primary mb-2">69 € / an</p>
-          <p class="text-xs mb-6">Paiement en une fois · Accès immédiat</p>
-
-          <a href="paiement_cercle_annuel.html"
-            class="flex items-center justify-center w-full bg-primary text-white h-14 rounded-xl font-bold hover:bg-primary/90 transition">
-            Choisir l’offre annuelle
-          </a>
-        </div>
-
-        <!-- ⭐ OFFRE MENSUELLE -->
-        <div class="bg-white/60 dark:bg-backgroundDark/40 p-6 rounded-2xl shadow border border-white/20 dark:border-white/10">
-
-          <h4 class="text-xl font-bold mb-2">Abonnement Mensuel</h4>
-
-          <p class="text-sm text-textLight/70 dark:text-textDark/70 mb-4">
-            Sans engagement – parfait pour commencer
-          </p>
-
-          <p class="text-3xl font-extrabold text-primary mb-2">7 € / mois</p>
-          <p class="text-xs mb-6">Paiement chaque mois · Résiliable à tout moment</p>
-
-          <a href="paiement_cercle.html"
-            class="flex items-center justify-center w-full bg-primary text-white h-14 rounded-xl font-bold hover:bg-primary/90 transition">
-            Choisir l’offre mensuelle
-          </a>
-        </div>
-
-      </div>
-    </section>
-
+    <a 
+      href="assistantIA.html"
+      class="rounded-full bg-accent px-8 h-12 inline-flex items-center justify-center text-base font-bold shadow-lg hover:scale-105 transition"
+    >
+      Trouver mon rituel bien-être
+    </a>
   </main>
+</div>
 
-  <!-- ⭐ FOOTER MOBILE -->
-  <footer
-    class="sticky bottom-0 bg-backgroundLight dark:bg-backgroundDark border-t border-white/20 dark:border-white/10 md:hidden">
-    <div class="flex justify-around py-2 text-xs text-textLight dark:text-textDark">
+<!-- 🌿 SECTION TEXTE RACINES & RITUELS -->
+<section id="presentation" class="max-w-3xl mx-auto px-6 py-16 text-center text-black dark:text-white">
+  <h2 class="text-3xl font-bold mb-6">Racines & Rituels</h2>
 
-      <a href="index.html" class="flex flex-col items-center">
-        <span class="material-symbols-outlined text-2xl">home</span>Accueil
-      </a>
+  <p class="text-lg leading-relaxed">
+    Bienvenue sur <strong>Racines & Rituels</strong>, votre boutique dédiée au bien-être intérieur, aux énergies positives et aux petits gestes qui nourrissent l’âme et transforment le quotidien.
+    Nous sélectionnons pour vous des produits naturels, authentiques et chargés de sens, conçus pour vous aider à vous recentrer, à apaiser vos émotions et à retrouver une harmonie profonde.
+  </p>
 
-      <a href="produits.html" class="flex flex-col items-center">
-        <span class="material-symbols-outlined text-2xl">shopping_bag</span>Produits
-      </a>
-
-      <a href="produits2.html" class="flex flex-col items-center">
-        <span class="material-symbols-outlined text-2xl">auto_awesome</span>Abonnement
-      </a>
-
-      <a href="conseil.html" class="flex flex-col items-center">
-        <span class="material-symbols-outlined text-2xl">tips_and_updates</span>Conseils
-      </a>
-
-      <a href="connexion.html" class="flex flex-col items-center">
-        <span class="material-symbols-outlined text-2xl">person</span>Profil
-      </a>
-    </div>
-  </footer>
+  <p class="text-lg leading-relaxed mt-4">
+    Que ce soit pour accompagner vos rituels personnels, purifier votre espace ou créer une ambiance sereine à la maison,
+    chaque article est pensé pour soutenir votre équilibre intérieur et favoriser un sentiment de calme, de clarté et d’ancrage.
+  </p>
+</section>
 
 </body>
-</html>
+</html>"
