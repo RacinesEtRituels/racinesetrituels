@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="fr" class="light">
-<head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Le Cercle des Infusions Sacrées | Racines & Rituels</title>
 
-  <meta name="description" content="Rejoignez le Cercle des Infusions Sacrées – votre abonnement bien-être mensuel ou annuel : plantes, infusions, rituels et énergie douce.">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Le Cercle des Infusions Sacrées | Racines & Rituels</title>
+  <meta name="description"
+    content="Rejoignez le Cercle des Infusions Sacrées – votre abonnement bien-être mensuel ou annuel : plantes, infusions, rituels et énergie douce.">
 
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;700&display=swap" rel="stylesheet"/>
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
 
   <script>
     tailwind.config = {
@@ -24,12 +26,10 @@
             textLight: "#582F0E",
             textDark: "#F5F5DC",
           },
-          fontFamily: {
-            display: ["Epilogue", "sans-serif"],
-          }
+          fontFamily: { display: ["Epilogue", "sans-serif"] },
         }
-      }
-    }
+      },
+    };
   </script>
 
   <style>
@@ -41,15 +41,15 @@
 
 <body class="bg-backgroundLight dark:bg-backgroundDark text-textLight dark:text-textDark">
 
-  <!-- ⭐ HEADER -->
-  <header class="fixed top-0 left-0 right-0 z-30 bg-backgroundLight/80 dark:bg-backgroundDark/80 backdrop-blur-md border-b border-white/20 dark:border-white/10">
-    <nav class="max-w-4xl mx-auto flex items-center justify-between px-4 py-3 text-sm font-medium">
+  <!-- ⭐ HEADER (identique à produits2) -->
+  <header class="fixed top-0 left-0 right-0 z-30 bg-black/40 backdrop-blur-md border-b border-white/10">
+    <nav class="max-w-4xl mx-auto flex items-center justify-between px-4 py-3 text-sm font-medium text-white">
 
-      <a href="index.html" class="font-bold tracking-wide hover:text-primary transition">
+      <a href="index.html" class="text-white font-bold tracking-wide hover:text-primary transition">
         Racines & Rituels
       </a>
 
-      <div class="hidden md:flex items-center gap-6">
+      <div class="hidden md:flex items-center gap-6 text-white">
         <a href="index.html" class="hover:text-primary transition flex items-center gap-1">
           <span class="material-symbols-outlined text-base">home</span>Accueil
         </a>
@@ -78,7 +78,7 @@
     </nav>
   </header>
 
-  <!-- ESPACE POUR LE MENU -->
+  <!-- ESPACE SOUS LE MENU -->
   <div class="pt-28"></div>
 
   <!-- ⭐ CONTENU PRINCIPAL -->
@@ -86,11 +86,10 @@
 
     <!-- ⭐ IMAGE UNIQUE -->
     <div class="flex justify-center p-2">
-      <img 
+      <img
         src="https://images.pexels.com/photos/1417945/pexels-photo-1417945.jpeg?auto=compress&cs=tinysrgb&w=900"
         alt="Infusion bien-être"
-        class="w-full max-w-md rounded-2xl shadow-xl object-cover"
-      />
+        class="w-full max-w-md rounded-2xl shadow-xl object-cover" />
     </div>
 
     <!-- Intro -->
@@ -133,7 +132,7 @@
       <p class="mt-4 text-sm">Accès immédiat après inscription.</p>
     </section>
 
-    <!-- ⭐ OFFRES D’ABONNEMENT — VERSION 2 COLONNES -->
+    <!-- ⭐ OFFRES D’ABONNEMENT — 2 COLONNES -->
     <section class="px-4 py-10">
       <h3 class="text-2xl font-bold text-center mb-10">Choisissez votre formule</h3>
 
@@ -142,7 +141,8 @@
         <!-- ⭐ OFFRE ANNUELLE – LE PLUS CHOISI -->
         <div class="relative bg-white/80 dark:bg-backgroundDark/60 p-6 rounded-2xl shadow-xl border border-primary/40">
 
-          <span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-xs font-bold px-3 py-1 rounded-full shadow">
+          <span
+            class="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-xs font-bold px-3 py-1 rounded-full shadow">
             Le plus choisi
           </span>
 
@@ -185,7 +185,8 @@
   </main>
 
   <!-- ⭐ FOOTER MOBILE -->
-  <footer class="sticky bottom-0 bg-backgroundLight dark:bg-backgroundDark border-t border-white/20 dark:border-white/10 md:hidden">
+  <footer
+    class="sticky bottom-0 bg-backgroundLight dark:bg-backgroundDark border-t border-white/20 dark:border-white/10 md:hidden">
     <div class="flex justify-around py-2 text-xs text-textLight dark:text-textDark">
 
       <a href="index.html" class="flex flex-col items-center">
@@ -207,7 +208,6 @@
       <a href="connexion.html" class="flex flex-col items-center">
         <span class="material-symbols-outlined text-2xl">person</span>Profil
       </a>
-
     </div>
   </footer>
 
