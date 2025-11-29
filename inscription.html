@@ -138,61 +138,59 @@
 
   <!-- SCRIPT SUPABASE -->
   <script type="module">
-    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+  import { supabase } from "./js/supabase.js";
+  import { syncLocalCartToSupabase } from "./js/cart.js";
 
-    const supabase = createClient(
-      "https://tjqaprfpgwmsavjtgoml.supabase.co",
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqYXBxcmZwZ3dtc2F2anRnb21sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMzNzgwMTAsImV4cCI6MjA3ODk1NDAxMH0.lVNkXrzwAaYpm3COxe6zWCQ6y6kz3fjRmZW1FNCy0Lo"
-    );
+  const msg = document.getElementById("message");
 
-    const msg = document.getElementById("message");
+  function showMessage(text, type = "error") {
+    if (!msg) return;
+    msg.textContent = text;
+    msg.classList.remove("hidden");
 
-    function showMessage(text, type="error") {
-      msg.textContent = text;
-      msg.classList.remove("hidden");
+    if (type === "error") {
+      msg.className = "mb-4 p-3 rounded-xl bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300";
+    } else {
+      msg.className = "mb-4 p-3 rounded-xl bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300";
+    }
+  }
 
-      if (type === "error") {
-        msg.className = "mb-4 p-3 rounded-xl bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300";
-      } else {
-        msg.className = "mb-4 p-3 rounded-xl bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300";
-      }
+  document.getElementById("inscriptionBtn").addEventListener("click", async () => {
+    const prenom = document.getElementById("prenom").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+    const password2 = document.getElementById("password2").value.trim();
+
+    if (!prenom || !email || !password) {
+      return showMessage("Merci de remplir tous les champs.");
+    }
+    if (password !== password2) {
+      return showMessage("Les mots de passe ne correspondent pas.");
+    }
+    if (password.length < 6) {
+      return showMessage("Votre mot de passe doit contenir au moins 6 caractères.");
     }
 
-    document.getElementById("inscriptionBtn").addEventListener("click", async () => {
-      const prenom = document.getElementById("prenom").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value.trim();
-      const password2 = document.getElementById("password2").value.trim();
-
-      if (!prenom || !email || !password) {
-        return showMessage("Merci de remplir tous les champs.");
-      }
-
-      if (password !== password2) {
-        return showMessage("Les mots de passe ne correspondent pas.");
-      }
-
-      if (password.length < 6) {
-        return showMessage("Votre mot de passe doit contenir au moins 6 caractères.");
-      }
-
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: { data: { prenom } }
-      });
-
-      if (error) {
-        return showMessage("Erreur : " + error.message);
-      }
-
-      showMessage("Compte créé ! Vérifiez votre e-mail pour confirmer votre inscription.", "success");
-
-      setTimeout(() => {
-        window.location.href = "connexion.html";
-      }, 2000);
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { prenom } }
     });
-  </script>
+
+    if (error) {
+      return showMessage("Erreur : " + error.message);
+    }
+
+    // Si Supabase crée une session immédiatement, on fusionne le panier visiteur
+    await syncLocalCartToSupabase();
+
+    showMessage("Compte créé ! Vérifiez votre e-mail pour confirmer votre inscription.", "success");
+    setTimeout(() => {
+      window.location.href = "connexion.html";
+    }, 2000);
+  });
+</script>
+
 
 </body>
 </html>
