@@ -41,82 +41,145 @@
 </head>
 
 <body class="bg-backgroundLight dark:bg-backgroundDark text-textLight dark:text-textDark">
-  <div class="relative flex flex-col min-h-screen overflow-x-hidden">
 
-    <!-- Header -->
-    <header class="flex items-center justify-between p-4 sticky top-0 z-20 bg-backgroundLight dark:bg-backgroundDark border-b border-white/20 dark:border-white/10 backdrop-blur-md">
-      <a href="produits.html" class="flex size-12 items-center justify-center hover:opacity-80 transition">
-        <span class="material-symbols-outlined text-2xl">arrow_back</span>
+  <!-- ⭐ HEADER / MENU GLOBAL -->
+  <header class="fixed top-0 left-0 right-0 z-30 bg-backgroundLight/80 dark:bg-backgroundDark/80 backdrop-blur-md border-b border-white/20 dark:border-white/10">
+    <nav class="max-w-4xl mx-auto flex items-center justify-between px-4 py-3 text-sm font-medium">
+
+      <!-- Logo -->
+      <a href="index.html" class="font-bold tracking-wide hover:text-primary transition">
+        Racines & Rituels
       </a>
-      <h1 class="text-lg font-bold flex-1 text-center">Le Cercle des Infusions Sacrées</h1>
-      <span class="flex size-12 items-center justify-center"></span>
-    </header>
 
-    <!-- Main -->
-    <main class="flex-1 w-full max-w-3xl mx-auto px-4 md:px-8 py-6">
+      <!-- MENU DESKTOP -->
+      <div class="hidden md:flex items-center gap-6">
+        <a href="index.html" class="hover:text-primary transition flex items-center gap-1">
+          <span class="material-symbols-outlined text-base">home</span>Accueil
+        </a>
 
-      <!-- Galerie -->
-      <div class="flex overflow-x-auto gap-4 snap-x snap-mandatory p-2 scroll-smooth">
-        <img src="https://images.unsplash.com/photo-1502740438-59ddac4ef7f9?auto=format&fit=crop&w=400&q=80"
-             alt="Infusion bien-être"
-             class="min-w-[280px] md:min-w-[360px] aspect-square object-cover rounded-xl shadow-md snap-center"/>
-        <img src="https://images.unsplash.com/photo-1524594081293-190a2fe0baae?auto=format&fit=crop&w=400&q=80"
-             alt="Plantes naturelles"
-             class="min-w-[280px] md:min-w-[360px] aspect-square object-cover rounded-xl shadow-md snap-center"/>
-        <img src="https://images.unsplash.com/photo-1586201375761-83865001e31b?auto=format&fit=crop&w=400&q=80"
-             alt="Rituel bien-être"
-             class="min-w-[280px] md:min-w-[360px] aspect-square object-cover rounded-xl shadow-md snap-center"/>
+        <a href="produits.html" class="hover:text-primary transition flex items-center gap-1">
+          <span class="material-symbols-outlined text-base">shopping_bag</span>Produits
+        </a>
+
+        <a href="produits2.html" class="hover:text-primary transition flex items-center gap-1">
+          <span class="material-symbols-outlined text-base">auto_awesome</span>Abonnement
+        </a>
+
+        <a href="conseil.html" class="hover:text-primary transition flex items-center gap-1">
+          <span class="material-symbols-outlined text-base">tips_and_updates</span>Conseils
+        </a>
+
+        <a href="inscription.html" class="hover:text-primary transition flex items-center gap-1">
+          <span class="material-symbols-outlined text-base">person_add</span>S’inscrire
+        </a>
+
+        <a href="connexion.html" class="hover:text-primary transition flex items-center gap-1">
+          <span class="material-symbols-outlined text-base">login</span>Connexion
+        </a>
       </div>
 
-      <!-- Intro -->
-      <section class="py-6 px-2">
-        <h2 class="text-3xl font-bold mb-1">Le Cercle des Infusions Sacrées</h2>
-        <p class="text-textLight/80 dark:text-textDark/80">Votre rituel mensuel bien-être : plantes, infusions, rituels et énergie douce. Sans engagement.</p>
-      </section>
+    </nav>
+  </header>
 
-      <!-- Description -->
-      <section class="px-4 py-6 space-y-4">
-        <h3 class="text-lg font-bold">Ce que vous recevez chaque mois</h3>
+  <div class="h-[72px]"></div>
 
-        <ul class="space-y-2">
-          <li>🌿 Une plante mise à l'honneur</li>
-          <li>🍵 Une recette d’infusion exclusive</li>
-          <li>🔬 Une fiche scientifique vulgarisée</li>
-          <li>🧘‍♀️ Un rituel bien-être simple à pratiquer</li>
-          <li>🎧 Un petit audio d’encouragement</li>
-        </ul>
+  <!-- ⭐ MAIN -->
+  <main class="flex-1 w-full max-w-3xl mx-auto px-4 md:px-8 py-6">
 
-        <p class="pt-2 text-textLight/80 dark:text-textDark/80">Un abonnement pensé pour vous aider à prendre soin de vous, sans pression, à votre rythme.</p>
-      </section>
+    <!-- Galerie -->
+    <div class="flex overflow-x-auto gap-4 snap-x snap-mandatory p-2 scroll-smooth">
+      <img src="https://images.unsplash.com/photo-1502740438-59ddac4ef7f9?auto=format&fit=crop&w=400&q=80"
+           alt="Infusion bien-être"
+           class="min-w-[280px] md:min-w-[360px] aspect-square object-cover rounded-xl shadow-md snap-center"/>
+      <img src="https://images.unsplash.com/photo-1524594081293-190a2fe0baae?auto=format&fit=crop&w=400&q=80"
+           alt="Plantes naturelles"
+           class="min-w-[280px] md:min-w-[360px] aspect-square object-cover rounded-xl shadow-md snap-center"/>
+      <img src="https://images.unsplash.com/photo-1586201375761-83865001e31b?auto=format&fit=crop&w=400&q=80"
+           alt="Rituel bien-être"
+           class="min-w-[280px] md:min-w-[360px] aspect-square object-cover rounded-xl shadow-md snap-center"/>
+    </div>
 
-      <!-- Mois 1 -->
-      <section class="px-4 py-6 border-t border-white/10">
-        <h3 class="text-lg font-bold mb-3">✨ Contenu du mois 1 : “Immunité & Recentrage”</h3>
+    <!-- Intro -->
+    <section class="py-6 px-2">
+      <h2 class="text-3xl font-bold mb-1">Le Cercle des Infusions Sacrées</h2>
+      <p class="text-textLight/80 dark:text-textDark/80">
+        Votre rituel mensuel bien-être : plantes, infusions, rituels et énergie douce. Sans engagement.
+      </p>
+    </section>
 
-        <ul class="space-y-2">
-          <li>🌺 Plante du mois : <strong>Hibiscus Rouge</strong></li>
-          <li>🍵 Recette : Infusion Immunité Rouge</li>
-          <li>🔬 Fiche scientifique : antioxydants & défenses naturelles</li>
-          <li>🧘 Rituel : Le rituel de la tasse chaude</li>
-          <li>🎧 Audio du mois : message de reconnexion</li>
-        </ul>
+    <!-- Description -->
+    <section class="px-4 py-6 space-y-4">
+      <h3 class="text-lg font-bold">Ce que vous recevez chaque mois</h3>
 
-        <p class="mt-4 text-sm">Contenu accessible immédiatement après inscription.</p>
-      </section>
+      <ul class="space-y-2">
+        <li>🌿 Une plante mise à l'honneur</li>
+        <li>🍵 Une recette d’infusion exclusive</li>
+        <li>🔬 Une fiche scientifique vulgarisée</li>
+        <li>🧘‍♀️ Un rituel bien-être simple à pratiquer</li>
+        <li>🎧 Un petit audio d’encouragement</li>
+      </ul>
 
-      <!-- Achat -->
-      <section class="sticky bottom-20 bg-backgroundLight dark:bg-backgroundDark p-4 border-t border-white/10">
-        <div class="flex items-center justify-between mb-4">
-          <p class="text-2xl font-bold text-primary">7,00€ / mois</p>
-          <p class="font-semibold text-sm">Sans engagement</p>
-        </div>
+      <p class="pt-2 text-textLight/80 dark:text-textDark/80">
+        Un abonnement pensé pour vous aider à prendre soin de vous, sans pression, à votre rythme.
+      </p>
+    </section>
 
-        <a href="paiement_cercle.html" class="block text-center bg-primary text-white h-14 rounded-xl font-bold hover:bg-primary/90 transition">
-          Rejoindre le Cercle
-        </a>
-      </section>
+    <!-- Mois 1 -->
+    <section class="px-4 py-6 border-t border-white/10">
+      <h3 class="text-lg font-bold mb-3">✨ Contenu du mois 1 : “Immunité & Recentrage”</h3>
 
-    </main>
+      <ul class="space-y-2">
+        <li>🌺 Plante du mois : <strong>Hibiscus Rouge</strong></li>
+        <li>🍵 Recette : Infusion Immunité Rouge</li>
+        <li>🔬 Fiche scientifique : antioxydants & défenses naturelles</li>
+        <li>🧘 Rituel : Le rituel de la tasse chaude</li>
+        <li>🎧 Audio du mois : message de reconnexion</li>
+      </ul>
 
-    <!-- Footer -->
-    <footer class="sticky bottom-0 bg-backgroundLi
+      <p class="mt-4 text-sm">Contenu accessible immédiatement après inscription.</p>
+    </section>
+
+    <!-- Achat -->
+    <section class="sticky bottom-20 bg-backgroundLight dark:bg-backgroundDark p-4 border-t border-white/10">
+      <div class="flex items-center justify-between mb-4">
+        <p class="text-2xl font-bold text-primary">7,00€ / mois</p>
+        <p class="font-semibold text-sm">Sans engagement</p>
+      </div>
+
+      <a href="paiement_cercle.html"
+         class="block text-center bg-primary text-white h-14 rounded-xl font-bold hover:bg-primary/90 transition">
+        Rejoindre le Cercle
+      </a>
+    </section>
+
+  </main>
+
+  <!-- ⭐ FOOTER MOBILE -->
+  <footer class="sticky bottom-0 bg-backgroundLight dark:bg-backgroundDark border-t border-white/20 dark:border-white/10 md:hidden">
+    <div class="flex justify-around py-2 text-xs text-textLight dark:text-textDark">
+
+      <a href="index.html" class="flex flex-col items-center">
+        <span class="material-symbols-outlined text-2xl">home</span>Accueil
+      </a>
+
+      <a href="produits.html" class="flex flex-col items-center">
+        <span class="material-symbols-outlined text-2xl">shopping_bag</span>Produits
+      </a>
+
+      <a href="produits2.html" class="flex flex-col items-center">
+        <span class="material-symbols-outlined text-2xl">auto_awesome</span>Abonnement
+      </a>
+
+      <a href="conseil.html" class="flex flex-col items-center">
+        <span class="material-symbols-outlined text-2xl">tips_and_updates</span>Conseils
+      </a>
+
+      <a href="connexion.html" class="flex flex-col items-center">
+        <span class="material-symbols-outlined text-2xl">person</span>Profil
+      </a>
+
+    </div>
+  </footer>
+
+</body>
+</html>
