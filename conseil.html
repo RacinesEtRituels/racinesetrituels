@@ -57,42 +57,54 @@
 
 <body class="bg-background-light dark:bg-background-dark text-gray-800 dark:text-white">
 
-  <!-- 🌿 MENU HAUT ÉLÉGANT -->
-  <header class="fixed top-0 left-0 right-0 z-30 bg-background-light/70 dark:bg-background-dark/70 backdrop-blur-md border-b border-gray-300/30 dark:border-gray-700/30">
-    <nav class="max-w-4xl mx-auto flex items-center justify-between px-4 py-3 text-sm font-medium">
+  <!-- 🌿 MENU HAUT (UNIFORMISÉ + ABONNEMENT) -->
+  <header class="fixed top-0 left-0 right-0 z-30 bg-black/40 backdrop-blur-md border-b border-white/10">
+    <nav class="max-w-4xl mx-auto flex items-center justify-between px-4 py-3 text-sm font-medium text-white">
 
       <!-- Logo -->
-      <a href="index.html" class="text-primary font-bold tracking-wide hover:opacity-75 transition">
+      <a href="index.html" class="text-white font-bold tracking-wide hover:text-primary transition">
         Racines & Rituels
       </a>
 
       <!-- Liens -->
-      <div class="flex items-center gap-6 text-gray-700 dark:text-gray-300">
+      <div class="hidden md:flex items-center gap-6 text-white">
+        
         <a href="index.html" class="hover:text-primary transition flex items-center gap-1">
           <span class="material-symbols-outlined text-base">home</span>Accueil
         </a>
+
         <a href="produits.html" class="hover:text-primary transition flex items-center gap-1">
           <span class="material-symbols-outlined text-base">shopping_bag</span>Produits
         </a>
+
+        <!-- ⭐ NOUVEAU : ABONNEMENT -->
+        <a href="produits2.html" class="hover:text-primary transition flex items-center gap-1">
+          <span class="material-symbols-outlined text-base">auto_awesome</span>Abonnement
+        </a>
+        <!-- ⭐ FIN AJOUT -->
+
         <a href="conseil.html" class="text-primary flex items-center gap-1">
           <span class="material-symbols-outlined text-base">tips_and_updates</span>Conseils
         </a>
+
         <a href="inscription.html" class="hover:text-primary transition flex items-center gap-1">
           <span class="material-symbols-outlined text-base">person_add</span>S'inscrire
         </a>
+
         <a href="connexion.html" class="hover:text-primary transition flex items-center gap-1">
           <span class="material-symbols-outlined text-base">login</span>Connexion
         </a>
       </div>
+
     </nav>
   </header>
 
-  <!-- Décalage pour que le contenu ne passe pas sous le menu -->
+  <!-- Décalage pour ne pas passer sous le menu -->
   <div class="h-[64px]"></div>
 
+  <!-- CONTENU CENTRAL -->
   <div class="min-h-screen flex flex-col">
 
-    <!-- CONTENU CENTRAL -->
     <main class="flex-1 p-4 max-w-2xl w-full mx-auto space-y-6">
 
       <!-- Section d'intro -->
@@ -156,6 +168,6 @@
     </main>
 
   </div>
+
 </body>
 </html>
-
