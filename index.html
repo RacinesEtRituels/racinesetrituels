@@ -40,51 +40,15 @@
       font-family: 'Epilogue', sans-serif;
     }
   </style>
-</head>
+  </head>
 
-<body class="bg-background-light dark:bg-background-dark text-white">
+  <body class="bg-background-light dark:bg-background-dark text-white">
 
-<header class="fixed top-0 left-0 right-0 z-30 bg-black/40 backdrop-blur-md border-b border-white/10">
-  <nav class="max-w-4xl mx-auto flex items-center justify-between px-4 py-3 text-sm font-medium text-white">
+  <div id="site-header"></div>
 
-    <a href="index.html" class="text-white font-bold tracking-wide hover:text-primary transition">
-      Racines & Rituels
-    </a>
+  <div class="h-[64px]"></div>
 
-    <div class="hidden md:flex items-center gap-6 text-white">
-      <a href="index.html" class="hover:text-primary transition flex items-center gap-1">
-        <span class="material-symbols-outlined text-base">home</span>Accueil
-      </a>
-
-      <a href="produits.html" class="hover:text-primary transition flex items-center gap-1">
-        <span class="material-symbols-outlined text-base">shopping_bag</span>Produits
-      </a>
-
-      <!-- ⭐ BOUTON ABONNEMENT AJOUTÉ -->
-      <a href="produits2.html" class="hover:text-primary transition flex items-center gap-1">
-        <span class="material-symbols-outlined text-base">auto_awesome</span>Abonnement
-      </a>
-      <!-- ⭐ FIN AJOUT -->
-
-      <a href="conseil.html" class="hover:text-primary transition flex items-center gap-1">
-        <span class="material-symbols-outlined text-base">tips_and_updates</span>Conseils
-      </a>
-
-      <a href="inscription.html" class="hover:text-primary transition flex items-center gap-1">
-        <span class="material-symbols-outlined text-base">person_add</span>S’inscrire
-      </a>
-
-      <a href="connexion.html" class="hover:text-primary transition flex items-center gap-1">
-        <span class="material-symbols-outlined text-base">login</span>Connexion
-      </a>
-    </div>
-
-  </nav>
-</header>
-
-<div class="h-[64px]"></div>
-
-<div class="relative min-h-screen flex flex-col items-center justify-center text-center px-6">
+  <div class="relative min-h-screen flex flex-col items-center justify-center text-center px-6">
 
   <div class="absolute inset-0">
     <img 
@@ -124,6 +88,8 @@
     Que ce soit pour accompagner vos rituels personnels, purifier votre espace ou créer une ambiance sereine, chaque article est pensé pour soutenir votre équilibre intérieur.
   </p>
 </section>
+
+<script type="module" src="js/header-loader.js"></script>
 
 </body>
 </html>
