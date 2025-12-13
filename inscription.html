@@ -48,39 +48,7 @@
 
 <body class="bg-background-light dark:bg-background-dark text-gray-900 dark:text-white">
 
-  <!-- MENU -->
-  <header class="fixed top-0 left-0 right-0 z-30 bg-black/40 backdrop-blur-md border-b border-white/10">
-    <nav class="max-w-4xl mx-auto flex items-center justify-between px-4 py-3 text-sm font-medium text-white">
-      <a href="index.html" class="text-white font-bold hover:text-primary transition">Racines & Rituels</a>
-
-      <div class="hidden md:flex items-center gap-6">
-
-        <a href="index.html" class="hover:text-primary transition flex items-center gap-1">
-          <span class="material-symbols-outlined">home</span>Accueil
-        </a>
-
-        <a href="produits.html" class="hover:text-primary transition flex items-center gap-1">
-          <span class="material-symbols-outlined">shopping_bag</span>Produits
-        </a>
-
-        <a href="produits2.html" class="hover:text-primary transition flex items-center gap-1">
-          <span class="material-symbols-outlined">auto_awesome</span>Abonnement
-        </a>
-
-        <a href="conseil.html" class="hover:text-primary transition flex items-center gap-1">
-          <span class="material-symbols-outlined">tips_and_updates</span>Conseils
-        </a>
-
-        <a href="inscription.html" class="text-primary flex items-center gap-1">
-          <span class="material-symbols-outlined">person_add</span>S'inscrire
-        </a>
-
-        <a href="connexion.html" class="hover:text-primary transition flex items-center gap-1">
-          <span class="material-symbols-outlined">login</span>Connexion
-        </a>
-      </div>
-    </nav>
-  </header>
+  <div id="site-header"></div>
 
   <!-- ESPACE -->
   <div class="h-[72px]"></div>
@@ -189,8 +157,10 @@
       window.location.href = "connexion.html";
     }, 2000);
   });
+
 </script>
 
+<script type="module" src="js/header-loader.js"></script>
 
 </body>
 </html>
