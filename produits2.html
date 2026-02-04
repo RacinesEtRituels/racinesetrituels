@@ -10,27 +10,10 @@
     content="Rejoignez le Cercle des Infusions Sacrées – votre abonnement bien-être mensuel ou annuel : plantes, infusions, rituels et énergie douce.">
 
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script src="js/tailwind-cdn-config.js"></script>
+  <script src="/js/config.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;700&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
-
-  <script>
-    tailwind.config = {
-      darkMode: "class",
-      theme: {
-        extend: {
-          colors: {
-            primary: "#E07A5F",
-            secondary: "#A3B18A",
-            backgroundLight: "#F5F5DC",
-            backgroundDark: "#3D2B1F",
-            textLight: "#582F0E",
-            textDark: "#F5F5DC",
-          },
-          fontFamily: { display: ["Epilogue", "sans-serif"] },
-        }
-      },
-    };
-  </script>
 
   <style>
     <script type="module">
@@ -57,38 +40,7 @@
   <!-- ⭐ CONTENU PRINCIPAL -->
   <main class="flex-1 w-full max-w-3xl mx-auto px-4 md:px-8 py-6">
 
-    <!-- ⭐ IMAGE UNIQUE -->
-    <div class="flex justify-center p-2">
-      <img
-        src="https://images.pexels.com/photos/1417945/pexels-photo-1417945.jpeg?auto=compress&cs=tinysrgb&w=900"
-        alt="Infusion bien-être"
-        class="w-full max-w-md rounded-2xl shadow-xl object-cover" />
-    </div>
 
-    <!-- Intro -->
-    <section class="py-6 px-2 text-center">
-      <h2 class="text-3xl font-bold mb-1">Le Cercle des Infusions Sacrées</h2>
-      <p class="text-textLight/80 dark:text-textDark/80 max-w-xl mx-auto">
-        Votre rituel bien-être : plantes, infusions, rituels, énergie douce. Sans engagement. Accessible à tous.
-      </p>
-    </section>
-
-    <!-- Description -->
-    <section class="px-4 py-6 space-y-4">
-      <h3 class="text-lg font-bold">Chaque mois, vous recevez :</h3>
-
-      <ul class="space-y-2">
-        <li>🌿 Une plante mise à l'honneur</li>
-        <li>🍵 Une recette d’infusion exclusive</li>
-        <li>🔬 Une fiche scientifique vulgarisée</li>
-        <li>🧘‍♀️ Un rituel bien-être simple à pratiquer</li>
-        <li>🎧 Un audio d’encouragement</li>
-      </ul>
-
-      <p class="pt-2 text-textLight/80 dark:text-textDark/80">
-        Un abonnement pensé pour vous apaiser, vous recentrer et prendre soin de vous.
-      </p>
-    </section>
 
     <!-- Mois 1 -->
     <section class="px-4 py-6 border-t border-white/10">
@@ -129,9 +81,10 @@
           <p class="text-xs mb-6">Paiement en une fois · Accès immédiat</p>
 
           <a href="paiement_cercle_annuel.html"
-            class="flex items-center justify-center w-full bg-primary text-white h-14 rounded-xl font-bold hover:bg-primary/90 transition">
-            Choisir l’offre annuelle
+            class="flex items-center justify-center w-full bg-primary text-white h-14 rounded-xl font-bold hover:bg-primary/90 transition mb-3">
+            Choisir l'offre annuelle
           </a>
+          <button data-product-id="cercle_annuel" data-name="Cercle - Annuel" data-price="69.00" class="add-to-cart flex items-center justify-center w-full h-12 rounded-xl bg-primary/80 text-white font-bold hover:bg-primary/90 transition">Ajouter au panier</button>
         </div>
 
         <!-- ⭐ OFFRE MENSUELLE -->
@@ -147,9 +100,10 @@
           <p class="text-xs mb-6">Paiement chaque mois · Résiliable à tout moment</p>
 
           <a href="paiement_cercle.html"
-            class="flex items-center justify-center w-full bg-primary text-white h-14 rounded-xl font-bold hover:bg-primary/90 transition">
-            Choisir l’offre mensuelle
+            class="flex items-center justify-center w-full bg-primary text-white h-14 rounded-xl font-bold hover:bg-primary/90 transition mb-3">
+            Choisir l'offre mensuelle
           </a>
+          <button data-product-id="cercle_mensuel" data-name="Cercle - Mensuel" data-price="7.00" class="add-to-cart flex items-center justify-center w-full h-12 rounded-xl bg-primary/80 text-white font-bold hover:bg-primary/90 transition">Ajouter au panier</button>
         </div>
 
       </div>
@@ -184,7 +138,57 @@
     </div>
   </footer>
 
+  <div id="site-footer"></div>
+
   <script type="module" src="js/header-loader.js"></script>
+  <script type="module" src="js/footer-loader.js"></script>
+
+  <script type="module">
+    import { addItem, getTotals } from './js/cart.js';
+
+    function showToast(message = 'Ajouté au panier') {
+      const t = document.createElement('div');
+      t.className = 'fixed bottom-6 right-6 bg-black/80 text-white px-4 py-2 rounded-lg text-sm z-50';
+      t.textContent = message;
+      document.body.appendChild(t);
+      setTimeout(() => t.remove(), 1800);
+    }
+
+    async function updateBadge() {
+      try {
+        const totals = await getTotals();
+        const badge = document.getElementById('cart-count');
+        if (badge) badge.textContent = totals.count || 0;
+      } catch (e) {}
+    }
+
+    document.querySelectorAll('.add-to-cart').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const product = {
+          id: btn.dataset.productId,
+          name: btn.dataset.name,
+          price: Number(btn.dataset.price || 0),
+          image: btn.dataset.image || '',
+          qty: 1
+        };
+        try {
+          await addItem(product);
+          showToast('Ajouté au panier');
+          updateBadge();
+        } catch (err) {
+          console.error('[cart] addItem failed', err);
+          alert('Produit introuvable. Merci de réessayer ou de contacter le support.');
+        }
+      });
+    });
+
+    window.addEventListener('rr-cart-updated', (e) => {
+      const badge = document.getElementById('cart-count');
+      if (badge) badge.textContent = e.detail.count || 0;
+    });
+
+    updateBadge();
+  </script>
 
 </body>
 </html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin — Orders</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" />
+</head>
+<body>
+  <main class="container">
+    <h1>Commandes</h1>
+    <p>Liste des commandes (triées par date de création décroissante).</p>
+    <label>
+      X-Admin-Token
+      <input type="password" id="adminToken" placeholder="Optionnel en dev" />
+    </label>
+    <button id="refresh">Rafraîchir</button>
+    <p id="error" style="color:#c00"></p>
+    <table id="table" role="grid">
+      <thead>
+        <tr>
+          <th>id</th>
+          <th>status</th>
+          <th>total_cents</th>
+          <th>created_at</th>
+          <th>paid_at</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </main>
+  <script>
+    const backend = window.BACKEND_URL || window.__BACKEND_URL || (window.__ENV__ && window.__ENV__.BACKEND_URL) || 'http://127.0.0.1:3000';
+    const errorEl = document.getElementById('error');
+    const tbody = document.querySelector('#table tbody');
+
+    async function load() {
+      errorEl.textContent = '';
+      tbody.innerHTML = '';
+      const headers = {};
+      const token = document.getElementById('adminToken').value;
+      if (token) headers['X-Admin-Token'] = token;
+      try {
+        const res = await fetch(`${backend}/admin/orders`, { headers });
+        if (!res.ok) {
+          const text = await res.text();
+          throw new Error(`Fetch failed (${res.status}): ${text}`);
+        }
+        const data = await res.json();
+        (data.orders || []).forEach((o) => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${o.id}</td>
+            <td>${o.status}</td>
+            <td>${o.total_cents ?? ''}</td>
+            <td>${o.created_at ?? ''}</td>
+            <td>${o.paid_at ?? ''}</td>`;
+          tbody.appendChild(tr);
+        });
+      } catch (err) {
+        errorEl.textContent = err.message || err;
+      }
+    }
+
+    document.getElementById('refresh').addEventListener('click', load);
+    load();
+  </script>
+</body>
+</html>

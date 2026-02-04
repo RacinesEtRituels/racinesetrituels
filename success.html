@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Commande – Racines & Rituels</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" />
+  <style>
+    body { background: #f7f7f7; }
+    main.container { max-width: 720px; margin-top: 48px; }
+    .card { background: #fff; border: 1px solid #e5e5e5; border-radius: 12px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+    .status { display: flex; align-items: center; gap: 10px; }
+    .dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+    .dot.success { background: #2fa36b; }
+    .dot.pending { background: #f6a700; }
+    .dot.error { background: #d64545; }
+    .loader { width: 16px; height: 16px; border: 3px solid #d9d9d9; border-top-color: #111; border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .muted { color: #666; font-size: 0.95rem; }
+    #details dl { display: grid; grid-template-columns: 140px 1fr; row-gap: 8px; column-gap: 12px; margin: 0; }
+    #details dt { font-weight: 600; }
+    #details dd { margin: 0; }
+    #actions { margin-top: 16px; display: flex; gap: 12px; flex-wrap: wrap; }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <h1>Statut de votre commande</h1>
+
+    <article class="card">
+      <div id="status" class="status">
+        <span class="loader" aria-hidden="true"></span>
+        <span id="status-text">Paiement en cours de validation...</span>
+      </div>
+      <p id="message" class="muted" style="margin-top: 6px;">Nous récupérons les informations Stripe et votre commande.</p>
+
+      <section id="details" style="display:none; margin-top: 16px;">
+        <dl>
+          <dt>Session</dt><dd id="session-id">—</dd>
+          <dt>Commande</dt><dd id="order-id">—</dd>
+          <dt>Montant</dt><dd id="amount">—</dd>
+          <dt>Email</dt><dd id="email">—</dd>
+          <dt>Statut</dt><dd id="order-status">—</dd>
+          <dt>Paiement</dt><dd id="payment-status">—</dd>
+          <dt>Payé le</dt><dd id="paid-at">—</dd>
+        </dl>
+      </section>
+
+      <p id="error" style="color:#d64545; margin-top: 14px; display:none;"></p>
+
+      <div id="actions">
+        <button id="retry" class="secondary" style="display:none;">Rafraîchir</button>
+        <a id="back" class="contrast" href="/" role="button">Retour à la boutique</a>
+      </div>
+    </article>
+  </main>
+  <script src="/js/config.js"></script>
+  <script type="module" src="/js/success.js"></script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+[BOOT] NODE_ENV = development
+[BOOT] STRIPE_SECRET_KEY loaded: true
+[BOOT] SUPABASE configured: true
+[BOOT] SITE_URL: http://localhost:8000
+[BOOT] PORT: 3000
+[BOOT] MAIL: { host: '127.0.0.1', port: 0, secure: false }
+[BOOT] MAIL autodetected: true (source=docker)
+[BOOT] Debug routes registered: /health, /debug/supabase, /debug/stripe-session/:id
+[BOOT] SUPABASE_URL present: true
+[BOOT] SUPABASE key present: true
+[BOOT] debug routes enabled
+[BOOT] SUPABASE_URL: http://127.0.0.1:54321
+[BOOT] SUPABASE_KEY type: service_role
+[BOOT] CORS allowed origins: http://localhost:8000,http://127.0.0.1:8000,http://localhost
+[BOOT] CORS enabled for POST /create-checkout-session
+[DEBUG] /debug/product-sample registered
+🚀 Backend running on http://localhost:3000
+{"level":"info","type":"request_end","path":"/health","method":"GET","status":200,"latency_ms":8,"correlation_id":"e1fb9465-a485-4d92-bb55-f9fe8b8c328e","origin":null}

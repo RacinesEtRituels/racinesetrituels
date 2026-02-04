@@ -11,31 +11,11 @@
 
   <!-- TailwindCSS -->
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script src="js/tailwind-cdn-config.js"></script>
 
   <!-- Polices -->
   <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;700&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
-
-  <!-- Thème -->
-  <script>
-    tailwind.config = {
-      darkMode: "class",
-      theme: {
-        extend: {
-          colors: {
-            primary: "#e64c19",
-            "background-light": "#f8f6f6",
-            "background-dark": "#211511",
-            "beige-light": "#F5F5DC",
-            terracotta: "#E2725B"
-          },
-          fontFamily: {
-            display: ["Epilogue", "sans-serif"]
-          }
-        }
-      }
-    }
-  </script>
 
   <style>
     body {
@@ -79,47 +59,13 @@
       </div>
     </main>
 
-    <!-- Footer (inchangé) -->
-    <footer class="sticky bottom-0 w-full bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm border-t border-gray-200 dark:border-gray-700">
-
-      <!-- Mobile -->
-      <div class="flex justify-around py-2 md:hidden text-gray-600 dark:text-gray-300 text-xs font-medium">
-        <a href="index.html" class="flex flex-col items-center">
-          <span class="material-symbols-outlined text-2xl">home</span>Accueil
-        </a>
-        <a href="produits.html" class="flex flex-col items-center">
-          <span class="material-symbols-outlined text-2xl">local_mall</span>Produits
-        </a>
-        <a href="assistantIA.html" class="flex flex-col items-center">
-          <span class="material-symbols-outlined text-2xl">psychology</span>Assistant
-        </a>
-        <a href="panier.html" class="flex flex-col items-center">
-          <span class="material-symbols-outlined text-2xl">shopping_cart</span>Panier
-        </a>
-        <a href="connexion.html" class="flex flex-col items-center hover:text-primary transition">
-          <span class="material-symbols-outlined text-2xl">person</span>Profil
-        </a>
-      </div>
-
-      <!-- Desktop -->
-      <div class="hidden md:grid md:grid-cols-5 lg:grid-cols-10 gap-2 py-3 text-center text-gray-600 dark:text-gray-400 text-sm font-medium">
-        <a href="index.html" class="flex flex-col items-center"><span class="material-symbols-outlined">home</span>Accueil</a>
-        <a href="produits.html" class="flex flex-col items-center"><span class="material-symbols-outlined">local_mall</span>Produits</a>
-        <a href="produits2.html" class="flex flex-col items-center"><span class="material-symbols-outlined">storefront</span>Abonnement</a>
-        <a href="assistantIA.html" class="flex flex-col items-center"><span class="material-symbols-outlined">psychology</span>Assistant</a>
-        <a href="conseil.html" class="flex flex-col items-center"><span class="material-symbols-outlined">tips_and_updates</span>Conseil</a>
-        <a href="panier.html" class="flex flex-col items-center"><span class="material-symbols-outlined">shopping_cart</span>Panier</a>
-        <a href="connexion.html" class="flex flex-col items-center"><span class="material-symbols-outlined">person</span>Connexion</a>
-        <a href="inscription.html" class="flex flex-col items-center"><span class="material-symbols-outlined">person_add</span>Inscription</a>
-        <a href="recupmotdepass.html" class="flex flex-col items-center"><span class="material-symbols-outlined">lock_reset</span>Mot de passe</a>
-        <a href="confreinimotPass.html" class="flex flex-col items-center text-primary"><span class="material-symbols-outlined">check_circle</span>Confirmation</a>
-      </div>
-
-    </footer>
+    <div id="site-footer"></div>
 
   </div>
 
+  <script src="/js/config.js"></script>
   <script type="module" src="js/header-loader.js"></script>
+  <script type="module" src="js/footer-loader.js"></script>
 
 </body>
 </html>

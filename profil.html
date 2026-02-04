@@ -7,6 +7,7 @@
   <title>Mon Profil - Racines & Rituels</title>
 
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script src="js/tailwind-cdn-config.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;700&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
 
@@ -22,9 +23,6 @@
   <div class="h-[70px]"></div>
 
   <!-- CONTENU -->
-  <div id="site-header"></div>
-
-  <div class="h-[70px]"></div>
   <main class="max-w-xl mx-auto p-4 space-y-8">
 
     <h1 class="text-3xl font-bold text-center">Mon Profil</h1>
@@ -120,6 +118,7 @@
   </main>
 
   <!-- SCRIPT -->
+  <script src="/js/config.js"></script>
   <script type="module">
     import { supabase } from "./supabase.js";
 
@@ -139,7 +138,6 @@
     }
     loadAvatar();
 
-      <script type="module" src="js/header-loader.js"></script>
     document.getElementById("avatarUpload").addEventListener("change", async (e) => {
       const file = e.target.files[0];
       if (!file) return;
@@ -237,6 +235,11 @@
     });
 
   </script>
+
+  <script type="module" src="js/header-loader.js"></script>
+
+  <div id="site-footer"></div>
+  <script type="module" src="js/footer-loader.js"></script>
 
 </body>
 </html>

@@ -23,32 +23,11 @@
 
   <!-- TailwindCSS -->
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script src="js/tailwind-cdn-config.js"></script>
 
   <!-- Polices -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;600;700&display=swap"/>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"/>
-
-  <!-- Thème -->
-  <script>
-    tailwind.config = {
-      darkMode: "class",
-      theme: {
-        extend: {
-          colors: {
-            primary: "#E07A5F",
-            "background-light": "#F5F5DC",
-            "background-dark": "#211511",
-            "text-light": "#3D405B",
-            "text-dark": "#F4F1DE",
-            accent: "#8FBC8F"
-          },
-          fontFamily: {
-            display: ["Epilogue", "sans-serif"]
-          }
-        }
-      }
-    }
-  </script>
 
   <style>
     body {
@@ -76,7 +55,7 @@
 
     <!-- DESCRIPTION -->
     <section class="text-center mb-8">
-      <h2 class="text-[32px] font-bold text-primary">Khamaré</h2>
+      <h2 class="text-[32px] font-bold text-primary" data-testid="product-title">Khamaré</h2>
       <p class="mt-3 text-base leading-relaxed">
         Le Khamaré, ou vétiver, est une plante traditionnelle reconnue pour ses propriétés purifiantes et apaisantes.  
         Utilisé depuis des générations, il accompagne naturellement le bien-être féminin.
@@ -126,10 +105,18 @@
 
     <!-- BOUTON PANIER -->
     <section class="py-6">
+      <div class="flex items-center justify-between mb-4">
+        <span class="text-xl font-bold text-primary" id="productPrice" data-testid="product-price"></span>
+      </div>
+
       <button 
         id="addToCartBtn"
-        data-product-id="khamare_10tiges"
-        class="flex items-center justify-center w-full h-14 rounded-full bg-primary text-white text-lg font-bold shadow-lg hover:bg-primary/90 transition">
+        data-product-id="encens-rituel"
+        data-name="Encens rituel"
+        data-price="7.00"
+        data-image="https://lh3.googleusercontent.com/aida-public/AB6AXuAgtq9a_iB5ErWpgi1ziSBthK8DUHoEwzFbfHNu8dhSRaTNDVwonoCdCluAPVoAIoVrNuzip3Cc0EttfkcX5NVNmdxlvWFrZLC48tTQdmuCTkiFxAwP5W6lHx2-nMYc_ML7_eDCvzIdZ7V_rVy7oIXZqsPyeKRsxrR6KfGTpv6SuBOLD-OmgvCRv2bBs63jrHesz3Nw1RfSYAcu2zpPB68i6UNhDgfDquIMkdF-tgkPODne5-NBAejIMV8jDu9eiNbCTTMDY0Iznek3"
+        class="flex items-center justify-center w-full h-14 rounded-full bg-primary text-white text-lg font-bold shadow-lg hover:bg-primary/90 transition"
+        data-testid="add-to-cart">
         Ajouter au panier
       </button>
     </section>
@@ -137,25 +124,152 @@
   </main>
 
   <!-- SCRIPT : PANIER + SUPABASE -->
+  <script src="/js/config.js"></script>
   <script type="module">
-    import { addToCart } from "./js/cart.js";
+    import { addItem, getTotals } from "./js/cart.js";
+    import { supabaseFetch } from "/js/supabase-public.js";
 
     const btn = document.getElementById("addToCartBtn");
+    const priceEl = document.getElementById("productPrice");
+    let fetchedProduct = null;
 
-    btn.addEventListener("click", async () => {
-      const productId = btn.dataset.productId;
+    async function fetchProduct() {
+      try {
+        btn.disabled = true;
+        btn.textContent = "Chargement...";
 
-      const result = await addToCart(productId, 1);
+        const productSlug = (btn.dataset.productId || "").trim();
+        const productName = (btn.dataset.name || "").trim();
 
-      if (result.source === "local") {
-        alert("Produit ajouté au panier (mode invité). Connectez-vous pour le sauvegarder.");
-      } else {
-        alert("Produit ajouté à votre panier !");
+        const slugCandidates = [productSlug, "encens-rituel", "khamare-10-tiges", "khamare_10tiges"].filter(Boolean);
+        const nameCandidates = [productName, "Encens rituel", "Khamare", "Khamaré"].filter(Boolean);
+
+        let data = [];
+
+        // 1) Try slug candidates
+        for (const slug of slugCandidates) {
+          const urlSlug = `/rest/v1/products?slug=eq.${encodeURIComponent(slug)}&select=id,name,price_cents,slug`;
+          const respSlug = await supabaseFetch(urlSlug);
+          if (!respSlug.ok) {
+            console.error("[SUPABASE] status", respSlug.status, await respSlug.text());
+            continue;
+          }
+          const d = await respSlug.json();
+          if (Array.isArray(d) && d.length) {
+            data = d;
+            break;
+          }
+        }
+
+        // 2) Fallback by name ilike %name%
+        if ((!data || data.length === 0) && nameCandidates.length) {
+          for (const nm of nameCandidates) {
+            const encodedName = encodeURIComponent(`%${nm}%`);
+            const urlName = `/rest/v1/products?name=ilike.${encodedName}&select=id,name,price_cents,slug`;
+            const respName = await supabaseFetch(urlName);
+            if (!respName.ok) {
+              console.error("[SUPABASE] status", respName.status, await respName.text());
+              continue;
+            }
+            const dataName = await respName.json();
+            if (Array.isArray(dataName) && dataName.length) {
+              data = dataName;
+              break;
+            }
+          }
+        }
+
+        fetchedProduct = Array.isArray(data) && data.length ? data[0] : null;
+
+        if (!fetchedProduct) {
+          if (window.location.hostname === "127.0.0.1") {
+            console.error("[product] not found", { slugCandidates, nameCandidates });
+          }
+          alert("Produit introuvable. Merci de réessayer ou de contacter le support.");
+          btn.disabled = true;
+          btn.textContent = "Indisponible";
+          return;
+        }
+
+        if (window.location.hostname === "127.0.0.1") {
+          console.log("[product] loaded", fetchedProduct);
+        }
+
+        if (priceEl && typeof fetchedProduct.price_cents === "number") {
+          const priceValue = (Number(fetchedProduct.price_cents) / 100).toFixed(2);
+          priceEl.textContent = `${priceValue} €`;
+        }
+
+        btn.disabled = false;
+        btn.textContent = "Ajouter au panier";
+      } catch (err) {
+        console.error("[product] fetch error", err);
+        alert("Produit introuvable. Merci de réessayer ou de contacter le support.");
+        btn.disabled = true;
+        btn.textContent = "Indisponible";
+      }
+    }
+
+    function showToast(message = 'Ajouté au panier') {
+      const t = document.createElement('div');
+      t.className = 'fixed bottom-6 right-6 bg-black/80 text-white px-4 py-2 rounded-lg text-sm z-50';
+      t.textContent = message;
+      document.body.appendChild(t);
+      setTimeout(() => t.remove(), 1800);
+    }
+
+    async function updateBadge() {
+      try {
+        const totals = await getTotals();
+        const badge = document.getElementById('cart-count');
+        if (badge) badge.textContent = totals.count || 0;
+      } catch (e) {
+        // ignore
+      }
+    }
+
+    btn.addEventListener('click', async () => {
+      if (!fetchedProduct) {
+        alert('Produit introuvable. Merci de réessayer ou de contacter le support.');
+        return;
+      }
+
+      const product = {
+        id: fetchedProduct.id,
+        name: fetchedProduct.name,
+        price: Number(fetchedProduct.price_cents || 0) / 100,
+        price_cents: Number(fetchedProduct.price_cents || 0),
+        image: btn.dataset.image || '',
+        qty: 1
+      };
+
+      try {
+        await addItem(product);
+        showToast('Ajouté au panier');
+        updateBadge();
+      } catch (err) {
+        console.error('[cart] addItem failed', err);
+        alert('Produit introuvable. Merci de réessayer ou de contacter le support.');
       }
     });
-  </script>
-        <script type="module" src="js/header-loader.js"></script>
 
+    // initial fetch
+    fetchProduct();
+
+    // update badge on cart changes
+    window.addEventListener('rr-cart-updated', (e) => {
+      const badge = document.getElementById('cart-count');
+      if (badge) badge.textContent = e.detail.count || 0;
+    });
+
+    // initial badge fill
+    updateBadge();
+  </script>
+
+  <script type="module" src="js/header-loader.js"></script>
+
+  <div id="site-footer"></div>
+  <script type="module" src="js/footer-loader.js"></script>
 
 </body>
 </html>

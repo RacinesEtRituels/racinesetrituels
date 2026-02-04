@@ -1,0 +1,48 @@
+Checking for new versions...
+
+Getting ready...
+Ready! You are using Stripe API Version [2025-11-17.clover]. Your webhook signing secret is whsec_a1f382e2fc09424091258048df045b9ed0fda28295703c6a969716721ab28a7a (^C to quit)
+2025-12-28 14:25:14   --> charge.succeeded [evt_3SjJy9DvfXeYABFQ0IhO4Lmv]
+2025-12-28 14:25:14  <--  [200] POST http://localhost:3000/webhook/stripe [evt_3SjJy9DvfXeYABFQ0IhO4Lmv]
+2025-12-28 14:25:14   --> payment_intent.succeeded [evt_3SjJy9DvfXeYABFQ0H7IlUiF]
+2025-12-28 14:25:14  <--  [200] POST http://localhost:3000/webhook/stripe [evt_3SjJy9DvfXeYABFQ0H7IlUiF]
+2025-12-28 14:25:14   --> payment_intent.created [evt_3SjJy9DvfXeYABFQ02oCf8Rq]
+2025-12-28 14:25:14  <--  [200] POST http://localhost:3000/webhook/stripe [evt_3SjJy9DvfXeYABFQ02oCf8Rq]
+2025-12-28 14:25:14   --> checkout.session.completed [evt_1SjJyADvfXeYABFQ7NKRKuOd]
+2025-12-28 14:25:14  <--  [200] POST http://localhost:3000/webhook/stripe [evt_1SjJyADvfXeYABFQ7NKRKuOd]
+2025-12-28 14:25:16   --> charge.updated [evt_3SjJy9DvfXeYABFQ0I9rnkA2]
+2025-12-28 14:25:16  <--  [200] POST http://localhost:3000/webhook/stripe [evt_3SjJy9DvfXeYABFQ0I9rnkA2]
+2025-12-28 14:27:05   --> product.created [evt_1SjJzxDvfXeYABFQlMk2B4C5]
+2025-12-28 14:27:05  <--  [200] POST http://localhost:3000/webhook/stripe [evt_1SjJzxDvfXeYABFQlMk2B4C5]
+2025-12-28 14:27:05   --> price.created [evt_1SjJzxDvfXeYABFQajbmYDM8]
+2025-12-28 14:27:05  <--  [200] POST http://localhost:3000/webhook/stripe [evt_1SjJzxDvfXeYABFQajbmYDM8]
+2025-12-28 14:27:09   --> charge.succeeded [evt_3SjJzzDvfXeYABFQ1RI8H0rw]
+2025-12-28 14:27:09  <--  [200] POST http://localhost:3000/webhook/stripe [evt_3SjJzzDvfXeYABFQ1RI8H0rw]
+2025-12-28 14:27:09   --> checkout.session.completed [evt_1SjK01DvfXeYABFQ0dBttnTV]
+2025-12-28 14:27:09   --> payment_intent.succeeded [evt_3SjJzzDvfXeYABFQ12JMsrBO]
+2025-12-28 14:27:09  <--  [200] POST http://localhost:3000/webhook/stripe [evt_3SjJzzDvfXeYABFQ12JMsrBO]
+2025-12-28 14:27:09  <--  [200] POST http://localhost:3000/webhook/stripe [evt_1SjK01DvfXeYABFQ0dBttnTV]
+2025-12-28 14:27:09   --> payment_intent.created [evt_3SjJzzDvfXeYABFQ1G44zAXm]
+2025-12-28 14:27:09  <--  [200] POST http://localhost:3000/webhook/stripe [evt_3SjJzzDvfXeYABFQ1G44zAXm]
+2025-12-28 14:27:11   --> charge.updated [evt_3SjJzzDvfXeYABFQ1TUZqXUe]
+2025-12-28 14:27:11  <--  [200] POST http://localhost:3000/webhook/stripe [evt_3SjJzzDvfXeYABFQ1TUZqXUe]
+Session expired, reconnecting...
+Ready! You are using Stripe API Version [2025-11-17.clover]. Your webhook signing secret is whsec_a1f382e2fc09424091258048df045b9ed0fda28295703c6a969716721ab28a7a (^C to quit)
+Session expired, reconnecting...
+Ready! You are using Stripe API Version [2025-11-17.clover]. Your webhook signing secret is whsec_a1f382e2fc09424091258048df045b9ed0fda28295703c6a969716721ab28a7a (^C to quit)
+Session expired, reconnecting...
+Ready! You are using Stripe API Version [2025-11-17.clover]. Your webhook signing secret is whsec_a1f382e2fc09424091258048df045b9ed0fda28295703c6a969716721ab28a7a (^C to quit)
+Session expired, reconnecting...
+Ready! You are using Stripe API Version [2025-11-17.clover]. Your webhook signing secret is whsec_a1f382e2fc09424091258048df045b9ed0fda28295703c6a969716721ab28a7a (^C to quit)
+Session expired, reconnecting...
+Ready! You are using Stripe API Version [2025-11-17.clover]. Your webhook signing secret is whsec_a1f382e2fc09424091258048df045b9ed0fda28295703c6a969716721ab28a7a (^C to quit)
+2025-12-28 18:58:54   --> charge.succeeded [evt_3SjOEzDvfXeYABFQ14QLJ18j]
+2025-12-28 18:58:54  <--  [200] POST http://localhost:3000/webhook/stripe [evt_3SjOEzDvfXeYABFQ14QLJ18j]
+2025-12-28 18:58:54   --> payment_intent.succeeded [evt_3SjOEzDvfXeYABFQ18FUXdGD]
+2025-12-28 18:58:54  <--  [200] POST http://localhost:3000/webhook/stripe [evt_3SjOEzDvfXeYABFQ18FUXdGD]
+2025-12-28 18:58:54   --> payment_intent.created [evt_3SjOEzDvfXeYABFQ1U1IeZvw]
+2025-12-28 18:58:54  <--  [200] POST http://localhost:3000/webhook/stripe [evt_3SjOEzDvfXeYABFQ1U1IeZvw]
+2025-12-28 18:58:54   --> checkout.session.completed [evt_1SjOF0DvfXeYABFQPlCzJ3wQ]
+2025-12-28 18:58:54  <--  [200] POST http://localhost:3000/webhook/stripe [evt_1SjOF0DvfXeYABFQPlCzJ3wQ]
+2025-12-28 18:58:57   --> charge.updated [evt_3SjOEzDvfXeYABFQ1e4lT7Gq]
+2025-12-28 18:58:57  <--  [200] POST http://localhost:3000/webhook/stripe [evt_3SjOEzDvfXeYABFQ1e4lT7Gq]

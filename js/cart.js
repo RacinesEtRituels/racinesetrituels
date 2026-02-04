@@ -1,113 +1,276 @@
+"use strict";
+
 import { supabase } from "./supabase.js";
 
-/* 🧪 Vérifie si l’utilisateur est connecté */
-export async function getUser() {
-  const { data } = await supabase.auth.getUser();
-  return data?.user || null;
+// Cart implementation using localStorage only (key: rr_cart)
+const STORAGE_KEY = "rr_cart";
+const IS_DEV = window.location.hostname === "127.0.0.1";
+
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+export function isUUID(str) {
+  return typeof str === "string" && UUID_REGEX.test(str.trim());
 }
 
+const productCache = new Map();
 
-/* 📥 Récupérer le panier (supabase si connecté, localStorage sinon) */
-export async function getCart() {
-  const user = await getUser();
-
-  if (!user) {
-    // Panier invité
-    return JSON.parse(localStorage.getItem("cart") || "[]");
-  }
-
-  // Panier connecté → Supabase
-  const { data } = await supabase.from("cart").select("*").eq("user_id", user.id);
-  return data || [];
-}
-
-
-/* ➕ Ajouter au panier */
-export async function addToCart(product) {
-  const user = await getUser();
-
-  if (!user) {
-    // invité → localStorage
-    let cart = JSON.parse(localStorage.getItem("cart") || "[]");
-
-    const item = cart.find(i => i.id === product.id);
-    if (item) item.quantity++;
-    else cart.push({ ...product, quantity: 1 });
-
-    localStorage.setItem("cart", JSON.stringify(cart));
-    return;
-  }
-
-  // utilisateur connecté → Supabase
-  const { data: existing } = await supabase
-    .from("cart")
-    .select("*")
-    .eq("user_id", user.id)
-    .eq("product_id", product.id)
-    .maybeSingle();
-
-  if (existing) {
-    await supabase
-      .from("cart")
-      .update({ quantity: existing.quantity + 1 })
-      .eq("id", existing.id);
-  } else {
-    await supabase.from("cart").insert({
-      user_id: user.id,
-      product_id: product.id,
-      name: product.name,
-      price: product.price,
-      image: product.image,
-      quantity: 1
-    });
+function readCart() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (e) {
+    console.error('rr_cart read error', e);
+    return [];
   }
 }
 
+function writeCart(cart) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(cart));
+    // dispatch an update event with totals
+    const totals = getTotalsSync(cart);
+    window.dispatchEvent(new CustomEvent('rr-cart-updated', { detail: totals }));
+  } catch (e) {
+    console.error('rr_cart write error', e);
+  }
+}
 
-/* ➖ Modifier quantité */
-export async function updateQuantity(id, diff) {
-  const user = await getUser();
+function getTotalsSync(cart) {
+  const subtotal = cart.reduce((s, it) => s + (Number(it.price || 0) * Number(it.qty || 0)), 0);
+  const count = cart.reduce((c, it) => c + Number(it.qty || 0), 0);
+  return { subtotal, total: subtotal, count };
+}
 
-  if (!user) {
-    // invité
-    let cart = JSON.parse(localStorage.getItem("cart") || "[]");
-    const item = cart.find(i => i.id == id);
+function normalize(item) {
+  // ensure schema: { id, name, price, image?, qty }
+  return {
+    id: String(item.id),
+    name: item.name || String(item.id),
+    price: Number(item.price || 0),
+    image: item.image || '',
+    qty: Number(item.qty || item.quantity || 1),
+  };
+}
 
-    if (!item) return;
+async function fetchProductByKey(key, fallbackName = null) {
+  const value = (key || "").toString().trim();
+  if (!value || !supabase) return null;
 
-    item.quantity += diff;
-    if (item.quantity <= 0) {
-      cart = cart.filter(i => i.id != id);
+  // Cache to avoid multiple calls when cart contains duplicates
+  if (productCache.has(value)) return productCache.get(value);
+
+  const slugified = value
+    .toLowerCase()
+    .replace(/_/g, "-")
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9-]/g, "-");
+
+  const slugCandidates = [value, value.toLowerCase(), value.replace(/_/g, "-"), slugified]
+    .filter(Boolean)
+    .filter((v, idx, arr) => arr.indexOf(v) === idx);
+
+  let record = null;
+  try {
+    for (const slug of slugCandidates) {
+      const { data, error } = await supabase
+        .from("products")
+        .select("id, name, price_cents, slug")
+        .eq("slug", slug)
+        .maybeSingle();
+
+      if (error) {
+        if (IS_DEV) console.error("[cart] slug lookup error", error.message || error);
+      }
+
+      if (data) {
+        record = data;
+        break;
+      }
     }
 
-    localStorage.setItem("cart", JSON.stringify(cart));
-    return;
+    if (!record && fallbackName) {
+      const { data, error } = await supabase
+        .from("products")
+        .select("id, name, price_cents, slug")
+        .ilike("name", `%${fallbackName}%`)
+        .maybeSingle();
+
+      if (error && IS_DEV) console.error("[cart] name lookup error", error.message || error);
+      if (data) record = data;
+    }
+  } catch (e) {
+    if (IS_DEV) console.error("[cart] fetchProductByKey unexpected", e);
   }
 
-  // connecté
-  const { data } = await supabase.from("cart").select("*").eq("id", id).maybeSingle();
-  if (!data) return;
+  if (record) productCache.set(value, record);
+  return record;
+}
 
-  const newQty = data.quantity + diff;
+async function ensureProductHasUuid(product) {
+  if (!product) throw new Error("product is required");
 
-  if (newQty <= 0) {
-    await supabase.from("cart").delete().eq("id", id);
+  const base = { ...product };
+  if (isUUID(base.id)) return base;
+
+  const found = await fetchProductByKey(base.id || base.slug || "", base.name || null);
+
+  if (!found) {
+    throw new Error("Produit introuvable, veuillez le retirer du panier ou réessayer");
+  }
+
+  return {
+    ...base,
+    id: found.id,
+    name: base.name || found.name,
+    price: base.price || (Number(found.price_cents) / 100) || 0,
+  };
+}
+
+export async function normalizeCartIds(cartInput = null) {
+  const cart = Array.isArray(cartInput) ? cartInput : readCart();
+  const updated = [];
+  const invalidItems = [];
+  let changed = false;
+
+  for (const it of cart) {
+    const clone = { ...it };
+    clone.qty = Number(clone.qty ?? clone.quantity ?? 1);
+
+    if (!isUUID(clone.id)) {
+      const found = await fetchProductByKey(clone.id || clone.slug || "", clone.name || null);
+      if (found) {
+        clone.id = found.id;
+        if (!clone.name) clone.name = found.name;
+        if (!clone.price && Number.isFinite(found.price_cents)) clone.price = Number(found.price_cents) / 100;
+        changed = true;
+      } else {
+        clone._invalid = true;
+        invalidItems.push(clone);
+      }
+    }
+    updated.push(clone);
+  }
+
+  if (changed) {
+    writeCart(updated);
+  }
+
+  return { cart: updated.map((i) => ({ ...i, quantity: i.quantity ?? i.qty })), invalidItems, changed };
+}
+
+export async function addToCart(product, qty = 1) {
+  // product can be object or id
+  const cart = readCart();
+  let item = null;
+  if (typeof product === "object") {
+    const resolved = product._skipResolve ? product : await ensureProductHasUuid(product);
+    item = normalize(resolved);
   } else {
-    await supabase.from("cart").update({ quantity: newQty }).eq("id", id);
-  }
-}
-
-
-/* 🗑️ Supprimer */
-export async function removeFromCart(id) {
-  const user = await getUser();
-
-  if (!user) {
-    let cart = JSON.parse(localStorage.getItem("cart") || "[]");
-    cart = cart.filter(i => i.id != id);
-    localStorage.setItem("cart", JSON.stringify(cart));
-    return;
+    const resolved = await ensureProductHasUuid({ id: product, qty });
+    item = normalize(resolved);
   }
 
-  await supabase.from("cart").delete().eq("id", id);
+  const idx = cart.findIndex((i) => i.id === item.id);
+  if (idx >= 0) {
+    cart[idx].qty = Number(cart[idx].qty || 0) + Number(item.qty || 1);
+  } else {
+    cart.push(item);
+  }
+
+  writeCart(cart);
+  return { source: "local", cart };
 }
+
+// Shared helper: ensure product shape then add to cart
+export async function addItem(product) {
+  if (!product || typeof product !== "object") {
+    throw new Error("addItem requires a product object");
+  }
+
+  const resolved = await ensureProductHasUuid(product);
+
+  // ensure required fields and defaults
+  const p = {
+    id: String(resolved.id),
+    name: resolved.name || String(resolved.id),
+    price: Number(resolved.price || 0),
+    image: resolved.image || resolved.img || "",
+    qty: Number(resolved.qty || resolved.quantity || 1),
+    _skipResolve: true,
+  };
+  return addToCart(p);
+}
+
+export async function removeFromCart(productId) {
+  const cart = readCart();
+  const newCart = cart.filter(i => i.id !== String(productId));
+  writeCart(newCart);
+  return newCart;
+}
+
+export async function updateQty(productId, qty) {
+  const cart = readCart();
+  const idx = cart.findIndex(i => i.id === String(productId));
+  if (idx >= 0) {
+    cart[idx].qty = Number(qty);
+    if (cart[idx].qty <= 0) cart.splice(idx, 1);
+    writeCart(cart);
+  }
+  return cart;
+}
+
+export async function updateQuantity(productId, delta) {
+  const cart = readCart();
+  const idx = cart.findIndex(i => i.id === String(productId));
+  if (idx >= 0) {
+    cart[idx].qty = Number(cart[idx].qty || 0) + Number(delta || 0);
+    if (cart[idx].qty <= 0) cart.splice(idx, 1);
+    writeCart(cart);
+  }
+  return cart;
+}
+
+export async function getCart() {
+  const { cart } = await normalizeCartIds();
+  // return items with compatibility field 'quantity'
+  return cart.map((i) => ({ ...i, quantity: i.qty ?? i.quantity }));
+}
+
+export async function getTotals() {
+  const cart = readCart();
+  return getTotalsSync(cart);
+}
+
+export async function clearCart() {
+  localStorage.removeItem(STORAGE_KEY);
+  window.dispatchEvent(new CustomEvent('rr-cart-updated', { detail: { subtotal: 0, total: 0, count: 0 } }));
+  return [];
+}
+
+export function getCartCount() {
+  const cart = readCart();
+  return cart.reduce((c, it) => c + Number(it.qty || 0), 0);
+}
+
+export function saveCart(cart) {
+  writeCart(cart);
+  return cart;
+}
+
+// attach to window for non-module use
+window.rrCart = {
+  addToCart,
+  addItem,
+  removeFromCart,
+  updateQty,
+  updateQuantity,
+  getCart,
+  getTotals,
+  getCartCount,
+  saveCart,
+  clearCart,
+  normalizeCartIds,
+  isUUID,
+};

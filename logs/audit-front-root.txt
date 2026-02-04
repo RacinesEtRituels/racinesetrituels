@@ -1,0 +1,93 @@
+SUMMARY:
+Port 8000: listener detected.
+Served config.js status: 200.
+Served key: sb_publishable_XXXX
+Local key: sb_publishable_XXXX
+Keys match: true
+
+OBSERVATIONS:
+pwd: /Users/alexandreboehler/Documents/racines&rituels site/racinesetrituels
+node process.cwd(): /Users/alexandreboehler/Documents/racines&rituels site/racinesetrituels
+git root: /Users/alexandreboehler/Documents/racines&rituels site/racinesetrituels
+Port 8000 listeners: present
+PID 31853 cmd=node servedPath=(unknown)
+GET / -> status 200
+GET /js/config.js -> status 200
+Served config.js first lines:
+// Frontend runtime configuration (example). Copy to js/config.js and set your anon key.
+window.__ENV__ = {
+  SUPABASE_URL: "http://127.0.0.1:54321",
+  SUPABASE_ANON_KEY: "sb_publishable_XXXX",
+};
+HEAD /js/config.js headers: {"accept-ranges":"bytes","cache-control":"no-cache, no-store, must-revalidate","connection":"close","content-length":"197","content-type":"application/javascript; charset=UTF-8","date":"Fri, 26 Dec 2025 23:46:33 GMT","etag":"W/\"9735955-197-2025-12-26T20:13:53.651Z\"","last-modified":"Fri, 26 Dec 2025 20:13:53 GMT"}
+Local js/config.js preview:
+// Frontend runtime configuration (example). Copy to js/config.js and set your anon key.
+window.__ENV__ = {
+  SUPABASE_URL: "http://127.0.0.1:54321",
+  SUPABASE_ANON_KEY: "sb_publishable_XXXX",
+};
+
+config.js files (<= depth 5):
+./js/config.js
+./node_modules/dotenv/config.js
+./node_modules/playwright/lib/common/config.js
+Occurrences of sb_publishable_XXXX:
+./js/config.js:4:  SUPABASE_ANON_KEY: "sb_publishable_XXXX",
+./js/supabase-public.js:17:  if (!anonKey || anonKey === "<REPLACE_WITH_SUPABASE_ANON_KEY>" || anonKey === "sb_publishable_XXXX") {
+./js/config.example.js:4:  SUPABASE_ANON_KEY: "sb_publishable_XXXX",
+./tests/config-runtime.test.mjs:12:const PLACEHOLDER = 'sb_publishable_XXXX';
+./tests/config-runtime.test.mjs:22:  assert.ok(!body.includes(PLACEHOLDER), 'js/config.js still contains placeholder sb_publishable_XXXX');
+./tests/ui-products.spec.js:81:    if (cfgBody.includes('sb_publishable_XXXX')) {
+./tests/config-served.test.mjs:17:  assert.match(body, /sb_publishable_XXXX/, 'Example must keep placeholder');
+./tests/config-served.test.mjs:26:  assert.ok(!body.includes('sb_publishable_XXXX'), 'js/config.js still contains placeholder sb_publishable_XXXX');
+./tests/frontend-env.test.mjs:28:    () => validateEnv({ SUPABASE_URL: 'http://127.0.0.1:54321', SUPABASE_ANON_KEY: 'sb_publishable_XXXX' }),
+./README.md:11:2. Éditer `js/config.js` et remplacer `sb_publishable_XXXX` par votre clé **anon/publishable** Supabase (jamais `service_role`). Cette clé est un JWT (commence par `eyJ`, comporte 3 parties séparées par des points). Les clés `sb_` (Stripe) sont invalides côté Supabase.
+./README.md:21:doit retourner votre clé anon (pas `sb_publishable_XXXX`).
+./scripts/audit-frontend.mjs:112:  const grepPlaceholder = await run("grep -R \"sb_publishable_XXXX\" -n .");
+./scripts/audit-frontend.mjs:114:  const grepOverwrite1 = await run("grep -R \"sb_publishable_XXXX\" -n scripts/ js/ server/");
+./scripts/audit-frontend.mjs:156:  if (grepPlaceholder.stdout) observations.push(`Occurrences of sb_publishable_XXXX:\n${grepPlaceholder.stdout}`);
+./scripts/audit-frontend.mjs:168:    if (configResp.body.includes("sb_publishable_XXXX") && typeof localConfig === "string" && localConfig.includes("eyJ")) {
+./scripts/audit-frontend.mjs:170:      hypothesis = `Le serveur sur 8000 sert un autre répertoire (${servedPath}); config.js servi contient sb_publishable_XXXX alors que js/config.js local contient un JWT.`;
+./scripts/audit-frontend.mjs:186:    fix = `Relancer http-server en pointant vers ${sp || "la racine du repo"} et remplacer sb_publishable_XXXX par la clé JWT via npm run fix:config.`;
+./scripts/check-served-config.js:11:const PLACEHOLDER = "sb_publishable_XXXX";
+./scripts/check-served-config.js:70:    fail(`sb_publishable_XXXX detected. Run npm run fix:config and restart the frontend.`);
+./scripts/fix-config.js:9:const PLACEHOLDER = "sb_publishable_XXXX";
+Occurrences of SUPABASE_ANON_KEY in js/:
+js/config.js:4:  SUPABASE_ANON_KEY: "sb_publishable_XXXX",
+js/supabase-public.js:11:  const anonKey = (env && env.SUPABASE_ANON_KEY || "").trim();
+js/supabase-public.js:17:  if (!anonKey || anonKey === "<REPLACE_WITH_SUPABASE_ANON_KEY>" || anonKey === "sb_publishable_XXXX") {
+js/supabase-public.js:18:    throw new Error("Missing SUPABASE_ANON_KEY. Ensure /js/config.js is loaded before modules.");
+js/supabase-public.js:29:    throw new Error("SUPABASE_ANON_KEY must be a JWT (eyJ.....eyJ... with 3 parts).");
+js/supabase-public.js:43:  const { url: SUPABASE_URL, anonKey: SUPABASE_ANON_KEY } = getEnv();
+js/supabase-public.js:51:  if (SUPABASE_ANON_KEY) {
+js/supabase-public.js:52:    baseHeaders.apikey = SUPABASE_ANON_KEY;
+js/supabase-public.js:53:    baseHeaders.Authorization = `Bearer ${SUPABASE_ANON_KEY}`;
+js/config.example.js:4:  SUPABASE_ANON_KEY: "sb_publishable_XXXX",
+Served config.js content matches: ./js/config.js
+Placeholder in scripts/js/server: 
+scripts/audit-frontend.mjs:112:  const grepPlaceholder = await run("grep -R \"sb_publishable_XXXX\" -n .");
+scripts/audit-frontend.mjs:114:  const grepOverwrite1 = await run("grep -R \"sb_publishable_XXXX\" -n scripts/ js/ server/");
+scripts/audit-frontend.mjs:156:  if (grepPlaceholder.stdout) observations.push(`Occurrences of sb_publishable_XXXX:\n${grepPlaceholder.stdout}`);
+scripts/audit-frontend.mjs:168:    if (configResp.body.includes("sb_publishable_XXXX") && typeof localConfig === "string" && localConfig.includes("eyJ")) {
+scripts/audit-frontend.mjs:170:      hypothesis = `Le serveur sur 8000 sert un autre répertoire (${servedPath}); config.js servi contient sb_publishable_XXXX alors que js/config.js local contient un JWT.`;
+scripts/audit-frontend.mjs:186:    fix = `Relancer http-server en pointant vers ${sp || "la racine du repo"} et remplacer sb_publishable_XXXX par la clé JWT via npm run fix:config.`;
+scripts/check-served-config.js:11:const PLACEHOLDER = "sb_publishable_XXXX";
+scripts/check-served-config.js:70:    fail(`sb_publishable_XXXX detected. Run npm run fix:config and restart the frontend.`);
+scripts/fix-config.js:9:const PLACEHOLDER = "sb_publishable_XXXX";
+js/config.js:4:  SUPABASE_ANON_KEY: "sb_publishable_XXXX",
+js/supabase-public.js:17:  if (!anonKey || anonKey === "<REPLACE_WITH_SUPABASE_ANON_KEY>" || anonKey === "sb_publishable_XXXX") {
+js/config.example.js:4:  SUPABASE_ANON_KEY: "sb_publishable_XXXX",
+writeFileSync hits: 
+./scripts/audit-frontend.mjs:115:  const grepOverwrite2 = await run("grep -R \"writeFileSync(.*config.js\" -n .");
+cp config example hits: 
+scripts/audit-frontend.mjs:116:  const grepOverwrite3 = await run("grep -R \"cp .*config.example.js .*config.js\" -n scripts/ package.json");
+
+PROBABLE_CAUSE:
+Le serveur sert bien js/config.js local (pas d'écart détecté).
+
+RECOMMENDED_FIX:
+Aligner le répertoire servi par http-server avec la racine contenant produits.html et js/config.js, relancer npm run dev:front, puis vérifier curl /js/config.js retourne le JWT.
+
+RAW_HTTP_HEADERS:
+GET /js/config.js headers: {"accept-ranges":"bytes","cache-control":"no-cache, no-store, must-revalidate","connection":"keep-alive","content-length":"197","content-type":"application/javascript; charset=UTF-8","date":"Fri, 26 Dec 2025 23:46:33 GMT","etag":"W/\"9735955-197-2025-12-26T20:13:53.651Z\"","keep-alive":"timeout=5","last-modified":"Fri, 26 Dec 2025 20:13:53 GMT"}
+HEAD /js/config.js headers: {"accept-ranges":"bytes","cache-control":"no-cache, no-store, must-revalidate","connection":"close","content-length":"197","content-type":"application/javascript; charset=UTF-8","date":"Fri, 26 Dec 2025 23:46:33 GMT","etag":"W/\"9735955-197-2025-12-26T20:13:53.651Z\"","last-modified":"Fri, 26 Dec 2025 20:13:53 GMT"}

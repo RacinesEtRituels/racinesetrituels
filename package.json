@@ -1,0 +1,66 @@
+{
+  "name": "racines-et-rituels",
+  "version": "1.0.0",
+  "description": "Static HTML/JS site with Stripe Checkout backend",
+  "type": "module",
+  "main": "server/server.js",
+  "scripts": {
+    "dev": "bash scripts/dev.sh",
+    "dev:alt": "npm run dev:pre && npm run dev:services",
+    "dev:pre": "bash scripts/dev-preflight.sh",
+    "dev:services": "concurrently --kill-others --names \"BACKEND,FRONTEND,STRIPE,SUMMARY\" -c \"bgBlue.bold,bgGreen.bold,bgMagenta.bold,bgCyan.bold\" \"npm run dev:server\" \"npm run dev:front\" \"npm run dev:stripe\" \"bash scripts/dev-summary.sh\"",
+    "dev:server": "cd server && NODE_ENV=development node server.js",
+    "dev:front": "npx http-server ./ -p 8000 -c-1 --silent",
+    "diag:front-root": "ROOT=./ && echo \"pwd: $(pwd)\" && node -p \"process.cwd()\" && ls -la && ls -la $ROOT && (curl -s http://127.0.0.1:8000/js/config.js | head -n 5 || true)",
+    "dev:stripe": "bash scripts/dev-stripe.sh",
+    "stripe:listen": "stripe listen --forward-to 127.0.0.1:3000/webhook",
+    "fix:config": "node scripts/fix-config.js",
+    "check:config": "node scripts/check-served-config.js",
+    "test:checkout": "bash scripts/test-checkout.sh",
+    "test:backend-health": "node --test tests/backend-health-smoke.test.mjs",
+    "test:supabase-auth": "node --test tests/supabase-auth.test.mjs",
+    "kill:ports": "lsof -ti :3000 | xargs kill -9 2>/dev/null || true && lsof -ti :8000 | xargs kill -9 2>/dev/null || true",
+    "db:migrate": "sh -c 'URL=${DATABASE_URL:-postgresql://postgres:postgres@127.0.0.1:54322/postgres}; for f in server/sql/*.sql; do echo \"Applying $f\"; psql \"$URL\" -f \"$f\"; done'",
+    "check:docker": "docker info >/dev/null 2>&1 || (echo '❌ Docker non démarré' && exit 1)",
+    "db:status": "npx supabase status",
+    "db:reset": "npx supabase db reset",
+    "db:diff": "npx supabase db diff -f local_stripe",
+    "db:push": "npx supabase db push",
+    "stop": "npx supabase stop",
+    "test:frontend-env": "node --test tests/frontend-env.test.mjs",
+    "test:config-served": "node --test tests/config-served.test.mjs",
+    "test:config-runtime": "node --test tests/config-runtime.test.mjs",
+    "test:rest-auth": "node --test tests/rest-auth-smoke.test.mjs",
+    "test:e2e": "npx playwright test tests/ui-products.spec.js",
+    "test:e2e:with-server": "bash scripts/e2e.sh",
+    "test:e2e:auto": "bash scripts/e2e.sh",
+    "audit:front": "node scripts/audit-frontend.mjs",
+    "test:smoke": "node scripts/smoke-test.js",
+    "test:smoke-success": "node scripts/smoke-success.mjs",
+    "test:cors": "bash scripts/check-cors.sh"
+  },
+  "// FRONT_ROOT": "./",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.89.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "nodemailer": "^6.10.1",
+    "stripe": "^14.4.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.41.2",
+    "concurrently": "^8.2.2",
+    "http-server": "^14.1.1"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "keywords": [
+    "ecommerce",
+    "stripe",
+    "checkout"
+  ],
+  "author": "",
+  "license": "ISC"
+}
