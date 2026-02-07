@@ -1,4 +1,0 @@
-
-> racines-et-rituels@1.0.0 dev:front
-> npx http-server ./ -p 8000 -c-1 --silent
-

@@ -1,9 +1,0 @@
-STRIPE_SECRET_KEY loaded: true
-SITE_URL: http://localhost:8000
-PORT: 3000
-STRIPE_WEBHOOK_SECRET loaded: true
-SUPABASE configured: false
-🚀 Backend running on http://localhost:3000
-[WEBHOOK] Ignored event { type: 'checkout.session.expired' }
-[WEBHOOK] Ignored event { type: 'checkout.session.expired' }
-[WEBHOOK] Ignored event { type: 'checkout.session.expired' }
