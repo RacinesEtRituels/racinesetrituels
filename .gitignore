@@ -1,3 +1,33 @@
-node_modules
-server/.env
+# Secrets
+.env
+.env.local
+.env.*.local
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Logs
+logs/
+*.log
+server.log
+stripe-*.log
+
+# OS / Editor
+.DS_Store
+.vscode/
+.idea/
+
+# Build / cache
+dist/
+build/
+.next/
+.cache/
+
+# Supabase local temp
+supabase/.branches/
+supabase/.temp/
+
 js/config.js

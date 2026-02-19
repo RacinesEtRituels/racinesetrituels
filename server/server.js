@@ -6,11 +6,15 @@ import dotenv from "dotenv";
 import { createClient } from "@supabase/supabase-js";
 import { execSync } from "child_process";
 import { fileURLToPath } from "url";
+import path from "path";
 import nodemailer from "nodemailer";
 import crypto from "crypto";
 
-// Load env ONCE, at top (use fileURLToPath to handle spaces in paths)
-dotenv.config({ path: fileURLToPath(new URL("./.env", import.meta.url)) });
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Force load server/.env no matter where node is launched from
+dotenv.config({ path: path.join(__dirname, ".env") });
 
 const resolvePath = (relPath) => fileURLToPath(new URL(relPath, import.meta.url));
 
@@ -1404,170 +1408,173 @@ const webhookHandlers = {
 const handleStripeWebhook = async (req, res) => {
   const requestId = req.correlationId || `whk_${Date.now()}`;
   const sig = req.headers["stripe-signature"];
-  const allowUnverified = DEV_ALLOW_UNVERIFIED_WEBHOOKS;
 
-  if (!STRIPE_WEBHOOK_SECRET && !allowUnverified) {
+  // Check if webhook secret is configured
+  if (!STRIPE_WEBHOOK_SECRET) {
     console.error(
       JSON.stringify({
         level: "error",
         type: "webhook_secret_missing",
         request_id: requestId,
+        timestamp: new Date().toISOString(),
       })
     );
-    return respondError(res, {
-      status: 500,
-      code: "missing_webhook_secret",
-      message: "STRIPE_WEBHOOK_SECRET is required",
-      correlationId: requestId,
-      requestId,
+    return res.status(500).json({
+      error: "STRIPE_WEBHOOK_SECRET is required",
+      request_id: requestId,
     });
   }
 
+  // Verify Stripe signature
   let event;
   try {
-    if (STRIPE_WEBHOOK_SECRET) {
-      event = stripe.webhooks.constructEvent(req.body, sig, STRIPE_WEBHOOK_SECRET);
-    } else if (allowUnverified) {
-      console.warn(
-        JSON.stringify({
-          level: "warn",
-          type: "webhook_unverified_allowed",
-          request_id: requestId,
-          hasSignatureHeader: Boolean(sig),
-        })
-      );
-      const bodyStr = Buffer.isBuffer(req.body) ? req.body.toString("utf8") : req.body;
-      event = typeof bodyStr === "string" ? JSON.parse(bodyStr) : bodyStr;
-    }
+    event = stripe.webhooks.constructEvent(
+      req.body,
+      sig,
+      STRIPE_WEBHOOK_SECRET
+    );
   } catch (err) {
     console.error(
       JSON.stringify({
         level: "error",
-        type: "webhook_signature_failed",
+        type: "webhook_signature_verification_failed",
         request_id: requestId,
-        error: err?.message || err,
-        hasSignatureHeader: Boolean(sig),
-        hasSecret: Boolean(STRIPE_WEBHOOK_SECRET),
+        error: err?.message || String(err),
+        has_signature: Boolean(sig),
+        timestamp: new Date().toISOString(),
       })
     );
-    return respondError(res, {
-      status: 400,
-      code: "invalid_signature",
-      message: "Webhook signature verification failed",
-      correlationId: requestId,
-      requestId,
-      error: err,
+    return res.status(400).json({
+      error: "Invalid signature",
+      request_id: requestId,
     });
   }
 
   const eventId = event?.id || "unknown";
+  const eventType = event?.type || "unknown";
 
+  // Log every event received
   console.log(
     JSON.stringify({
       level: "info",
       type: "webhook_event_received",
-      request_id: requestId,
       event_id: eventId,
-      event_type: event.type,
+      event_type: eventType,
+      request_id: requestId,
+      timestamp: new Date().toISOString(),
     })
   );
 
-  // Événements ignorés (trop verbeux, pas d'action nécessaire)
-  const ignoreEvents = new Set([
-    "charge.updated",
-    "charge.succeeded",
-    "payment_intent.created",
-    "price.created",
-    "product.created",
-  ]);
+  // Handle checkout.session.completed
+  if (eventType === "checkout.session.completed") {
+    const session = event.data?.object;
 
-  if (ignoreEvents.has(event.type)) {
-    console.log(
-      JSON.stringify({
-        level: "info",
-        type: "webhook_event_ignored",
-        event_type: event.type,
-        event_id: eventId,
-        request_id: requestId,
-        reason: "ignored_event_type",
-      })
-    );
-    return res.json({ received: true, ignored: true });
-  }
-
-  // Vérifier si on a un handler pour cet événement
-  const handler = webhookHandlers[event.type];
-
-  if (!handler) {
-    console.log(
-      JSON.stringify({
-        level: "info",
-        type: "webhook_event_ignored",
-        event_type: event.type,
-        event_id: eventId,
-        request_id: requestId,
-        reason: "no_handler",
-      })
-    );
-    return res.json({ received: true, ignored: true });
-  }
-
-  // Vérifier que Supabase est configuré
-  if (!supabase) {
-    console.error(
-      JSON.stringify({
-        level: "error",
-        type: "webhook_handler_skipped",
-        event_type: event.type,
-        event_id: eventId,
-        request_id: requestId,
-        reason: "supabase_not_configured",
-      })
-    );
-    return res.json({ received: true, error: "supabase_not_configured" });
-  }
-
-  // Appeler le handler
-  try {
-    const dataObject = event.data?.object || {};
-    await handler(dataObject, event);
-
-    console.log(
-      JSON.stringify({
-        level: "info",
-        type: "webhook_handler_success",
-        event_type: event.type,
-        event_id: eventId,
-        request_id: requestId,
-      })
-    );
-
-    return res.json({ received: true });
-  } catch (err) {
-    console.error(
-      JSON.stringify({
-        level: "error",
-        type: "webhook_handler_failed",
-        event_type: event.type,
-        event_id: eventId,
-        request_id: requestId,
-        error: err?.message || String(err),
-        stack: EXPOSE_STACKS ? err?.stack : undefined,
-      })
-    );
-
-    // Enregistrer l'erreur dans webhook_events si possible
-    try {
-      await recordWebhookEventStatus(eventId, "error", err?.message || "handler_failed");
-    } catch (recordErr) {
-      console.error("[WEBHOOK] failed to record error status", { 
-        error: recordErr?.message || recordErr 
-      });
+    if (!session) {
+      console.error(
+        JSON.stringify({
+          level: "error",
+          type: "webhook_missing_session_data",
+          event_id: eventId,
+          request_id: requestId,
+          timestamp: new Date().toISOString(),
+        })
+      );
+      // Return 200 to avoid Stripe retries
+      return res.json({ received: true, error: "missing_session_data" });
     }
 
-    // Toujours renvoyer 200 pour éviter les retries infinis de Stripe
-    return res.json({ received: true, error: "handler_failed" });
+    // Wrap business logic in try/catch to prevent crashes
+    try {
+      console.log(
+        JSON.stringify({
+          level: "info",
+          type: "webhook_processing_checkout",
+          event_id: eventId,
+          session_id: session.id,
+          order_id: session.client_reference_id || session.metadata?.order_id || null,
+          request_id: requestId,
+          timestamp: new Date().toISOString(),
+        })
+      );
+
+      // Call existing business logic
+      await handleCheckoutSessionCompleted(session, event);
+
+      console.log(
+        JSON.stringify({
+          level: "info",
+          type: "webhook_checkout_completed_success",
+          event_id: eventId,
+          session_id: session.id,
+          request_id: requestId,
+          timestamp: new Date().toISOString(),
+        })
+      );
+
+      return res.json({ received: true });
+    } catch (err) {
+      // Log error but return 200 to avoid Stripe retries
+      console.error(
+        JSON.stringify({
+          level: "error",
+          type: "webhook_checkout_processing_failed",
+          event_id: eventId,
+          session_id: session.id,
+          request_id: requestId,
+          error: err?.message || String(err),
+          stack: EXPOSE_STACKS ? err?.stack : undefined,
+          timestamp: new Date().toISOString(),
+        })
+      );
+
+      // Try to record error status (best effort)
+      try {
+        await recordWebhookEventStatus(
+          eventId,
+          "error",
+          err?.message || "checkout_processing_failed"
+        );
+      } catch (recordErr) {
+        console.error(
+          JSON.stringify({
+            level: "error",
+            type: "webhook_record_status_failed",
+            event_id: eventId,
+            request_id: requestId,
+            error: recordErr?.message || String(recordErr),
+            timestamp: new Date().toISOString(),
+          })
+        );
+      }
+
+      // Always return 200 to prevent infinite Stripe retries
+      return res.json({ 
+        received: true, 
+        error: "processing_failed",
+        request_id: requestId 
+      });
+    }
   }
+
+  // All other event types: log and return 200
+  console.log(
+    JSON.stringify({
+      level: "info",
+      type: "webhook_event_ignored",
+      event_id: eventId,
+      event_type: eventType,
+      request_id: requestId,
+      reason: "unhandled_event_type",
+      timestamp: new Date().toISOString(),
+    })
+  );
+
+  return res.json({ 
+    received: true, 
+    ignored: true,
+    event_type: eventType,
+    request_id: requestId 
+  });
 };
 
 // Webhook endpoints (Stripe CLI forward target) — raw body is required for signature verification

@@ -26,7 +26,7 @@ echo ""
 echo "2️⃣  Récupération d'un produit depuis Supabase..."
 
 SUPABASE_URL="http://127.0.0.1:54321"
-SUPABASE_KEY="sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH"
+SUPABASE_KEY="sb_publishable_xxx"
 
 PRODUCT_JSON=$(curl -s \
   "${SUPABASE_URL}/rest/v1/products?select=id,name,price_cents&limit=1" \

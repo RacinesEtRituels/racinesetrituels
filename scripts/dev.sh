@@ -178,7 +178,7 @@ log_info "Démarrage du frontend (port ${FRONTEND_PORT})..."
 npm run dev:front > logs/frontend.log 2>&1 &
 FRONTEND_PID=$!
 
-sleep 1
+sleep 4
 if ! lsof -ti :${FRONTEND_PORT} >/dev/null 2>&1; then
   log_error "Frontend non démarré (port ${FRONTEND_PORT} non ouvert)"
   [ -n "$BACKEND_PID" ] && kill $BACKEND_PID 2>/dev/null || true
