@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="fr" class="light">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Boutique - Racines & Rituels</title>
+    <meta name="description"
+        content="Découvrez nos produits naturels : Khamaré, Hibiscus et nos abonnements bien-être.">
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="js/tailwind-cdn-config.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;700;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+
+    <style>
+        body {
+            font-family: 'Epilogue', sans-serif;
+        }
+
+        /* Petit effet de survol pour les cartes */
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-black dark:text-white min-h-screen flex flex-col">
+
+    <div id="site-header"></div>
+    <div class="h-[80px]"></div>
+    <main class="flex-grow max-w-6xl mx-auto px-6 py-12 w-full">
+
+        <div class="text-center mb-16">
+            <h1 class="text-4xl md:text-5xl font-black mb-4">Notre Boutique</h1>
+            <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+                Découvrez nos racines, nos fleurs et nos rituels pour purifier votre corps et votre esprit.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+
+            <a href="produits.html?id=ID_DU_KHAMARE"
+                class="product-card group bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-xl transition duration-300 overflow-hidden border border-gray-100 dark:border-gray-700 flex flex-col">
+                <div class="aspect-square bg-gray-100 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1596547609652-9fc5d8d428ae?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                        alt="Khamaré" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                </div>
+                <div class="p-6 flex flex-col flex-grow text-center">
+                    <h2 class="text-xl font-bold mb-2">Khamaré (Racine de Vétiver)</h2>
+                    <p class="text-gray-500 text-sm mb-4 flex-grow">Purifie, apaise et parfume naturellement.</p>
+                    <p class="text-2xl font-black text-primary">12,00 €</p>
+                    <span
+                        class="mt-4 bg-black dark:bg-white text-white dark:text-black font-bold py-2 px-4 rounded-full w-full">Voir
+                        le produit</span>
+                </div>
+            </a>
+
+            <a href="produits.html?id=72f87f4c-7741-4bcd-8b25-90a69c36ab71"
+                class="product-card group bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-xl transition duration-300 overflow-hidden border border-gray-100 dark:border-gray-700 flex flex-col">
+                <div class="aspect-square bg-gray-100 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1556379069-7c1674209211?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                        alt="Hibiscus Blanc"
+                        class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                </div>
+                <div class="p-6 flex flex-col flex-grow text-center">
+                    <h2 class="text-xl font-bold mb-2">Fleurs d'Hibiscus Blanc</h2>
+                    <p class="text-gray-500 text-sm mb-4 flex-grow">Sachet de 100g. Doux et réconfortant.</p>
+                    <p class="text-2xl font-black text-primary">6,00 €</p>
+                    <span
+                        class="mt-4 bg-black dark:bg-white text-white dark:text-black font-bold py-2 px-4 rounded-full w-full">Voir
+                        le produit</span>
+                </div>
+            </a>
+
+            <a href="bcf9b3d9-6452-4001-afde-12a57703b901"
+                class="product-card group bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-xl transition duration-300 overflow-hidden border border-gray-100 dark:border-gray-700 flex flex-col">
+                <div class="aspect-square bg-gray-100 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1596547610664-96c21e3f8992?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                        alt="Hibiscus Rouge"
+                        class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                </div>
+                <div class="p-6 flex flex-col flex-grow text-center">
+                    <h2 class="text-xl font-bold mb-2">Fleurs d'Hibiscus Rouge</h2>
+                    <p class="text-gray-500 text-sm mb-4 flex-grow">Sachet de 100g. Riche en antioxydants.</p>
+                    <p class="text-2xl font-black text-primary">6,00 €</p>
+                    <span
+                        class="mt-4 bg-black dark:bg-white text-white dark:text-black font-bold py-2 px-4 rounded-full w-full">Voir
+                        le produit</span>
+                </div>
+            </a>
+
+            <a href="produits2.html"
+                class="product-card group bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-xl transition duration-300 overflow-hidden border border-gray-100 dark:border-gray-700 flex flex-col">
+                <div class="aspect-square bg-gray-100 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1600428853876-0bfb2d03d360?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                        alt="Abonnement Mensuel"
+                        class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                </div>
+                <div class="p-6 flex flex-col flex-grow text-center">
+                    <span class="text-xs font-bold uppercase tracking-wider text-accent mb-2">Sans engagement</span>
+                    <h2 class="text-xl font-bold mb-2">Box Bien-Être Mensuelle</h2>
+                    <p class="text-gray-500 text-sm mb-4 flex-grow">Recevez vos rituels chaque mois directement chez
+                        vous.</p>
+                    <p class="text-2xl font-black text-primary">7,00 € <span class="text-sm font-normal text-gray-500">/
+                            mois</span></p>
+                    <span class="mt-4 bg-accent text-white font-bold py-2 px-4 rounded-full w-full">S'abonner</span>
+                </div>
+            </a>
+
+            <a href="produits2.html"
+                class="product-card group border-2 border-accent bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-xl transition duration-300 overflow-hidden flex flex-col relative">
+                <div class="absolute top-4 right-4 bg-accent text-white text-xs font-bold px-3 py-1 rounded-full z-10">
+                    Économisez 15€ !
+                </div>
+                <div class="aspect-square bg-gray-100 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                        alt="Abonnement Annuel"
+                        class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                </div>
+                <div class="p-6 flex flex-col flex-grow text-center">
+                    <span class="text-xs font-bold uppercase tracking-wider text-accent mb-2">Offre Premium</span>
+                    <h2 class="text-xl font-bold mb-2">Box Bien-Être Annuelle</h2>
+                    <p class="text-gray-500 text-sm mb-4 flex-grow">Une année complète de sérénité et de rituels.</p>
+                    <p class="text-2xl font-black text-primary">69,00 € <span
+                            class="text-sm font-normal text-gray-500">/ an</span></p>
+                    <span class="mt-4 bg-accent text-white font-bold py-2 px-4 rounded-full w-full">S'abonner</span>
+                </div>
+            </a>
+
+        </div>
+    </main>
+
+    <div id="site-footer"></div>
+
+    <script src="/js/config.js"></script>
+    <script type="module" src="js/header-loader.js"></script>
+    <script type="module" src="js/footer-loader.js"></script>
+
+</body>
+
+</html>
