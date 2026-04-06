@@ -5,6 +5,7 @@
   "type": "module",
   "main": "server/server.js",
   "scripts": {
+    "start": "node server/server.js",
     "dev": "bash scripts/dev.sh",
     "dev:alt": "npm run dev:pre && npm run dev:services",
     "dev:pre": "bash scripts/dev-preflight.sh",
