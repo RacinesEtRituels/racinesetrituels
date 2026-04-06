@@ -7,7 +7,7 @@ async function loadHeader() {
   }
 
   try {
-    const headerPath = 'components/header.html';
+    const headerPath = '/components/header.html';
     console.log('[header-loader] fetching header from:', headerPath);
     const res = await fetch(headerPath);
     if (!res.ok) {

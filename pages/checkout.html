@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr" class="light">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,10 +9,11 @@
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <script src="/public/js/tailwind-cdn-config.js"></script>
 
-  <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;700&display=swap" rel="stylesheet"/>
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
 
 </head>
+
 <body class="bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark">
   <div id="site-header"></div>
   <main class="max-w-3xl mx-auto p-6">
@@ -45,7 +47,8 @@
         </div>
         <div>
           <p id="payError" class="hidden text-red-600 text-sm mb-2"></p>
-          <button id="payBtn" type="button" class="w-full h-12 bg-primary text-white rounded-lg font-bold">Payer</button>
+          <button id="payBtn" type="button"
+            class="w-full h-12 bg-primary text-white rounded-lg font-bold">Payer</button>
         </div>
       </form>
 
@@ -61,7 +64,7 @@
 
     <div id="confirmation" class="hidden mt-6 p-4 bg-green-100 rounded-lg">
       <p class="font-bold">Commande enregistrée !</p>
-      <p>Merci. <a href="index.html" class="text-primary underline">Retour à l'accueil</a></p>
+      <p>Merci. <a href="/index.html" class="text-primary underline">Retour à l'accueil</a></p>
     </div>
 
   </main>
@@ -72,8 +75,8 @@
   <script type="module" src="/public/js/footer-loader.js"></script>
 
   <script type="module">
-    import { getCart, getTotals, clearCart, normalizeCartIds, isUUID } from './js/cart.js';
-    import { BACKEND_URL } from './js/backend-config.js';
+    import { getCart, getTotals, clearCart, normalizeCartIds, isUUID } from '/public/js/cart.js';
+    import { BACKEND_URL } from '/public/js/backend-config.js';
 
     async function renderSummary() {
       const items = await getCart();
@@ -128,18 +131,18 @@
 
           const items = normalizedCart.map(it => {
             const str = v => typeof v === 'string' ? v.trim() : '';
-            const uuidCandidate = [it.product_id_uuid, it.product_uuid, it.uuid, it.id].map(str).find(v => isUUID(v));
+            const uuidCandidate = [it.product_id, it.product_uuid, it.uuid, it.id].map(str).find(v => isUUID(v));
             const slugCandidate = [it.product_slug, it.slug, it.id].map(str).find(v => v && !isUUID(v) && v.length >= 2);
 
             return {
-              product_id_uuid: uuidCandidate || null,
+              product_id: uuidCandidate || null,
               product_slug: slugCandidate || null,
               quantity: Number(it.quantity ?? it.qty ?? 1),
             };
           });
 
           for (const it of items) {
-            const hasUuid = Boolean(it.product_id_uuid && isUUID(it.product_id_uuid));
+            const hasUuid = Boolean(it.product_id && isUUID(it.product_id));
             const hasSlug = Boolean(it.product_slug && it.product_slug.length >= 2);
             if (!hasUuid && !hasSlug) {
               throw new Error('Panier invalide : identifiant produit manquant.');
@@ -178,4 +181,5 @@
     });
   </script>
 </body>
+
 </html>

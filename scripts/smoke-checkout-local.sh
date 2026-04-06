@@ -28,8 +28,8 @@ curl -sf "$BASE_BACKEND/health" >/dev/null || fail "/health failed"
 pass "backend /health ok"
 
 # 4) front success page
-curl -sf "$BASE_FRONT/success.html" >/dev/null || fail "success.html not reachable"
-pass "success.html reachable"
+curl -sf "$BASE_FRONT/pages/success.html" >/dev/null || fail "pages/success.html not reachable"
+pass "pages/success.html reachable"
 
 # 5) supabase REST
 if [[ -z "$SUPA_KEY" ]]; then fail "SUPABASE key missing"; fi

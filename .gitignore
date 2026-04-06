@@ -31,3 +31,4 @@ supabase/.branches/
 supabase/.temp/
 
 js/config.js
+public/js/config.js

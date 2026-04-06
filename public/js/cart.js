@@ -44,9 +44,10 @@ function getTotalsSync(cart) {
 }
 
 function normalize(item) {
-  // ensure schema: { id, name, price, image?, qty }
+  // ensure schema: { id, slug, name, price, image?, qty }
   return {
     id: String(item.id),
+    slug: item.slug || '',
     name: item.name || String(item.id),
     price: Number(item.price || 0),
     image: item.image || '',
@@ -123,6 +124,7 @@ async function ensureProductHasUuid(product) {
   return {
     ...base,
     id: found.id,
+    slug: base.slug || found.slug || '',
     name: base.name || found.name,
     price: base.price || (Number(found.price_cents) / 100) || 0,
   };
@@ -142,6 +144,7 @@ export async function normalizeCartIds(cartInput = null) {
       const found = await fetchProductByKey(clone.id || clone.slug || "", clone.name || null);
       if (found) {
         clone.id = found.id;
+        if (!clone.slug) clone.slug = found.slug || '';
         if (!clone.name) clone.name = found.name;
         if (!clone.price && Number.isFinite(found.price_cents)) clone.price = Number(found.price_cents) / 100;
         changed = true;
@@ -194,6 +197,7 @@ export async function addItem(product) {
   // ensure required fields and defaults
   const p = {
     id: String(resolved.id),
+    slug: resolved.slug || '',
     name: resolved.name || String(resolved.id),
     price: Number(resolved.price || 0),
     image: resolved.image || resolved.img || "",

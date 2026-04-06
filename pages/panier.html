@@ -43,7 +43,7 @@
       <!-- Si panier vide -->
       <div id="emptyCart" class="hidden text-center py-20 text-gray-600 dark:text-gray-400">
         <p class="text-lg">Votre panier est vide 🧺</p>
-        <a href="produits.html" class="text-primary font-semibold underline mt-2 inline-block">Voir les produits</a>
+        <a href="/boutique.html" class="text-primary font-semibold underline mt-2 inline-block">Voir les produits</a>
       </div>
 
       <!-- 🧮 RÉCAP TOTAL -->
@@ -62,7 +62,7 @@
         </div>
 
         <div class="flex gap-3 pt-4">
-          <a href="produits.html"
+          <a href="/boutique.html"
             class="flex-1 h-12 flex items-center justify-center rounded-xl bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white font-bold hover:bg-gray-300 dark:hover:bg-gray-600 transition">
             Continuer mes achats
           </a>
@@ -93,8 +93,8 @@
 
   <!-- 📌 CHARGEMENT DU PANIER -->
   <script type="module">
-    import { getCart, removeFromCart, updateQuantity, clearCart, getTotals, normalizeCartIds, isUUID } from "./js/cart.js";
-    import { BACKEND_URL } from "./js/backend-config.js";
+    import { getCart, removeFromCart, updateQuantity, clearCart, getTotals, normalizeCartIds, isUUID } from "/public/js/cart.js";
+    import { BACKEND_URL } from "/public/js/backend-config.js";
 
     const cartItemsEl = document.getElementById("cartItems");
     const emptyCartEl = document.getElementById("emptyCart");

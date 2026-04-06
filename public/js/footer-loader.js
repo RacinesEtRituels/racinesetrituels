@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (!placeholder) return;
 
   try {
-    const res = await fetch('components/footer.html');
+    const res = await fetch('/components/footer.html');
     if (!res.ok) throw new Error('footer fetch failed: ' + res.status);
     const html = await res.text();
 

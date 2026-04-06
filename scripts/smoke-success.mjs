@@ -28,8 +28,8 @@ const expect = (cond, msg) => {
   if (!cond) throw new Error(msg);
 };
 
-await check("front /success.html (200, text/html)", async () => {
-  const res = await fetch(`${FRONT_URL}/success.html`);
+await check("front /pages/success.html (200, text/html)", async () => {
+  const res = await fetch(`${FRONT_URL}/pages/success.html`);
   expect(res.ok, `HTTP ${res.status}`);
   const ct = res.headers.get("content-type") || "";
   expect(ct.includes("text/html"), `content-type=${ct}`);
