@@ -258,7 +258,7 @@ app.post("/create-checkout-session", async (req, res) => {
         console.log(`[checkout] recherche Supabase par slug: "${item.product_slug}"`);
         const { data, error } = await supabase.from("products")
           .select("id,name,price_cents,stripe_price_id")
-          .eq("slug", item.product_slug).maybeSingle();
+          .eq("slug", item.product_slug).eq("is_active", true).maybeSingle();
         if (error) console.error(`[checkout] erreur Supabase (slug="${item.product_slug}"):`, error.message, error.code);
         console.log(`[checkout] résultat Supabase:`, data ? `trouvé id=${data.id}` : 'null');
         product = data;
@@ -266,7 +266,7 @@ app.post("/create-checkout-session", async (req, res) => {
         console.log(`[checkout] pas de slug, recherche Supabase par id: "${item.product_id}"`);
         const { data, error } = await supabase.from("products")
           .select("id,name,price_cents,stripe_price_id")
-          .eq("id", item.product_id).maybeSingle();
+          .eq("id", item.product_id).eq("is_active", true).maybeSingle();
         if (error) console.error(`[checkout] erreur Supabase (id="${item.product_id}"):`, error.message, error.code);
         console.log(`[checkout] résultat Supabase:`, data ? `trouvé slug=${data.slug || '(sans slug)'}` : 'null');
         product = data;
