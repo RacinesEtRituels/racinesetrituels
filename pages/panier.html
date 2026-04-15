@@ -275,12 +275,7 @@
           console.log("[checkout] payload ->", payload);
         }
 
-        const backend = BACKEND_URL || (window.__ENV__ && window.__ENV__.BACKEND_URL);
-        if (!backend) {
-          throw new Error("BACKEND_URL non défini dans config.js");
-        }
-
-        const resp = await fetch(`${backend}/create-checkout-session`, {
+        const resp = await fetch(`${BACKEND_URL}/create-checkout-session`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
