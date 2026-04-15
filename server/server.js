@@ -65,6 +65,17 @@ app.get('/déconnexion.html', (req, res) => {
   res.sendFile(path.join(frontendPath, 'pages', 'déconnexion.html'));
 });
 
+// Dynamic config.js — injects real env vars (overrides static file)
+app.get('/public/js/config.js', (req, res) => {
+  res.setHeader('Content-Type', 'application/javascript');
+  res.setHeader('Cache-Control', 'no-store');
+  res.send(`window.__ENV__ = ${JSON.stringify({
+    SUPABASE_URL: process.env.SUPABASE_URL || '',
+    SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY || '',
+    BACKEND_URL: process.env.BACKEND_URL || '',
+  })};`);
+});
+
 app.use(express.static(frontendPath));
 // Route racine → pages/index.html
 app.get('/', (req, res) => {
