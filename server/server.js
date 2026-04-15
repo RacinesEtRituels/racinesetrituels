@@ -55,7 +55,7 @@ const frontendPath = path.join(__dirname, '..');
 [
   'index', 'boutique', 'produits', 'produits2', 'hibiscus-blanc', 'hibiscus-rouge',
   'panier', 'checkout', 'success', 'cancel', 'profil', 'connexion', 'inscription',
-  'assistantIA', 'conseil', 'confreinimotPass', 'recupmotdepass'
+  'assistantIA', 'conseil', 'confreinimotPass', 'recupmotdepass', 'admin'
 ].forEach(p => {
   app.get(`/${p}.html`, (req, res) => {
     res.sendFile(path.join(frontendPath, 'pages', `${p}.html`));
@@ -98,11 +98,22 @@ async function processOrderSuccess(session) {
   }
 
   try {
-    // 1. Mise à jour statut
+    // 1. Mise à jour statut + adresse de livraison
     console.log('Mise à jour de la commande en paid dans Supabase...');
+    const shipping = session.shipping_details;
+    const shippingFields = shipping ? {
+      shipping_name: shipping.name || null,
+      shipping_address1: shipping.address?.line1 || null,
+      shipping_address2: shipping.address?.line2 || null,
+      shipping_postcode: shipping.address?.postal_code || null,
+      shipping_city: shipping.address?.city || null,
+      shipping_country: shipping.address?.country || null,
+    } : {};
     const { error: updateError } = await supabase.from("orders").update({
       status: "paid",
       payment_status: "paid",
+      customer_email: session.customer_details?.email || null,
+      ...shippingFields,
       notes: JSON.stringify({
         stripe_session_id: session.id,
         customer_email: session.customer_details?.email,
@@ -311,6 +322,7 @@ app.post("/create-checkout-session", async (req, res) => {
       line_items: resolvedProducts.map(({ product, qty }) => ({ price: product.stripe_price_id, quantity: qty })),
       client_reference_id: order.id,
       metadata: { order_id: order.id },
+      shipping_address_collection: { allowed_countries: ['FR', 'BE', 'CH', 'LU', 'DE'] },
       success_url: `${process.env.SITE_URL}/success.html?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.SITE_URL}/cancel.html`,
     });
@@ -350,7 +362,11 @@ app.get("/public/order-by-session", async (req, res) => {
 });
 
 app.get("/admin/orders", async (req, res) => {
-  const { data } = await supabase.from("orders").select("*").order("created_at", { ascending: false }).limit(50);
+  const { data } = await supabase
+    .from("orders")
+    .select("*, order_items(qty, unit_sale_price_ttc_cents, products(name, slug))")
+    .order("created_at", { ascending: false })
+    .limit(100);
   res.json({ orders: data });
 });
 
