@@ -69,6 +69,8 @@ app.get('/déconnexion.html', (req, res) => {
 app.get('/robots.txt', (req, res) => res.sendFile(path.join(frontendPath, 'public', 'robots.txt')));
 app.get('/sitemap.xml', (req, res) => res.sendFile(path.join(frontendPath, 'public', 'sitemap.xml')));
 app.get('/manifest.json', (req, res) => res.sendFile(path.join(frontendPath, 'public', 'manifest.json')));
+app.get('/favicon.png', (req, res) => res.sendFile(path.join(frontendPath, 'public', 'favicon.png')));
+app.get('/favicon.ico', (req, res) => res.sendFile(path.join(frontendPath, 'public', 'favicon.png')));
 
 // Dynamic config.js — injects real env vars (overrides static file)
 app.get('/public/js/config.js', (req, res) => {
