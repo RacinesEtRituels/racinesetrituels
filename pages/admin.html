@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Admin — Commandes</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    const pwd = prompt("Mot de passe admin :");
+    if (pwd !== "racines2026") window.location.replace("/index.html");
+  </script>
   <style>
     body { font-family: sans-serif; }
     @media print {
