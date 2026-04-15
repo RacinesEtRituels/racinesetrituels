@@ -80,12 +80,7 @@
 
   <!-- 🌿 SCRIPT SUPABASE -->
   <script type="module">
-    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
-    const supabase = createClient(
-      "https://tjqaprfpgwmsavjtgoml.supabase.co",
-      "sb_publishable_xxx"
-    );
+    import { supabase } from "/public/js/supabase.js";
 
     document.getElementById("loginBtn").addEventListener("click", async () => {
       const email = document.getElementById("email").value.trim();

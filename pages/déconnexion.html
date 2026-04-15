@@ -27,13 +27,9 @@
   </div>
 
   <!-- Script Supabase -->
+  <script src="/public/js/config.js"></script>
   <script type="module">
-    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
-    const supabase = createClient(
-      "https://tjqaprfpgwmsavjtgoml.supabase.co",
-      "TON-ANON-KEY-ICI"
-    );
+    import { supabase } from "/public/js/supabase.js";
 
     // Déconnexion automatique à l’ouverture de la page
     async function logout() {
