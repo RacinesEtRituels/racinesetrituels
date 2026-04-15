@@ -21,6 +21,11 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://racinesetrituels.vercel.app/khamare.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://racinesetrituels.vercel.app/conseil.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>

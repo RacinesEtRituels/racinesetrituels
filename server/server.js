@@ -55,7 +55,7 @@ const frontendPath = path.join(__dirname, '..');
 [
   'index', 'boutique', 'produits', 'produits2', 'hibiscus-blanc', 'hibiscus-rouge',
   'panier', 'checkout', 'success', 'cancel', 'profil', 'connexion', 'inscription',
-  'assistantIA', 'conseil', 'confreinimotPass', 'recupmotdepass', 'admin'
+  'assistantIA', 'conseil', 'confreinimotPass', 'recupmotdepass', 'admin', 'khamare'
 ].forEach(p => {
   app.get(`/${p}.html`, (req, res) => {
     res.sendFile(path.join(frontendPath, 'pages', `${p}.html`));
