@@ -19,15 +19,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
 
   <style>
-    <script type="module">
-  import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
-  window.supabase = createClient(
-    "https://tjqaprfpgwmsavjtgoml.supabase.co",
-    "sb_publishable_xxx"
-  );
-</script>
-
     body { font-family: 'Epilogue', sans-serif; }
   </style>
 </head>
@@ -92,8 +83,7 @@
 
   <!-- SCRIPT SUPABASE -->
   <script type="module">
-  import { supabase } from "./js/supabase.js";
-  import { syncLocalCartToSupabase } from "./js/cart.js";
+  import { supabase } from "/public/js/supabase.js";
 
   const msg = document.getElementById("message");
 
@@ -134,9 +124,6 @@
     if (error) {
       return showMessage("Erreur : " + error.message);
     }
-
-    // Si Supabase crée une session immédiatement, on fusionne le panier visiteur
-    await syncLocalCartToSupabase();
 
     showMessage("Compte créé ! Vérifiez votre e-mail pour confirmer votre inscription.", "success");
     setTimeout(() => {
