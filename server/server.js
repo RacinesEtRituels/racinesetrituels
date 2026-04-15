@@ -65,6 +65,11 @@ app.get('/déconnexion.html', (req, res) => {
   res.sendFile(path.join(frontendPath, 'pages', 'déconnexion.html'));
 });
 
+// SEO technical files served from root URLs
+app.get('/robots.txt', (req, res) => res.sendFile(path.join(frontendPath, 'public', 'robots.txt')));
+app.get('/sitemap.xml', (req, res) => res.sendFile(path.join(frontendPath, 'public', 'sitemap.xml')));
+app.get('/manifest.json', (req, res) => res.sendFile(path.join(frontendPath, 'public', 'manifest.json')));
+
 // Dynamic config.js — injects real env vars (overrides static file)
 app.get('/public/js/config.js', (req, res) => {
   res.setHeader('Content-Type', 'application/javascript');
