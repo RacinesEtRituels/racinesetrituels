@@ -38,21 +38,18 @@
     "audit:front": "node scripts/audit-frontend.mjs",
     "test:smoke": "node scripts/smoke-test.js",
     "test:smoke-success": "node scripts/smoke-success.mjs",
-    "test:cors": "bash scripts/check-cors.sh"
+    "test:cors": "bash scripts/check-cors.sh",
+    "build:css": "tailwindcss -i public/css/tailwind.input.css -o public/css/tailwind.css --minify",
+    "build": "npm run build:css"
   },
   "// FRONT_ROOT": "./",
-  "dependencies": {
-    "@supabase/supabase-js": "^2.89.0",
-    "cors": "^2.8.5",
-    "dotenv": "^16.3.1",
-    "express": "^4.18.2",
-    "nodemailer": "^7.0.12",
-    "stripe": "^14.4.0"
-  },
   "devDependencies": {
     "@playwright/test": "^1.41.2",
+    "@tailwindcss/container-queries": "^0.1.1",
+    "@tailwindcss/forms": "^0.5.7",
     "concurrently": "^8.2.2",
-    "http-server": "^14.1.1"
+    "http-server": "^14.1.1",
+    "tailwindcss": "^3.4.0"
   },
   "engines": {
     "node": ">=16.0.0"
