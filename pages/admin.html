@@ -7,7 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     const pwd = prompt("Mot de passe admin :");
-    if (pwd !== "racines2026") window.location.replace("/index.html");
+    if (!pwd) window.location.replace("/index.html");
   </script>
   <style>
     body { font-family: sans-serif; }
@@ -108,7 +108,14 @@
     }
 
     async function load() {
-      const resp = await fetch('/admin/orders');
+      const resp = await fetch('/admin/orders', {
+        headers: { 'X-Admin-Secret': pwd },
+      });
+      if (resp.status === 401) {
+        alert('Mot de passe incorrect.');
+        window.location.replace('/index.html');
+        return;
+      }
       const { orders } = await resp.json();
 
       document.getElementById('loading').classList.add('hidden');

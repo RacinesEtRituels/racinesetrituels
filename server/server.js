@@ -47,7 +47,28 @@ app.post("/webhook/stripe", express.raw({ type: "application/json" }), async (re
   }
 });
 
-app.use(cors());
+// CORS — whitelist known origins only
+const allowedOrigins = new Set([
+  process.env.SITE_URL,
+  `http://localhost:${process.env.PORT || 3000}`,
+].filter(Boolean));
+app.use(cors({
+  origin: (origin, cb) => {
+    if (!origin || allowedOrigins.has(origin)) return cb(null, true);
+    cb(new Error(`CORS: origine non autorisée : ${origin}`));
+  },
+}));
+
+// Admin auth middleware — validates X-Admin-Secret header against ADMIN_SECRET env var
+const requireAdmin = (req, res, next) => {
+  const secret = process.env.ADMIN_SECRET;
+  if (!secret) return res.status(503).json({ error: 'ADMIN_SECRET non configuré côté serveur.' });
+  if (req.headers['x-admin-secret'] !== secret) {
+    return res.status(401).json({ error: 'Non autorisé.' });
+  }
+  next();
+};
+
 app.use(express.json());
 
 // --- FICHIERS STATIQUES (frontend) ---
@@ -371,7 +392,7 @@ app.get("/public/order-by-session", async (req, res) => {
   }
 });
 
-app.get("/admin/orders", async (req, res) => {
+app.get("/admin/orders", requireAdmin, async (req, res) => {
   const { data } = await supabase
     .from("orders")
     .select("*, order_items(qty, unit_sale_price_ttc_cents, products(name, slug))")
