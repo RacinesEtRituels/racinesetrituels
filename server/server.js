@@ -10,7 +10,10 @@ import crypto from "crypto";
 
 // --- CONFIGURATION ---
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-dotenv.config({ path: path.join(__dirname, ".env") });
+// Load .env.local from project root first (dev priority — never committed)
+dotenv.config({ path: path.join(__dirname, '..', '.env.local') });
+// Fallback: server/.env for secrets absent from .env.local (STRIPE, SERVICE_ROLE)
+dotenv.config({ path: path.join(__dirname, '.env') });
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: "2024-06-20" });
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
