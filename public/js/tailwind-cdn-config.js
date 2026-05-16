@@ -12,7 +12,7 @@ tailwind.config = {
         "background-light": "#f8f6f6",
         "background-dark": "#211511",
 
-        // Alternative primary set (produits2.html)
+        // Alternative primary set (abonnements.html)
         secondary: "#A3B18A",
         backgroundLight: "#F5F5DC",
         backgroundDark: "#3D2B1F",

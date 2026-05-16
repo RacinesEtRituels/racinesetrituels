@@ -77,7 +77,7 @@ const frontendPath = path.join(__dirname, '..');
 // --- ROUTES HTML (URLs propres → /pages/) ---
 // Déclarées AVANT express.static pour prendre priorité sur les originaux à la racine
 [
-  'index', 'boutique', 'produits', 'produits2', 'hibiscus-blanc', 'hibiscus-rouge',
+  'index', 'boutique', 'produits', 'abonnements', 'hibiscus-blanc', 'hibiscus-rouge',
   'panier', 'checkout', 'success', 'cancel', 'profil', 'connexion', 'inscription',
   'assistantIA', 'conseil', 'confreinimotPass', 'recupmotdepass', 'admin', 'khamare'
 ].forEach(p => {
