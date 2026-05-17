@@ -1,0 +1,21 @@
+-- =================================================================
+-- Migration : rls_subscriptions_deny_all
+-- Timestamp : 20260517010000
+-- Cible     : public.subscriptions uniquement
+-- Objectif  : Activer RLS en mode deny-all implicite.
+--             Aucune policy ajoutée → anon et authenticated ne
+--             peuvent ni lire ni écrire cette table.
+--             service_role bypasse RLS → backend Express non affecté.
+-- Contexte  : Aucun frontend ne lit subscriptions valablement.
+--             subscriptions.js : 100 % commenté (dead code).
+--             profil.html : query sur user_id/renew_at inexistants
+--                           → déjà morte silencieusement.
+--             Toutes les opérations passent par Express (service_role).
+-- FK enfants : subscription_shipments.subscription_id → service_role,
+--              non affecté par ce changement.
+-- Idempotent : ALTER TABLE ENABLE ROW LEVEL SECURITY est no-op si
+--              RLS est déjà activé.
+-- NE PAS TOUCHER : subscription_shipments, orders, customers, products.
+-- =================================================================
+
+ALTER TABLE public.subscriptions ENABLE ROW LEVEL SECURITY;
