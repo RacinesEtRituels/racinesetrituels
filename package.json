@@ -40,7 +40,9 @@
     "test:smoke-success": "node scripts/smoke-success.mjs",
     "test:cors": "bash scripts/check-cors.sh",
     "build:css": "tailwindcss -i public/css/tailwind.input.css -o public/css/tailwind.css --minify",
-    "build": "npm run build:css"
+    "build": "npm run build:css",
+    "audit:security": "node scripts/security/security-audit.js",
+    "audit:security:debug": "DEBUG=1 node scripts/security/security-audit.js"
   },
   "// FRONT_ROOT": "./",
   "devDependencies": {
@@ -49,6 +51,7 @@
     "@tailwindcss/forms": "^0.5.7",
     "concurrently": "^8.2.2",
     "http-server": "^14.1.1",
+    "pg": "^8.20.0",
     "tailwindcss": "^3.4.0"
   },
   "engines": {

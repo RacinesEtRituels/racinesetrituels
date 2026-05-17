@@ -1,0 +1,66 @@
+name: Security Audit
+
+on:
+  push:
+    branches: [main]
+    paths:
+      # Re-run when migrations or audit scripts change
+      - 'supabase/migrations/**'
+      - 'scripts/security/**'
+      - '.github/workflows/security-audit.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'supabase/migrations/**'
+      - 'scripts/security/**'
+  schedule:
+    # Every Monday at 06:00 UTC — catches drift even without code changes
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+    # Allow manual trigger from GitHub Actions UI
+
+concurrency:
+  group: security-audit-${{ github.ref }}
+  cancel-in-progress: false   # Never cancel a running audit
+
+jobs:
+  security-audit:
+    name: PostgreSQL Security Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run security audit
+        env:
+          SUPABASE_DB_URL:          ${{ secrets.SUPABASE_DB_URL }}
+          SUPABASE_URL:             ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: node scripts/security/security-audit.js
+
+      # Upload the console output as an artifact on failure for easy debugging
+      - name: Save audit log on failure
+        if: failure()
+        run: node scripts/security/security-audit.js 2>&1 | tee /tmp/security-audit.log || true
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          SUPABASE_URL:    ${{ secrets.SUPABASE_URL }}
+
+      - name: Upload audit log
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-audit-log
+          path: /tmp/security-audit.log
+          retention-days: 30
