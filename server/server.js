@@ -50,6 +50,7 @@ app.post("/webhook/stripe", express.raw({ type: "application/json" }), async (re
 // CORS — whitelist known origins only
 const allowedOrigins = new Set([
   process.env.SITE_URL,
+  'https://racinesetrituels.vercel.app',
   `http://localhost:${process.env.PORT || 3000}`,
 ].filter(Boolean));
 app.use(cors({
