@@ -1,4 +1,13 @@
+import { config as dotenvConfig } from 'dotenv';
+import { fileURLToPath } from 'url';
+import { dirname, resolve } from 'path';
 import pg from 'pg';
+
+// Load .env.local from project root for local dev.
+// Silent if absent — CI/CD injects SUPABASE_DB_URL via environment secrets directly.
+// Does NOT override variables already set in the environment (safe for CI).
+const __dirname = dirname(fileURLToPath(import.meta.url));
+dotenvConfig({ path: resolve(__dirname, '../../.env.local') });
 
 const { Pool } = pg;
 
