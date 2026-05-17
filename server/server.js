@@ -143,7 +143,6 @@ async function processOrderSuccess(session) {
     const { error: updateError } = await supabase.from("orders").update({
       status: "paid",
       payment_status: "paid",
-      customer_email: session.customer_details?.email || null,
       ...shippingFields,
       notes: JSON.stringify({
         stripe_session_id: session.id,
