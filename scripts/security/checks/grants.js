@@ -64,7 +64,11 @@ export async function checkGrants() {
     const state    = rls[table] ?? { on: false, policies: 0 };
     const isSens   = config.sensitiveTables.includes(table);
 
-    for (const [grantee, privs] of Object.entries(roleGrants)) {
+    for (const [grantee, rawPrivs] of Object.entries(roleGrants)) {
+      // pg returns array_agg as a JS array, but falls back to a "{A,B}" string in some contexts
+      const privs  = Array.isArray(rawPrivs)
+        ? rawPrivs
+        : String(rawPrivs).replace(/[{}]/g, '').split(',').filter(Boolean);
       const writes   = privs.filter(p => WRITE_PRIVS.has(p));
       const hasWrite = writes.length > 0;
       const privStr  = privs.join(', ');
