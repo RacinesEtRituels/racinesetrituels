@@ -28,12 +28,13 @@ async function main() {
     { label: '6/6 — Storage',                  fn: checkStorage    },
   ];
 
+  let errors = 0;
   for (const check of checks) {
     section(check.label);
     try {
       await check.fn();
     } catch (err) {
-      // Don't let one failing check abort the rest
+      errors++;
       console.error(`\n  ⚡ Check "${check.label}" threw an error:`);
       console.error(`     ${err.message}`);
       if (process.env.DEBUG) console.error(err.stack);
@@ -41,6 +42,16 @@ async function main() {
   }
 
   const { failures } = summary();
+
+  if (errors > 0) {
+    console.error(`\n  ⚠️  ${errors} check(s) could not run (see errors above).`);
+    if (errors === checks.length) {
+      console.error('  ❌  All checks failed — DB connection likely missing or invalid.');
+      console.error('      Set SUPABASE_DB_URL in GitHub Secrets → Settings → Secrets and variables → Actions');
+      await closePool();
+      process.exit(1);
+    }
+  }
 
   await closePool();
   process.exit(failures > 0 ? 1 : 0);
