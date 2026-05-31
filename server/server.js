@@ -15,6 +15,16 @@ dotenv.config({ path: path.join(__dirname, '..', '.env.local') });
 // Fallback: server/.env for secrets absent from .env.local (STRIPE, SERVICE_ROLE)
 dotenv.config({ path: path.join(__dirname, '.env') });
 
+// Startup guard — fail fast if required secrets are absent or still placeholder
+const _PLACEHOLDER = /REMPLACER|À_REMPLIR/i;
+for (const _v of ['SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY', 'STRIPE_SECRET_KEY', 'STRIPE_WEBHOOK_SECRET']) {
+  if (!process.env[_v] || _PLACEHOLDER.test(process.env[_v])) {
+    console.error(`❌ Variable manquante ou non configurée : ${_v}`);
+    console.error('   → vérifier .env.local (projet) ou server/.env');
+    process.exit(1);
+  }
+}
+
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: "2024-06-20" });
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 const mailer = nodemailer.createTransport({
@@ -120,6 +130,98 @@ const now = () => new Date().toISOString();
 const ACTIVITY_ID = process.env.SUPABASE_ACTIVITY_ID || "23823b14-7ed5-4ce2-a35d-87d1715ac95a";
 const CHANNEL_ID  = process.env.SUPABASE_CHANNEL_ID  || "a96d625a-a933-444d-a560-1f6671137028";
 
+const isSubscriptionProduct = (product) => product?.type === "subscription";
+const subscriptionBillingCycle = (product) => (
+  /annuel|annual|year/i.test(product?.name || "") ? "annual" : "monthly"
+);
+const stripeRecurringInterval = (product) => (
+  subscriptionBillingCycle(product) === "annual" ? "year" : "month"
+);
+
+async function findOrCreateCustomerFromSession(session) {
+  const email = session.customer_details?.email;
+  if (!email) return null;
+
+  const { data: existingCustomer, error: readError } = await supabase
+    .from("customers")
+    .select("id")
+    .eq("activity_id", ACTIVITY_ID)
+    .eq("email", email)
+    .maybeSingle();
+
+  if (readError) throw new Error(`Erreur lecture client : ${readError.message}`);
+  if (existingCustomer) return existingCustomer;
+
+  const { data: createdCustomer, error: insertError } = await supabase
+    .from("customers")
+    .insert({
+      activity_id: ACTIVITY_ID,
+      source: "stripe",
+      full_name: session.customer_details?.name || null,
+      email,
+      type: "individual",
+      stage: "client",
+      notes: JSON.stringify({
+        stripe_customer_id: typeof session.customer === "string" ? session.customer : null,
+      }),
+    })
+    .select("id")
+    .single();
+
+  if (insertError) throw new Error(`Erreur création client : ${insertError.message}`);
+  return createdCustomer;
+}
+
+async function persistSubscriptionsForOrder(session, orderId, orderItems) {
+  const stripeSubscriptionId = typeof session.subscription === "string" ? session.subscription : null;
+  if (!stripeSubscriptionId) {
+    console.warn("⚠️ Session abonnement sans stripe_subscription_id — subscription Core non créée.");
+    return;
+  }
+
+  const customer = await findOrCreateCustomerFromSession(session);
+  if (!customer) {
+    console.warn("⚠️ Session abonnement sans email client — subscription Core non créée.");
+    return;
+  }
+
+  await supabase.from("orders").update({
+    customer_id: customer.id,
+    stripe_customer_id: typeof session.customer === "string" ? session.customer : null,
+  }).eq("id", orderId);
+
+  for (const item of orderItems.filter((i) => isSubscriptionProduct(i.products))) {
+    const product = item.products;
+    const billingCycle = subscriptionBillingCycle(product);
+    const { data: existingSubscription, error: readError } = await supabase
+      .from("subscriptions")
+      .select("id")
+      .eq("stripe_subscription_id", stripeSubscriptionId)
+      .eq("product_id", item.product_id)
+      .maybeSingle();
+
+    if (readError) throw new Error(`Erreur lecture abonnement : ${readError.message}`);
+    if (existingSubscription) continue;
+
+    const { error: insertError } = await supabase.from("subscriptions").insert({
+      customer_id: customer.id,
+      product_id: item.product_id,
+      status: "active",
+      frequency: billingCycle,
+      billing_cycle: billingCycle,
+      price_cents: item.unit_sale_price_ttc_cents,
+      stripe_subscription_id: stripeSubscriptionId,
+      notes: JSON.stringify({
+        order_id: orderId,
+        stripe_customer_id: typeof session.customer === "string" ? session.customer : null,
+        customer_email: session.customer_details?.email || null,
+      }),
+    });
+
+    if (insertError) throw new Error(`Erreur création abonnement : ${insertError.message}`);
+  }
+}
+
 async function processOrderSuccess(session) {
   console.log('--- 🚀 DÉBUT PROCESS ORDER SUCCESS ---');
   const orderId = session.client_reference_id || session.metadata?.order_id;
@@ -130,6 +232,28 @@ async function processOrderSuccess(session) {
   }
 
   try {
+    const { data: existingOrder, error: readError } = await supabase
+      .from("orders")
+      .select("id,payment_status")
+      .eq("id", orderId)
+      .maybeSingle();
+
+    if (readError) throw new Error(`Erreur lecture commande : ${readError.message}`);
+    if (!existingOrder) {
+      console.error(`❌ Commande introuvable pour Stripe session ${session.id}`);
+      return;
+    }
+
+    if (existingOrder.payment_status === "paid") {
+      await supabase.from("orders").update({
+        stripe_checkout_session_id: session.id,
+        stripe_payment_intent_id: typeof session.payment_intent === "string" ? session.payment_intent : null,
+        stripe_customer_id: typeof session.customer === "string" ? session.customer : null,
+      }).eq("id", orderId);
+      console.log('ℹ️ Commande déjà payée — effets secondaires ignorés.');
+      return;
+    }
+
     // 1. Mise à jour statut + adresse de livraison
     console.log('Mise à jour de la commande en paid dans Supabase...');
     const shipping = session.shipping_details;
@@ -141,24 +265,52 @@ async function processOrderSuccess(session) {
       shipping_city: shipping.address?.city || null,
       shipping_country: shipping.address?.country || null,
     } : {};
-    const { error: updateError } = await supabase.from("orders").update({
-      status: "paid",
-      payment_status: "paid",
-      ...shippingFields,
-      notes: JSON.stringify({
-        stripe_session_id: session.id,
-        customer_email: session.customer_details?.email,
-        paid_at: now(),
-      }),
-    }).eq("id", orderId);
-    if (updateError) console.error('❌ Erreur Supabase Update :', updateError.message);
-    else console.log('✅ Commande passée en PAID avec succès.');
+    const { data: paidOrder, error: updateError } = await supabase.from("orders").update({
+        status: "paid",
+        payment_status: "paid",
+        fulfillment_status: "pending",
+        stripe_checkout_session_id: session.id,
+        stripe_payment_intent_id: typeof session.payment_intent === "string" ? session.payment_intent : null,
+        stripe_customer_id: typeof session.customer === "string" ? session.customer : null,
+        ...shippingFields,
+        notes: JSON.stringify({
+          customer_email: session.customer_details?.email,
+          paid_at: now(),
+        }),
+      })
+      .eq("id", orderId)
+      .neq("payment_status", "paid")
+      .select("id")
+      .maybeSingle();
+    if (updateError) throw new Error(`Erreur Supabase Update : ${updateError.message}`);
+    if (!paidOrder) {
+      console.log('ℹ️ Commande déjà payée par un webhook concurrent — effets secondaires ignorés.');
+      return;
+    }
+    console.log('✅ Commande passée en PAID avec succès.');
 
-    // 2. Décrémentation Stock (Option RPC originale)
-    console.log('Décrémentation du stock...');
-    const { error: rpcError } = await supabase.rpc("decrement_stock_for_order", { order_id: orderId });
-    if (rpcError) console.error('❌ Erreur RPC decrement_stock_for_order :', rpcError.message);
-    else console.log('✅ Stock décrémenté avec succès.');
+    const { data: orderItemsForEffects, error: effectsItemsError } = await supabase
+      .from("order_items")
+      .select("product_id, qty, unit_sale_price_ttc_cents, products(id, name, type)")
+      .eq("order_id", orderId);
+    if (effectsItemsError) throw new Error(`Erreur lecture articles commande : ${effectsItemsError.message}`);
+
+    const hasPhysicalItems = (orderItemsForEffects || []).some((item) => !isSubscriptionProduct(item.products));
+    const hasSubscriptionItems = (orderItemsForEffects || []).some((item) => isSubscriptionProduct(item.products));
+
+    if (hasPhysicalItems) {
+      console.log('Décrémentation du stock...');
+      const { error: rpcError } = await supabase.rpc("decrement_stock_for_order", { order_id: orderId });
+      if (rpcError) console.error('❌ Erreur RPC decrement_stock_for_order :', rpcError.message);
+      else console.log('✅ Stock décrémenté avec succès.');
+    } else {
+      console.log('ℹ️ Commande abonnement — décrémentation stock ignorée.');
+    }
+
+    if (hasSubscriptionItems) {
+      await persistSubscriptionsForOrder(session, orderId, orderItemsForEffects || []);
+      console.log('✅ Abonnement Core synchronisé.');
+    }
 
     // 3. File d'attente Impression — table print_jobs absente en production, étape ignorée
     console.log('ℹ️ print_jobs non disponible en production — ignoré.');
@@ -310,7 +462,7 @@ app.post("/create-checkout-session", async (req, res) => {
       if (item.product_slug) {
         console.log(`[checkout] recherche Supabase par slug: "${item.product_slug}"`);
         const { data, error } = await supabase.from("products")
-          .select("id,name,price_cents,stripe_price_id")
+          .select("id,name,price_cents,type,stock,stripe_price_id")
           .eq("slug", item.product_slug).eq("is_active", true).maybeSingle();
         if (error) console.error(`[checkout] erreur Supabase (slug="${item.product_slug}"):`, error.message, error.code);
         console.log(`[checkout] résultat Supabase:`, data ? `trouvé id=${data.id}` : 'null');
@@ -318,7 +470,7 @@ app.post("/create-checkout-session", async (req, res) => {
       } else if (item.product_id) {
         console.log(`[checkout] pas de slug, recherche Supabase par id: "${item.product_id}"`);
         const { data, error } = await supabase.from("products")
-          .select("id,name,price_cents,stripe_price_id")
+          .select("id,name,price_cents,type,stock,stripe_price_id")
           .eq("id", item.product_id).eq("is_active", true).maybeSingle();
         if (error) console.error(`[checkout] erreur Supabase (id="${item.product_id}"):`, error.message, error.code);
         console.log(`[checkout] résultat Supabase:`, data ? `trouvé slug=${data.slug || '(sans slug)'}` : 'null');
@@ -328,15 +480,34 @@ app.post("/create-checkout-session", async (req, res) => {
       }
       if (!product) {
         return res.status(400).json({
-          error: `Produit introuvable : ${item.product_slug || '(inconnu)'}`,
+          error: `Produit introuvable : ${item.product_slug || item.product_id || '(inconnu)'}`,
           correlation_id: crypto.randomUUID(),
         });
       }
       resolvedProducts.push({ product, qty });
     }
 
+    const hasSubscriptionItems = resolvedProducts.some(({ product }) => isSubscriptionProduct(product));
+    const hasPhysicalItems = resolvedProducts.some(({ product }) => !isSubscriptionProduct(product));
+    if (hasSubscriptionItems && hasPhysicalItems) {
+      return res.status(400).json({
+        error: "Panier mixte abonnement + produit physique non supporté pour le moment.",
+        correlation_id: crypto.randomUUID(),
+      });
+    }
+
+    for (const { product, qty } of resolvedProducts.filter(({ product }) => !isSubscriptionProduct(product))) {
+      const stock = Number(product.stock ?? 0);
+      if (stock < qty) {
+        return res.status(400).json({
+          error: `Stock insuffisant pour ${product.name}. Disponible : ${stock}.`,
+          correlation_id: crypto.randomUUID(),
+        });
+      }
+    }
+
     const totalCents = resolvedProducts.reduce((sum, { product, qty }) => sum + product.price_cents * qty, 0);
-    const checkoutMode = "payment";
+    const checkoutMode = hasSubscriptionItems ? "subscription" : "payment";
 
     const { data: order, error: orderError } = await supabase.from("orders").insert({
       activity_id: ACTIVITY_ID,
@@ -348,22 +519,7 @@ app.post("/create-checkout-session", async (req, res) => {
     }).select().single();
     if (orderError) throw new Error(`Erreur création commande : ${orderError.message}`);
 
-    const session = await stripe.checkout.sessions.create({
-      mode: checkoutMode,
-      line_items: resolvedProducts.map(({ product, qty }) => ({ price: product.stripe_price_id, quantity: qty })),
-      client_reference_id: order.id,
-      metadata: { order_id: order.id },
-      shipping_address_collection: { allowed_countries: ['FR', 'BE', 'CH', 'LU', 'DE'] },
-      success_url: `${process.env.SITE_URL}/success.html?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.SITE_URL}/cancel.html`,
-    });
-
-    // stripe_session_id n'existe pas en prod → stocké dans notes
-    await supabase.from("orders").update({
-      notes: JSON.stringify({ stripe_session_id: session.id }),
-    }).eq("id", order.id);
-
-    await supabase.from("order_items").insert(
+    const { error: itemsError } = await supabase.from("order_items").insert(
       resolvedProducts.map(({ product, qty }) => ({
         order_id: order.id,
         product_id: product.id,
@@ -371,6 +527,34 @@ app.post("/create-checkout-session", async (req, res) => {
         unit_sale_price_ttc_cents: product.price_cents,
       }))
     );
+    if (itemsError) throw new Error(`Erreur création articles commande : ${itemsError.message}`);
+
+    const session = await stripe.checkout.sessions.create({
+      mode: checkoutMode,
+      line_items: resolvedProducts.map(({ product, qty }) => ({
+        price_data: {
+          currency: "eur",
+          unit_amount: product.price_cents,
+          product_data: {
+            name: product.name,
+          },
+          ...(isSubscriptionProduct(product) ? {
+            recurring: { interval: stripeRecurringInterval(product) },
+          } : {}),
+        },
+        quantity: qty,
+      })),
+      client_reference_id: order.id,
+      metadata: { order_id: order.id },
+      shipping_address_collection: { allowed_countries: ['FR', 'BE', 'CH', 'LU', 'DE'] },
+      success_url: `${process.env.SITE_URL}/success.html?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.SITE_URL}/cancel.html`,
+    });
+
+    const { error: sessionUpdateError } = await supabase.from("orders").update({
+      stripe_checkout_session_id: session.id,
+    }).eq("id", order.id);
+    if (sessionUpdateError) throw new Error(`Erreur stockage session Stripe : ${sessionUpdateError.message}`);
 
     res.json({ url: session.url, order_id: order.id });
   } catch (err) { res.status(500).json({ error: err.message }); }
