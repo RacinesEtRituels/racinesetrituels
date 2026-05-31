@@ -11,10 +11,12 @@
     "dev:pre": "bash scripts/dev-preflight.sh",
     "dev:services": "concurrently --kill-others --names \"BACKEND,FRONTEND,STRIPE,SUMMARY\" -c \"bgBlue.bold,bgGreen.bold,bgMagenta.bold,bgCyan.bold\" \"npm run dev:server\" \"npm run dev:front\" \"npm run dev:stripe\" \"bash scripts/dev-summary.sh\"",
     "dev:server": "cd server && NODE_ENV=development node server.js",
-    "dev:front": "npx http-server ./ -p 5174 -c-1 --silent",
+    "dev:backend": "npm run dev:server",
+    "dev:frontend": "node scripts/dev-frontend.mjs",
+    "dev:front": "npm run dev:frontend",
     "diag:front-root": "ROOT=./ && echo \"pwd: $(pwd)\" && node -p \"process.cwd()\" && ls -la && ls -la $ROOT && (curl -s http://127.0.0.1:8000/js/config.js | head -n 5 || true)",
     "dev:stripe": "bash scripts/dev-stripe.sh",
-    "stripe:listen": "stripe listen --forward-to 127.0.0.1:3000/webhook",
+    "stripe:listen": "stripe listen --forward-to 127.0.0.1:3000/webhook/stripe",
     "fix:config": "node scripts/fix-config.js",
     "check:config": "node scripts/check-served-config.js",
     "test:checkout": "bash scripts/test-checkout.sh",
@@ -44,7 +46,7 @@
     "audit:security": "node scripts/security/security-audit.js",
     "audit:security:debug": "DEBUG=1 node scripts/security/security-audit.js"
   },
-  "// FRONT_ROOT": "./",
+  "// FRONT_ROOT": "pages served by scripts/dev-frontend.mjs",
   "devDependencies": {
     "@playwright/test": "^1.41.2",
     "@tailwindcss/container-queries": "^0.1.1",
