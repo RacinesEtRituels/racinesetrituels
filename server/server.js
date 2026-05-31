@@ -139,18 +139,65 @@ const stripeRecurringInterval = (product) => (
 );
 
 async function findOrCreateCustomerFromSession(session) {
-  const email = session.customer_details?.email;
+  const stripeCustomerId = typeof session.customer === "string" ? session.customer : null;
+  const email = session.customer_details?.email || null;
+  const fullName = session.customer_details?.name || null;
+  if (!stripeCustomerId && !email) return null;
+
+  const customerUpdates = {
+    ...(stripeCustomerId ? { stripe_customer_id: stripeCustomerId } : {}),
+    ...(email ? { email } : {}),
+    ...(fullName ? { full_name: fullName } : {}),
+    stage: "client",
+    is_active: true,
+  };
+
+  if (stripeCustomerId) {
+    const { data: stripeCustomer, error: stripeReadError } = await supabase
+      .from("customers")
+      .select("id")
+      .eq("activity_id", ACTIVITY_ID)
+      .eq("stripe_customer_id", stripeCustomerId)
+      .maybeSingle();
+
+    if (stripeReadError) throw new Error(`Erreur lecture client Stripe : ${stripeReadError.message}`);
+    if (stripeCustomer) {
+      const { error: updateError } = await supabase
+        .from("customers")
+        .update(customerUpdates)
+        .eq("id", stripeCustomer.id);
+      if (updateError) throw new Error(`Erreur mise à jour client Stripe : ${updateError.message}`);
+      return stripeCustomer;
+    }
+  }
+
   if (!email) return null;
 
-  const { data: existingCustomer, error: readError } = await supabase
+  const { data: existingCustomers, error: readError } = await supabase
     .from("customers")
-    .select("id")
+    .select("id, stage, is_active, created_at")
     .eq("activity_id", ACTIVITY_ID)
     .eq("email", email)
-    .maybeSingle();
+    .order("created_at", { ascending: true })
+    .limit(20);
 
   if (readError) throw new Error(`Erreur lecture client : ${readError.message}`);
-  if (existingCustomer) return existingCustomer;
+  const existingCustomer = (existingCustomers || []).sort((a, b) => {
+    const rank = (customer) => (
+      (customer.is_active ? 0 : 10) +
+      ({ client: 0, prospect: 1, inactive: 2 }[customer.stage] ?? 3)
+    );
+    return rank(a) - rank(b);
+  })[0];
+
+  if (existingCustomer) {
+    const { error: updateError } = await supabase
+      .from("customers")
+      .update(customerUpdates)
+      .eq("id", existingCustomer.id);
+    if (updateError) throw new Error(`Erreur mise à jour client : ${updateError.message}`);
+    return existingCustomer;
+  }
 
   const { data: createdCustomer, error: insertError } = await supabase
     .from("customers")
@@ -161,9 +208,8 @@ async function findOrCreateCustomerFromSession(session) {
       email,
       type: "individual",
       stage: "client",
-      notes: JSON.stringify({
-        stripe_customer_id: typeof session.customer === "string" ? session.customer : null,
-      }),
+      is_active: true,
+      ...(stripeCustomerId ? { stripe_customer_id: stripeCustomerId } : {}),
     })
     .select("id")
     .single();
