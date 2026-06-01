@@ -272,6 +272,10 @@ async function persistSubscriptionsForOrder(session, orderId, orderItems) {
 
 async function processOrderSuccess(session) {
   console.log('--- 🚀 DÉBUT PROCESS ORDER SUCCESS ---');
+  if (!session.client_reference_id || !session.metadata?.order_id || !session.payment_intent) {
+    console.log('Session webhook incomplète — récupération Stripe API :', session.id);
+    session = await stripe.checkout.sessions.retrieve(session.id);
+  }
   const orderId = session.client_reference_id || session.metadata?.order_id;
   console.log('ID de commande trouvé par Stripe :', orderId);
   if (!orderId) {
@@ -304,7 +308,7 @@ async function processOrderSuccess(session) {
 
     // 1. Mise à jour statut + adresse de livraison
     console.log('Mise à jour de la commande en paid dans Supabase...');
-    const shipping = session.shipping_details;
+    const shipping = session.shipping_details || session.collected_information?.shipping_details;
     const shippingFields = shipping ? {
       shipping_name: shipping.name || null,
       shipping_address1: shipping.address?.line1 || null,
@@ -336,6 +340,16 @@ async function processOrderSuccess(session) {
       return;
     }
     console.log('✅ Commande passée en PAID avec succès.');
+
+    const customer = await findOrCreateCustomerFromSession(session);
+    if (customer) {
+      const { error: customerUpdateError } = await supabase.from("orders").update({
+        customer_id: customer.id,
+        stripe_customer_id: typeof session.customer === "string" ? session.customer : null,
+      }).eq("id", orderId);
+      if (customerUpdateError) throw new Error(`Erreur liaison client commande : ${customerUpdateError.message}`);
+      console.log('✅ Client Core lié à la commande.');
+    }
 
     const { data: orderItemsForEffects, error: effectsItemsError } = await supabase
       .from("order_items")
@@ -594,6 +608,7 @@ app.post("/create-checkout-session", async (req, res) => {
       })),
       client_reference_id: order.id,
       metadata: { order_id: order.id },
+      ...(checkoutMode === "payment" ? { customer_creation: "always" } : {}),
       shipping_address_collection: { allowed_countries: ['FR', 'BE', 'CH', 'LU', 'DE'] },
       success_url: `${process.env.SITE_URL}/success.html?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.SITE_URL}/cancel.html`,
