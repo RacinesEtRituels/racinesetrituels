@@ -177,7 +177,7 @@ async function findOrCreateCustomerFromSession(session) {
 
   const { data: existingCustomers, error: readError } = await supabase
     .from("customers")
-    .select("id, stage, is_active, created_at")
+    .select("id, stripe_customer_id, stage, is_active, created_at")
     .eq("activity_id", ACTIVITY_ID)
     .eq("email", email)
     .order("created_at", { ascending: true })
@@ -193,9 +193,18 @@ async function findOrCreateCustomerFromSession(session) {
   })[0];
 
   if (existingCustomer) {
+    const emailUpdatePayload = {
+      ...(fullName ? { full_name: fullName } : {}),
+      stage: "client",
+      is_active: true,
+      // Ne jamais écraser un stripe_customer_id existant — on le définit seulement s'il manque
+      ...(!existingCustomer.stripe_customer_id && stripeCustomerId
+        ? { stripe_customer_id: stripeCustomerId }
+        : {}),
+    };
     const { error: updateError } = await supabase
       .from("customers")
-      .update(customerUpdates)
+      .update(emailUpdatePayload)
       .eq("id", existingCustomer.id);
     if (updateError) throw new Error(`Erreur mise à jour client : ${updateError.message}`);
     return existingCustomer;
@@ -216,20 +225,31 @@ async function findOrCreateCustomerFromSession(session) {
     .select("id")
     .single();
 
-  if (insertError) throw new Error(`Erreur création client : ${insertError.message}`);
+  if (insertError) {
+    // Contrainte unique sur email : deux webhooks concurrents — le premier a déjà créé le customer
+    if (insertError.code === "23505") {
+      const { data: raceFallback } = await supabase
+        .from("customers")
+        .select("id")
+        .eq("activity_id", ACTIVITY_ID)
+        .eq("email", email)
+        .maybeSingle();
+      if (raceFallback) return raceFallback;
+    }
+    throw new Error(`Erreur création client : ${insertError.message}`);
+  }
   return createdCustomer;
 }
 
-async function persistSubscriptionsForOrder(session, orderId, orderItems) {
+async function persistSubscriptionsForOrder(session, orderId, orderItems, customer) {
   const stripeSubscriptionId = typeof session.subscription === "string" ? session.subscription : null;
   if (!stripeSubscriptionId) {
     console.warn("⚠️ Session abonnement sans stripe_subscription_id — subscription Core non créée.");
     return;
   }
 
-  const customer = await findOrCreateCustomerFromSession(session);
   if (!customer) {
-    console.warn("⚠️ Session abonnement sans email client — subscription Core non créée.");
+    console.warn("⚠️ Session abonnement sans client résolu — subscription Core non créée.");
     return;
   }
 
@@ -370,7 +390,7 @@ async function processOrderSuccess(session) {
     }
 
     if (hasSubscriptionItems) {
-      await persistSubscriptionsForOrder(session, orderId, orderItemsForEffects || []);
+      await persistSubscriptionsForOrder(session, orderId, orderItemsForEffects || [], customer);
       console.log('✅ Abonnement Core synchronisé.');
     }
 
