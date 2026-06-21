@@ -19,12 +19,14 @@
 ## Pages légales à créer
 
 - [x] `pages/mentions-legales.html` — éditeur, hébergeur, PI, responsabilité, RGPD, cookies, contact
-- [ ] `pages/confidentialite.html` — politique de confidentialité / RGPD complète
-  - Données collectées (compte, commande, email)
-  - Finalités et base légale
-  - Durée de conservation
-  - Droits des utilisateurs (accès, rectification, suppression, portabilité, opposition)
-  - DPO / contact : contact@racinesetrituels.com
+- [x] `pages/confidentialite.html` — politique de confidentialité RGPD complète
+  - Données collectées (identité, commandes, abonnements, technique)
+  - Finalités et base légale (contrat, obligation légale, intérêt légitime, consentement)
+  - Prestataires : Vercel, Supabase, Stripe, Resend, IONOS
+  - Durées de conservation
+  - Droits des utilisateurs (accès, rectification, effacement, opposition, limitation, portabilité, consentement, CNIL)
+  - Transferts hors UE — clauses contractuelles types
+  - Sécurité (HTTPS, accès restreint, secrets en variables d'environnement)
 - [ ] `pages/cgv.html` — Conditions Générales de Vente
   - Objet et champ d'application
   - Prix (TTC, TVA)
@@ -34,40 +36,43 @@
   - Garanties légales
   - Médiation des litiges (art. L.612-1 Code de la consommation)
 - [ ] `pages/cookies.html` — politique des cookies
-  - Liste des cookies utilisés (téchniques, analytiques, tiers)
+  - Liste des cookies utilisés (techniques, analytiques, tiers)
   - Durée de conservation
-  - Comment les refuser
+  - Comment les refuser / les gérer
 
 ---
 
 ## Intégration footer
 
 - [x] Lien "Mentions légales" ajouté dans `components/footer.html`
+- [x] Lien "Confidentialité" ajouté dans `components/footer.html`
 - [ ] Ajouter lien "CGV" dans le footer quand la page sera créée
-- [ ] Ajouter lien "Confidentialité" dans le footer quand la page sera créée
+- [ ] Ajouter lien "Cookies" dans le footer quand la page sera créée
 
 ---
 
 ## Obligations légales en production
 
-- [ ] Bannière cookies conforme ePrivacy (consentement avant analytics/tracking)
-- [ ] Vérifier que les emails transactionnels mentionnent le droit de désabonnement
-- [ ] Déclarer les traitements de données si nécessaire (pas d'obligation RGPD d'enregistrement pour les TPE, mais documenter un registre interne)
+- [ ] **Bandeau cookies** conforme ePrivacy (consentement avant tout cookie non essentiel / analytics)
+- [ ] Vérifier que les emails transactionnels contiennent le droit de contact / désabonnement marketing
+- [ ] Documenter un registre interne des traitements (recommandé, pas obligatoire pour les TPE)
 - [ ] Souscrire une RC Pro si vente de produits physiques / conseils santé
-- [ ] Vérifier l'habilitation pour la vente de produits liés au bien-être / plantes
+- [ ] Vérifier l'habilitation pour la vente de produits liés au bien-être / plantes médicinales
+- [ ] Conditions générales d'abonnement : préciser la politique de résiliation et de remboursement
+- [ ] Droit de rétractation : vérifier l'exception pour les biens numériques / abonnements (art. L.221-28 Code de la consommation)
 
 ---
 
-## Mentions légales — lien dans les pages importantes
+## Liens en attente (404 temporaires)
 
-Pages qui devraient avoir un accès rapide aux mentions légales (via footer) :
-- Toutes les pages → footer global ✅ (lien ajouté)
-- Page checkout : vérifier que le footer est visible avant paiement
-- Page success/panier : idem
+Ces liens existent dans les pages légales mais renvoient 404 jusqu'à la création des pages cibles :
+- `/cookies.html` — référencé dans `mentions-legales.html` et `confidentialite.html`
+- `/cgv.html` — pas encore référencé dans le footer
 
 ---
 
 ## Notes
 
-- La page `mentions-legales.html` contient des liens vers `confidentialite.html` et `cookies.html` qui n'existent pas encore. Ces liens sont en attente (404 jusqu'à création des pages).
-- Le domaine `racinesetrituels.com` est référencé dans les canonical URLs. Vérifier que le domaine est bien configuré sur Vercel avant mise en production.
+- Le domaine `racinesetrituels.com` est référencé dans les canonical URLs. Vérifier la configuration Vercel avant mise en production.
+- La page `confidentialite.html` mentionne Stripe, Resend, Vercel, Supabase, IONOS comme prestataires. À mettre à jour si la liste évolue.
+- Délai de réponse aux droits RGPD mentionné dans la page : **30 jours**.
