@@ -171,6 +171,45 @@ test('server.js : erreur stock inclut orderId dans le message (non silencieux)',
   );
 });
 
+// ── Email audit ───────────────────────────────────────────────────────────────
+
+test('server.js : importe insertEmailLog depuis emails/log.js', () => {
+  const src = readFileSync(join(ROOT, 'server/server.js'), 'utf8');
+  assert.ok(src.includes("from \"./emails/log.js\"") || src.includes("from './emails/log.js'"),
+    'insertEmailLog doit être importé directement pour les cas skipped');
+});
+
+test('server.js : persistSubscriptionsForOrder enveloppé dans try/catch indépendant', () => {
+  const src = readFileSync(join(ROOT, 'server/server.js'), 'utf8');
+  assert.ok(src.includes('Abonnement Core non créé pour commande'),
+    'Une erreur de persistSubscriptionsForOrder ne doit pas bloquer l\'email');
+});
+
+test('server.js : log skipped quand customerEmail absent (order-confirmation)', () => {
+  const src = readFileSync(join(ROOT, 'server/server.js'), 'utf8');
+  assert.ok(src.includes("status: 'skipped'"), 'Un log skipped doit être écrit dans email_logs quand pas d\'email');
+});
+
+test('emails/index.js : sendTestEmail passe par EmailService.send()', () => {
+  const src = readFileSync(join(ROOT, 'server/emails/index.js'), 'utf8');
+  assert.ok(src.includes('EmailService.send('), 'sendTestEmail doit utiliser EmailService.send pour tracer dans email_logs');
+  assert.ok(!src.includes("client.emails.send("), 'sendTestEmail ne doit plus appeler Resend directement');
+});
+
+test('emails/log.js : insertEmailLog ne lève jamais (try/catch global)', () => {
+  const src = readFileSync(join(ROOT, 'server/emails/log.js'), 'utf8');
+  assert.ok(src.includes('try {') && src.includes('} catch (e)'), 'insertEmailLog doit être protégé contre toute exception');
+});
+
+test('emails/send.js : insertEmailLog appelé même si Resend échoue', () => {
+  const src = readFileSync(join(ROOT, 'server/emails/send.js'), 'utf8');
+  // insertEmailLog est appelé après le bloc try/catch qui capture sendError
+  const logIndex = src.indexOf('await insertEmailLog(');
+  const rethrowIndex = src.indexOf('if (sendError) throw sendError');
+  assert.ok(logIndex > 0 && rethrowIndex > logIndex,
+    'insertEmailLog doit être appelé AVANT le rethrow de sendError');
+});
+
 test('server.js : décrémentation stock réservée aux commandes physiques (hasPhysicalItems)', () => {
   const src = readFileSync(join(ROOT, 'server/server.js'), 'utf8');
   assert.ok(src.includes('hasPhysicalItems'), 'La garde hasPhysicalItems doit exister');
