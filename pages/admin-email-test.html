@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Email — Racines & Rituels</title>
+  <style>
+    body { font-family: sans-serif; background: #f4f1ec; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
+    .card { background: #fff; border-radius: 10px; padding: 40px 48px; max-width: 440px; width: 100%; box-shadow: 0 4px 20px rgba(0,0,0,0.08); text-align: center; }
+    h1 { font-size: 1.2rem; margin: 0 0 8px; color: #2d2d2d; }
+    p.sub { font-size: 0.85rem; color: #888; margin: 0 0 32px; }
+    button { width: 100%; padding: 14px; background: #2d7a4f; color: #fff; border: none; border-radius: 8px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: background .2s; }
+    button:hover:not(:disabled) { background: #235f3d; }
+    button:disabled { opacity: .6; cursor: not-allowed; }
+    #status { margin-top: 20px; font-size: 0.9rem; min-height: 22px; }
+    .ok  { color: #2d7a4f; font-weight: 600; }
+    .err { color: #c0392b; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🌿 Test Email Resend</h1>
+    <p class="sub">Envoie un email de test à <strong>alexandre.boehler@gmail.com</strong></p>
+
+    <button id="sendBtn">Envoyer un email de test</button>
+    <div id="status"></div>
+  </div>
+
+  <script>
+    const btn = document.getElementById('sendBtn');
+    const status = document.getElementById('status');
+
+    btn.addEventListener('click', async () => {
+      btn.disabled = true;
+      status.textContent = 'Envoi en cours…';
+      status.className = '';
+
+      try {
+        const res = await fetch('/api/test-email', { method: 'POST' });
+        const json = await res.json().catch(() => ({}));
+
+        if (res.ok && json.ok) {
+          status.textContent = '✅ Email envoyé ! Vérifiez alexandre.boehler@gmail.com';
+          status.className = 'ok';
+        } else {
+          status.textContent = '❌ Erreur : ' + (json.error || `HTTP ${res.status}`);
+          status.className = 'err';
+        }
+      } catch (err) {
+        status.textContent = '❌ Impossible de contacter le serveur : ' + err.message;
+        status.className = 'err';
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

@@ -7,6 +7,7 @@ import { fileURLToPath } from "url";
 import path from "path";
 import nodemailer from "nodemailer";
 import crypto from "crypto";
+import { sendTestEmail } from "./emails/index.js";
 
 // --- CONFIGURATION ---
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -92,7 +93,8 @@ const frontendPath = path.join(__dirname, '..');
 [
   'index', 'boutique', 'produits', 'abonnements', 'hibiscus-blanc', 'hibiscus-rouge',
   'panier', 'checkout', 'success', 'cancel', 'profil', 'connexion', 'inscription',
-  'assistantIA', 'conseil', 'confreinimotPass', 'recupmotdepass', 'admin', 'khamare'
+  'assistantIA', 'conseil', 'confreinimotPass', 'recupmotdepass', 'admin', 'khamare',
+  'admin-email-test',
 ].forEach(p => {
   app.get(`/${p}.html`, (req, res) => {
     res.sendFile(path.join(frontendPath, 'pages', `${p}.html`));
@@ -669,6 +671,19 @@ app.get("/admin/orders", requireAdmin, async (req, res) => {
 });
 
 app.get("/health", (req, res) => res.json({ status: "ok" }));
+
+// --- EMAIL TEST ---
+app.post("/api/test-email", async (req, res) => {
+  try {
+    const data = await sendTestEmail();
+    console.log('[test-email] ✅ envoyé —', data?.id);
+    res.json({ ok: true, id: data?.id });
+  } catch (err) {
+    console.error('[test-email] ❌', err.message);
+    const isConfig = err.message.includes('manquante');
+    res.status(isConfig ? 503 : 500).json({ ok: false, error: err.message });
+  }
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`🚀 Backend Racines & Rituels opérationnel sur port ${PORT}`));
