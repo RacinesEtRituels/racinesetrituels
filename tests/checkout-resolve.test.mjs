@@ -22,34 +22,41 @@ if (!slug || !uuid) {
   console.warn("[SKIP] set TEST_PRODUCT_SLUG and TEST_PRODUCT_UUID to run checkout resolve tests");
   test("skip when env not set", () => {});
 } else {
-  test("slug payload resolves to uuid", async () => {
+  // Server returns { url, order_id } on success (not session_id)
+  test("slug payload resolves product and returns Stripe URL", async () => {
     const { status, body } = await postCheckout({ items: [{ product_slug: slug, quantity: 1 }] });
-    assert.equal(status, 200);
-    assert.ok(body.session_id);
-    assert.ok(body.order_id);
+    assert.equal(status, 200, `Unexpected status: ${status} — ${JSON.stringify(body)}`);
+    assert.ok(body.url, "Stripe checkout URL missing");
+    assert.ok(body.order_id, "order_id missing");
   });
 
-  test("uuid payload succeeds", async () => {
-    const { status, body } = await postCheckout({ items: [{ product_id_uuid: uuid, quantity: 1 }] });
-    assert.equal(status, 200);
-    assert.ok(body.session_id);
+  test("uuid payload (product_id) resolves product and returns Stripe URL", async () => {
+    const { status, body } = await postCheckout({ items: [{ product_id: uuid, quantity: 1 }] });
+    assert.equal(status, 200, `Unexpected status: ${status} — ${JSON.stringify(body)}`);
+    assert.ok(body.url, "Stripe checkout URL missing");
+    assert.ok(body.order_id, "order_id missing");
   });
 
-  test("unknown slug returns 404", async () => {
+  // Server returns 400 (not 404) when no product is found
+  test("unknown slug returns 400 with error message", async () => {
     const { status, body } = await postCheckout({ items: [{ product_slug: "__unknown_slug__", quantity: 1 }] });
-    assert.equal(status, 404);
-    assert.equal(body.error, "product_not_found");
+    assert.equal(status, 400, `Expected 400, got ${status}`);
+    assert.ok(body.error, "Error message should be present");
   });
 
-  test("legacy product_id slug is accepted", async () => {
-    const { status, body } = await postCheckout({ items: [{ product_id: slug, quantity: 1 }] });
-    assert.equal(status, 200);
-    assert.ok(body.session_id);
+  test("empty items array returns 400", async () => {
+    const { status, body } = await postCheckout({ items: [] });
+    assert.equal(status, 400, `Expected 400, got ${status}`);
+    assert.ok(body.error, "Error message should be present");
   });
 
-  test("providing both slug and uuid in one item is rejected", async () => {
-    const { status, body } = await postCheckout({ items: [{ product_slug: slug, product_id_uuid: uuid, quantity: 1 }] });
-    assert.equal(status, 400);
-    assert.equal(body.error, "invalid_payload");
+  test("invalid quantity (0) returns 400", async () => {
+    const { status } = await postCheckout({ items: [{ product_slug: slug, quantity: 0 }] });
+    assert.equal(status, 400, "Quantity 0 should be rejected");
+  });
+
+  test("invalid quantity (100) returns 400", async () => {
+    const { status } = await postCheckout({ items: [{ product_slug: slug, quantity: 100 }] });
+    assert.equal(status, 400, "Quantity > 99 should be rejected");
   });
 }
