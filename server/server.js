@@ -102,6 +102,9 @@ const frontendPath = path.join(__dirname, '..');
   'confidentialite',
   'cgv',
   'cookies',
+  'retractation-retours',
+  'mediateur-consommation',
+  'contact',
 ].forEach(p => {
   app.get(`/${p}.html`, (req, res) => {
     res.sendFile(path.join(frontendPath, 'pages', `${p}.html`));
