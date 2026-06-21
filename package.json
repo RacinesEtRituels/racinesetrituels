@@ -34,6 +34,7 @@
     "test:config-served": "node --test tests/config-served.test.mjs",
     "test:config-runtime": "node --test tests/config-runtime.test.mjs",
     "test:rest-auth": "node --test tests/rest-auth-smoke.test.mjs",
+    "test:subscriptions": "node --test tests/subscription-resolve.test.mjs",
     "test:e2e": "npx playwright test tests/ui-products.spec.js",
     "test:e2e:with-server": "bash scripts/e2e.sh",
     "test:e2e:auto": "bash scripts/e2e.sh",

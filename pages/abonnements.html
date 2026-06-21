@@ -85,12 +85,12 @@
           <p class="text-3xl font-extrabold text-primary mb-2">69 € / an</p>
           <p class="text-xs mb-6">Paiement en une fois · Accès immédiat</p>
 
-          <a href="/checkout.html"
-            class="flex items-center justify-center w-full bg-primary text-white h-14 rounded-xl font-bold hover:bg-primary/90 transition mb-3">
+          <button id="btn-checkout-annual" disabled
+            class="flex items-center justify-center w-full bg-primary text-white h-14 rounded-xl font-bold hover:bg-primary/90 transition mb-3 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
             Choisir l'offre annuelle
-          </a>
-          <button data-product-id="cercle_annuel" data-name="Cercle - Annuel" data-price="69.00"
-            class="add-to-cart flex items-center justify-center w-full h-12 rounded-xl bg-primary/80 text-white font-bold hover:bg-primary/90 transition">Ajouter
+          </button>
+          <button id="btn-cart-annual" disabled
+            class="flex items-center justify-center w-full h-12 rounded-xl bg-primary/80 text-white font-bold hover:bg-primary/90 transition disabled:opacity-50 disabled:cursor-not-allowed">Ajouter
             au panier</button>
         </div>
 
@@ -107,16 +107,18 @@
           <p class="text-3xl font-extrabold text-primary mb-2">7 € / mois</p>
           <p class="text-xs mb-6">Paiement chaque mois · Résiliable à tout moment</p>
 
-          <a href="/checkout.html"
-            class="flex items-center justify-center w-full bg-primary text-white h-14 rounded-xl font-bold hover:bg-primary/90 transition mb-3">
+          <button id="btn-checkout-monthly" disabled
+            class="flex items-center justify-center w-full bg-primary text-white h-14 rounded-xl font-bold hover:bg-primary/90 transition mb-3 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
             Choisir l'offre mensuelle
-          </a>
-          <button data-product-id="cercle_mensuel" data-name="Cercle - Mensuel" data-price="7.00"
-            class="add-to-cart flex items-center justify-center w-full h-12 rounded-xl bg-primary/80 text-white font-bold hover:bg-primary/90 transition">Ajouter
+          </button>
+          <button id="btn-cart-monthly" disabled
+            class="flex items-center justify-center w-full h-12 rounded-xl bg-primary/80 text-white font-bold hover:bg-primary/90 transition disabled:opacity-50 disabled:cursor-not-allowed">Ajouter
             au panier</button>
         </div>
 
       </div>
+
+      <p id="sub-error" class="hidden text-red-600 dark:text-red-400 text-sm text-center mt-6 px-4"></p>
     </section>
 
   </main>
@@ -154,9 +156,19 @@
   <script type="module" src="/public/js/footer-loader.js"></script>
 
   <script type="module">
-    import { addItem, getTotals } from '/public/js/cart.js';
+    import { addItem } from '/public/js/cart.js';
+    import { supabase } from '/public/js/supabase.js';
 
-    function showToast(message = 'Ajouté au panier') {
+    let monthlyProduct = null;
+    let annualProduct = null;
+
+    function showSubError(msg) {
+      const el = document.getElementById('sub-error');
+      if (el) { el.textContent = msg; el.classList.remove('hidden'); }
+      console.error('[abonnements]', msg);
+    }
+
+    function showToast(message) {
       const t = document.createElement('div');
       t.className = 'fixed bottom-6 right-6 bg-black/80 text-white px-4 py-2 rounded-lg text-sm z-50';
       t.textContent = message;
@@ -164,41 +176,117 @@
       setTimeout(() => t.remove(), 1800);
     }
 
-    async function updateBadge() {
+    async function resolveSubscriptionProducts() {
       try {
-        const totals = await getTotals();
-        const badge = document.getElementById('cart-count');
-        if (badge) badge.textContent = totals.count || 0;
-      } catch (e) { }
+        const { data, error } = await supabase
+          .from('products')
+          .select('id, name, price_cents')
+          .eq('type', 'subscription')
+          .eq('is_active', true);
+
+        if (error) {
+          showSubError("Impossible de charger les offres. Veuillez rafraîchir la page.");
+          console.error('[abonnements] Supabase error:', error);
+          return false;
+        }
+
+        if (!data || data.length === 0) {
+          showSubError("Aucune offre d'abonnement disponible actuellement.");
+          return false;
+        }
+
+        // Sort by price ascending: cheapest = monthly (€7), most expensive = annual (€69)
+        const sorted = [...data].sort((a, b) => a.price_cents - b.price_cents);
+        monthlyProduct = sorted[0];
+        annualProduct = sorted.length >= 2 ? sorted[sorted.length - 1] : null;
+
+        if (monthlyProduct && annualProduct && monthlyProduct.id === annualProduct.id) {
+          annualProduct = null;
+        }
+
+        return true;
+      } catch (err) {
+        showSubError("Erreur lors du chargement des offres. Veuillez rafraîchir la page.");
+        console.error('[abonnements] resolve error:', err);
+        return false;
+      }
     }
 
-    document.querySelectorAll('.add-to-cart').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        const product = {
-          id: btn.dataset.productId,
-          slug: btn.dataset.productId,
-          name: btn.dataset.name,
-          price: Number(btn.dataset.price || 0),
-          image: btn.dataset.image || '',
-          qty: 1
-        };
+    // Product already has a UUID from Supabase — skip re-resolution in cart.js
+    function makeCartItem(product) {
+      return {
+        id: product.id,           // UUID → ensureProductHasUuid returns immediately
+        slug: '',
+        name: product.name,
+        price: product.price_cents / 100,
+        image: '',
+        qty: 1,
+      };
+    }
+
+    function wireButton(btnId, product, onClick) {
+      const btn = document.getElementById(btnId);
+      if (!btn) return;
+      if (!product) {
+        btn.disabled = true;
+        btn.title = 'Offre non disponible';
+        return;
+      }
+      btn.disabled = false;
+      btn.addEventListener('click', onClick);
+    }
+
+    async function init() {
+      const ok = await resolveSubscriptionProducts();
+      if (!ok) return;
+
+      wireButton('btn-checkout-annual', annualProduct, async () => {
         try {
-          await addItem(product);
-          showToast('Ajouté au panier');
-          updateBadge();
+          await addItem(makeCartItem(annualProduct));
+          window.location.href = '/checkout.html';
         } catch (err) {
-          console.error('[cart] addItem failed', err);
-          showToast('Produit introuvable. Merci de réessayer.');
+          console.error('[abonnements] checkout annual error', err);
+          showToast('Erreur lors de la sélection. Veuillez réessayer.');
         }
       });
-    });
+
+      wireButton('btn-cart-annual', annualProduct, async () => {
+        try {
+          await addItem(makeCartItem(annualProduct));
+          showToast('Ajouté au panier');
+        } catch (err) {
+          console.error('[abonnements] cart annual error', err);
+          showToast("Erreur lors de l'ajout. Veuillez réessayer.");
+        }
+      });
+
+      wireButton('btn-checkout-monthly', monthlyProduct, async () => {
+        try {
+          await addItem(makeCartItem(monthlyProduct));
+          window.location.href = '/checkout.html';
+        } catch (err) {
+          console.error('[abonnements] checkout monthly error', err);
+          showToast('Erreur lors de la sélection. Veuillez réessayer.');
+        }
+      });
+
+      wireButton('btn-cart-monthly', monthlyProduct, async () => {
+        try {
+          await addItem(makeCartItem(monthlyProduct));
+          showToast('Ajouté au panier');
+        } catch (err) {
+          console.error('[abonnements] cart monthly error', err);
+          showToast("Erreur lors de l'ajout. Veuillez réessayer.");
+        }
+      });
+    }
 
     window.addEventListener('rr-cart-updated', (e) => {
       const badge = document.getElementById('cart-count');
       if (badge) badge.textContent = e.detail.count || 0;
     });
 
-    updateBadge();
+    init();
   </script>
 
 </body>
