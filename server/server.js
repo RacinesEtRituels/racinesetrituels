@@ -449,8 +449,11 @@ async function processOrderSuccess(session) {
     if (hasPhysicalItems) {
       console.log('Décrémentation du stock...');
       const { error: rpcError } = await supabase.rpc("decrement_stock_for_order", { order_id: orderId });
-      if (rpcError) console.error('❌ Erreur RPC decrement_stock_for_order :', rpcError.message);
-      else console.log('✅ Stock décrémenté avec succès.');
+      if (rpcError) {
+        console.error(`❌ [CRITIQUE] Stock non décrémenté pour commande ${orderId} : ${rpcError.message}`);
+      } else {
+        console.log(`✅ Stock décrémenté avec succès (commande ${orderId}).`);
+      }
     } else {
       console.log('ℹ️ Commande abonnement — décrémentation stock ignorée.');
     }
