@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aperçu Emails — Racines & Rituels</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: sans-serif; background: #f0ede8; color: #1b110e; }
+    header { background: #1b110e; color: #fff; padding: 16px 24px; display: flex; align-items: center; gap: 12px; }
+    header h1 { margin: 0; font-size: 1rem; font-weight: 700; letter-spacing: 1px; }
+    header span { font-size: 0.8rem; color: #9a8b7d; }
+    .toolbar { display: flex; gap: 10px; padding: 16px 24px; background: #fff; border-bottom: 1px solid #e8e0d8; flex-wrap: wrap; align-items: center; }
+    .toolbar label { font-size: 0.8rem; font-weight: 700; color: #666; text-transform: uppercase; letter-spacing: 1px; margin-right: 4px; }
+    button { padding: 9px 20px; border: 2px solid #e64c19; border-radius: 6px; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: all .15s; background: #fff; color: #e64c19; }
+    button.active, button:hover { background: #e64c19; color: #fff; }
+    .size-btn { border-color: #ccc; color: #555; font-size: 0.75rem; padding: 6px 12px; }
+    .size-btn.active, .size-btn:hover { background: #555; color: #fff; border-color: #555; }
+    .preview-wrap { padding: 20px 24px; }
+    .preview-label { font-size: 0.75rem; color: #999; margin-bottom: 8px; letter-spacing: 1px; text-transform: uppercase; }
+    .iframe-shell { background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,.08); transition: width .2s; }
+    iframe { display: block; width: 100%; height: 700px; border: none; }
+    .status { font-size: 0.8rem; color: #999; padding: 0 24px 12px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🌿 Aperçu des emails</h1>
+    <span>Aucun email n'est envoyé — rendu uniquement</span>
+  </header>
+
+  <div class="toolbar">
+    <label>Template :</label>
+    <button class="tpl-btn active" data-template="order-confirmation">
+      Confirmation commande
+    </button>
+    <button class="tpl-btn" data-template="subscription-confirmation">
+      Confirmation abonnement
+    </button>
+
+    <span style="flex:1"></span>
+
+    <label>Largeur :</label>
+    <button class="size-btn active" data-width="100%">Bureau</button>
+    <button class="size-btn" data-width="430px">Mobile</button>
+  </div>
+
+  <div class="status" id="status">Chargement…</div>
+
+  <div class="preview-wrap">
+    <div class="preview-label" id="preview-label">—</div>
+    <div class="iframe-shell" id="shell">
+      <iframe id="preview" title="Aperçu email" sandbox="allow-same-origin"></iframe>
+    </div>
+  </div>
+
+  <script>
+    const iframe = document.getElementById('preview');
+    const shell  = document.getElementById('shell');
+    const status = document.getElementById('status');
+    const label  = document.getElementById('preview-label');
+
+    const LABELS = {
+      'order-confirmation':       'Confirmation de commande — données d\'exemple',
+      'subscription-confirmation':'Confirmation d\'abonnement — données d\'exemple',
+    };
+
+    let currentTemplate = 'order-confirmation';
+
+    async function loadPreview(template) {
+      currentTemplate = template;
+      status.textContent = 'Chargement…';
+
+      // Mettre à jour les boutons actifs
+      document.querySelectorAll('.tpl-btn').forEach(b =>
+        b.classList.toggle('active', b.dataset.template === template)
+      );
+
+      try {
+        const res = await fetch(`/api/email-preview?template=${encodeURIComponent(template)}`);
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          status.textContent = '❌ Erreur : ' + (err.error || `HTTP ${res.status}`);
+          return;
+        }
+        const html = await res.text();
+        // Injecter via srcdoc pour isoler le CSS de l'email
+        iframe.srcdoc = html;
+        label.textContent = LABELS[template] || template;
+        status.textContent = '✅ Aperçu chargé — ' + new Date().toLocaleTimeString('fr-FR');
+      } catch (err) {
+        status.textContent = '❌ Impossible de contacter le serveur : ' + err.message;
+      }
+    }
+
+    // Boutons templates
+    document.querySelectorAll('.tpl-btn').forEach(btn => {
+      btn.addEventListener('click', () => loadPreview(btn.dataset.template));
+    });
+
+    // Boutons largeur
+    document.querySelectorAll('.size-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        shell.style.width = btn.dataset.width;
+        shell.style.margin = btn.dataset.width === '100%' ? '' : '0 auto';
+      });
+    });
+
+    // Chargement initial
+    loadPreview('order-confirmation');
+  </script>
+</body>
+</html>
