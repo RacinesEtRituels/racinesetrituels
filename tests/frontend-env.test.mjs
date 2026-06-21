@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 
 // We import lazily inside each test to avoid caching env between cases.
 async function loadModule() {
-  return import('../js/supabase-public.js');
+  return import('../public/js/supabase-public.js');
 }
 
 test('validateEnv throws when anon key missing', async () => {
