@@ -97,6 +97,7 @@ const frontendPath = path.join(__dirname, '..');
   'assistantIA', 'conseil', 'confreinimotPass', 'recupmotdepass', 'admin', 'khamare',
   'admin-email-test',
   'admin-email-preview',
+  'admin-email-logs',
 ].forEach(p => {
   app.get(`/${p}.html`, (req, res) => {
     res.sendFile(path.join(frontendPath, 'pages', `${p}.html`));
@@ -628,6 +629,32 @@ app.get("/admin/orders", requireAdmin, async (req, res) => {
     .order("created_at", { ascending: false })
     .limit(100);
   res.json({ orders: data });
+});
+
+// Interface admin temporaire — logs emails envoyés via Resend.
+// ATTENTION : route réservée aux environnements de développement ou si
+// ADMIN_EMAIL_LOGS_ENABLED=true est explicitement défini en production.
+// Ne pas exposer publiquement sans cette garde.
+app.get('/api/admin/email-logs', requireAdmin, async (req, res) => {
+  if (process.env.NODE_ENV === 'production' && process.env.ADMIN_EMAIL_LOGS_ENABLED !== 'true') {
+    return res.status(403).json({
+      error: 'Interface désactivée en production. Définir ADMIN_EMAIL_LOGS_ENABLED=true pour l\'activer.',
+    });
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('email_logs')
+      .select('id, created_at, template, recipient, status, provider, provider_message_id, error_message, order_id, customer_id, metadata')
+      .order('created_at', { ascending: false })
+      .limit(50);
+
+    if (error) throw new Error(error.message);
+    res.json({ logs: data || [] });
+  } catch (err) {
+    console.error('[email-logs] ❌', err.message);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 app.get("/health", (req, res) => res.json({ status: "ok" }));

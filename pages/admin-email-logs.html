@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Logs Emails — Racines & Rituels</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background: #f0ede8; color: #1b110e; font-size: 14px; }
+
+    header { background: #1b110e; color: #fff; padding: 14px 24px; display: flex; align-items: center; gap: 12px; }
+    header h1 { margin: 0; font-size: 0.95rem; font-weight: 700; letter-spacing: 1px; }
+    header span { font-size: 0.75rem; color: #9a8b7d; }
+
+    .toolbar {
+      display: flex; gap: 10px; padding: 12px 24px; background: #fff;
+      border-bottom: 1px solid #e8e0d8; align-items: center; flex-wrap: wrap;
+    }
+    .toolbar label { font-size: 0.75rem; font-weight: 700; color: #666; text-transform: uppercase; letter-spacing: 1px; }
+    .toolbar input[type="password"] {
+      padding: 7px 12px; border: 1.5px solid #ddd; border-radius: 5px;
+      font-size: 0.85rem; width: 220px; outline: none;
+    }
+    .toolbar input[type="password"]:focus { border-color: #e64c19; }
+    button {
+      padding: 8px 18px; border: 2px solid #e64c19; border-radius: 5px;
+      font-size: 0.82rem; font-weight: 700; cursor: pointer;
+      background: #e64c19; color: #fff; transition: opacity .15s;
+    }
+    button:hover { opacity: .85; }
+    button.secondary { background: #fff; color: #e64c19; }
+    button.secondary:hover { background: #e64c19; color: #fff; }
+
+    .status-bar { padding: 8px 24px; font-size: 0.78rem; color: #888; background: #fff; border-bottom: 1px solid #f0ece6; }
+
+    .table-wrap { padding: 20px 24px; overflow-x: auto; }
+
+    table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,.06); }
+    thead tr { background: #1b110e; color: #fff; }
+    th { padding: 10px 14px; text-align: left; font-size: 0.72rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; white-space: nowrap; }
+    td { padding: 10px 14px; border-bottom: 1px solid #f3ede6; vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: #faf7f3; }
+
+    .badge {
+      display: inline-block; padding: 2px 9px; border-radius: 20px;
+      font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .5px;
+    }
+    .badge-sent    { background: #d1fae5; color: #065f46; }
+    .badge-error   { background: #fee2e2; color: #991b1b; }
+    .badge-skipped { background: #f3f4f6; color: #6b7280; }
+
+    .cell-mono { font-family: 'Courier New', monospace; font-size: 0.78rem; color: #555; }
+    .cell-err  { color: #b91c1c; font-size: 0.78rem; max-width: 260px; word-break: break-word; }
+    .cell-id   { font-family: monospace; font-size: 0.7rem; color: #aaa; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .cell-date { white-space: nowrap; color: #555; font-size: 0.78rem; }
+
+    .empty { text-align: center; padding: 48px; color: #aaa; font-size: 0.9rem; }
+    .count { font-size: 0.78rem; color: #888; margin-left: auto; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>📬 Logs Emails</h1>
+  <span>Interface admin — 50 derniers envois Resend</span>
+</header>
+
+<div class="toolbar">
+  <label for="secret-input">Admin Secret</label>
+  <input type="password" id="secret-input" placeholder="ADMIN_SECRET" autocomplete="off">
+  <button id="btn-load">Charger</button>
+  <button id="btn-refresh" class="secondary" style="display:none">↻ Rafraîchir</button>
+  <span class="count" id="count"></span>
+</div>
+
+<div class="status-bar" id="status">Entrez le secret admin puis cliquez sur Charger.</div>
+
+<div class="table-wrap">
+  <table id="logs-table">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Statut</th>
+        <th>Template</th>
+        <th>Destinataire</th>
+        <th>ID Resend</th>
+        <th>Erreur</th>
+        <th>Commande</th>
+      </tr>
+    </thead>
+    <tbody id="logs-body">
+      <tr><td colspan="7" class="empty">—</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<script>
+  const BACKEND_URL = window.__ENV__?.BACKEND_URL || 'http://localhost:3000';
+  const SESSION_KEY = 'rr_admin_secret';
+
+  const input   = document.getElementById('secret-input');
+  const btnLoad = document.getElementById('btn-load');
+  const btnRef  = document.getElementById('btn-refresh');
+  const status  = document.getElementById('status');
+  const tbody   = document.getElementById('logs-body');
+  const count   = document.getElementById('count');
+
+  // Restore secret from sessionStorage
+  const saved = sessionStorage.getItem(SESSION_KEY);
+  if (saved) input.value = saved;
+
+  function fmt(isoDate) {
+    if (!isoDate) return '—';
+    const d = new Date(isoDate);
+    return d.toLocaleDateString('fr-FR') + ' ' + d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  }
+
+  function badge(s) {
+    const cls = s === 'sent' ? 'badge-sent' : s === 'error' ? 'badge-error' : 'badge-skipped';
+    return `<span class="badge ${cls}">${s}</span>`;
+  }
+
+  function shortId(id) {
+    if (!id) return '<span style="color:#ccc">—</span>';
+    return `<span title="${id}" class="cell-id">${id}</span>`;
+  }
+
+  function renderRows(logs) {
+    if (!logs.length) {
+      tbody.innerHTML = '<tr><td colspan="7" class="empty">Aucun log trouvé.</td></tr>';
+      count.textContent = '0 entrée';
+      return;
+    }
+    tbody.innerHTML = logs.map(log => `
+      <tr>
+        <td class="cell-date">${fmt(log.created_at)}</td>
+        <td>${badge(log.status)}</td>
+        <td class="cell-mono">${log.template || '—'}</td>
+        <td>${log.recipient || '—'}</td>
+        <td>${shortId(log.provider_message_id)}</td>
+        <td class="cell-err">${log.error_message ? escHtml(log.error_message) : '<span style="color:#ccc">—</span>'}</td>
+        <td>${shortId(log.order_id)}</td>
+      </tr>
+    `).join('');
+    count.textContent = `${logs.length} entrée${logs.length > 1 ? 's' : ''}`;
+  }
+
+  function escHtml(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  async function load() {
+    const secret = input.value.trim();
+    if (!secret) { status.textContent = '⚠️ Entrez le secret admin.'; return; }
+    sessionStorage.setItem(SESSION_KEY, secret);
+    status.textContent = 'Chargement…';
+    btnLoad.disabled = true;
+
+    try {
+      const res = await fetch(`${BACKEND_URL}/api/admin/email-logs`, {
+        headers: { 'X-Admin-Secret': secret },
+      });
+
+      if (res.status === 401 || res.status === 503) {
+        status.textContent = '❌ Secret admin invalide ou non configuré côté serveur.';
+        tbody.innerHTML = '<tr><td colspan="7" class="empty">Authentification échouée.</td></tr>';
+        btnRef.style.display = 'none';
+        return;
+      }
+      if (res.status === 403) {
+        const body = await res.json().catch(() => ({}));
+        status.textContent = '❌ ' + (body.error || 'Accès refusé en production.');
+        return;
+      }
+      if (!res.ok) {
+        status.textContent = `❌ Erreur serveur HTTP ${res.status}`;
+        return;
+      }
+
+      const data = await res.json();
+      renderRows(data.logs || []);
+      status.textContent = '✅ Chargé — ' + new Date().toLocaleTimeString('fr-FR');
+      btnRef.style.display = '';
+    } catch (e) {
+      status.textContent = '❌ Impossible de contacter le serveur : ' + e.message;
+    } finally {
+      btnLoad.disabled = false;
+    }
+  }
+
+  btnLoad.addEventListener('click', load);
+  btnRef.addEventListener('click', load);
+  input.addEventListener('keydown', (e) => { if (e.key === 'Enter') load(); });
+
+  // Auto-load si secret déjà en session
+  if (saved) load();
+</script>
+</body>
+</html>
