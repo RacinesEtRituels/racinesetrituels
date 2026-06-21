@@ -39,6 +39,7 @@
     "test:email-templates": "node --test tests/email-templates.test.mjs",
     "test:webhook-email": "node --test tests/webhook-email.test.mjs",
     "test:email-logs": "node --test tests/email-logs.test.mjs",
+    "test:email-service": "node --test tests/email-service.test.mjs",
     "test:admin-email-logs": "node --test tests/admin-email-logs.smoke.test.mjs",
     "test:e2e": "npx playwright test tests/ui-products.spec.js",
     "test:e2e:with-server": "bash scripts/e2e.sh",
