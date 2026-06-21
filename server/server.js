@@ -359,7 +359,8 @@ async function persistSubscriptionsForOrder(session, orderId, orderItems, custom
 
 async function processOrderSuccess(session) {
   console.log('--- 🚀 DÉBUT PROCESS ORDER SUCCESS ---');
-  if (!session.client_reference_id || !session.metadata?.order_id || !session.payment_intent) {
+  // payment_intent is null for subscription mode — do not use it as a presence check
+  if (!session.client_reference_id || !session.metadata?.order_id) {
     console.log('Session webhook incomplète — récupération Stripe API :', session.id);
     session = await stripe.checkout.sessions.retrieve(session.id);
   }
@@ -698,7 +699,13 @@ app.post("/create-checkout-session", async (req, res) => {
 app.get("/public/order-by-session", async (req, res) => {
   try {
     const sessionId = req.query.session_id;
-    if (!sessionId) return res.json({ ok: false, order: null });
+    if (!sessionId) {
+      return res.status(400).json({ ok: false, error: 'missing_session_id', status: 400, correlation_id: crypto.randomUUID() });
+    }
+    // Reject obviously invalid session IDs before hitting Stripe API
+    if (!sessionId.startsWith('cs_')) {
+      return res.status(400).json({ ok: false, error: 'invalid_session_id', status: 400, correlation_id: crypto.randomUUID() });
+    }
     // stripe_session_id absent en prod → on récupère l'order.id via Stripe (client_reference_id)
     const stripeSession = await stripe.checkout.sessions.retrieve(sessionId);
     const orderId = stripeSession.client_reference_id;
@@ -707,6 +714,10 @@ app.get("/public/order-by-session", async (req, res) => {
     res.json({ ok: true, order: data });
   } catch (err) {
     console.error('[order-by-session] erreur :', err.message);
+    // Stripe throws for invalid/nonexistent session IDs
+    if (err.message?.includes('No such checkout.session') || err.statusCode === 404) {
+      return res.status(400).json({ ok: false, error: 'invalid_session_id', status: 400, correlation_id: crypto.randomUUID() });
+    }
     res.json({ ok: false, order: null, error: err.message });
   }
 });
