@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html class="light" lang="fr">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Conditions Générales de Vente | Racines & Rituels</title>
+  <meta name="description" content="Conditions Générales de Vente de Racines & Rituels — commandes, paiement, livraison, abonnements, rétractation et garanties légales.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://racinesetrituels.com/cgv.html">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="manifest" href="/manifest.json">
+
+  <meta property="og:title" content="Conditions Générales de Vente | Racines & Rituels">
+  <meta property="og:description" content="CGV de Racines & Rituels — commandes, paiement Stripe, livraison, abonnements, rétractation et garanties légales.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://racinesetrituels.com/cgv.html">
+  <meta property="og:image" content="https://racinesetrituels.com/public/images/hibiscus-rouge.jpg">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Conditions Générales de Vente | Racines & Rituels">
+  <meta name="twitter:description" content="CGV — commandes, paiement, livraison, abonnements et vos droits en tant que consommateur.">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Conditions Générales de Vente",
+    "url": "https://racinesetrituels.com/cgv.html",
+    "description": "Conditions Générales de Vente de Racines & Rituels — commandes, paiement, livraison, abonnements, rétractation et garanties légales.",
+    "inLanguage": "fr-FR",
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "Racines & Rituels",
+      "url": "https://racinesetrituels.com"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Racines & Rituels",
+      "url": "https://racinesetrituels.com"
+    }
+  }
+  </script>
+
+  <link rel="stylesheet" href="/public/css/tailwind.css">
+  <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+
+  <style>
+    body { font-family: 'Epilogue', sans-serif; min-height: 100dvh; }
+
+    .legal-section {
+      background: white;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      box-shadow: 0 1px 8px rgba(0,0,0,.06);
+    }
+    .dark .legal-section {
+      background: rgba(33,21,17,.4);
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+    .section-title h2 {
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    p {
+      font-size: 0.93rem;
+      color: #4b5563;
+      line-height: 1.7;
+    }
+    .dark p { color: #d1d5db; }
+
+    ul.data-list {
+      list-style: none;
+      padding: 0;
+      margin: 0.5rem 0 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    ul.data-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      font-size: 0.93rem;
+      color: #4b5563;
+      line-height: 1.65;
+    }
+    .dark ul.data-list li { color: #d1d5db; }
+    ul.data-list li::before {
+      content: '–';
+      color: #e64c19;
+      flex-shrink: 0;
+      margin-top: 0.05rem;
+    }
+
+    .right-item {
+      border-left: 3px solid #e64c19;
+      padding: 0.5rem 0 0.5rem 1rem;
+      margin-bottom: 0.6rem;
+    }
+    .right-item strong {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #1b110e;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .dark .right-item strong { color: #f3f4f6; }
+    .right-item span {
+      font-size: 0.88rem;
+      color: #6b7280;
+      line-height: 1.6;
+    }
+    .dark .right-item span { color: #9ca3af; }
+
+    .highlight-box {
+      background: #fff7f4;
+      border: 1px solid #fcd8cb;
+      border-radius: 0.5rem;
+      padding: 0.85rem 1rem;
+      font-size: 0.88rem;
+      color: #7c2d12;
+      line-height: 1.6;
+    }
+    .dark .highlight-box {
+      background: rgba(230,76,25,.08);
+      border-color: rgba(230,76,25,.25);
+      color: #fca89a;
+    }
+
+    .info-box {
+      background: #f8f6f6;
+      border: 1px solid #e8ddd8;
+      border-radius: 0.5rem;
+      padding: 0.85rem 1rem;
+      font-size: 0.88rem;
+      color: #374151;
+      line-height: 1.6;
+    }
+    .dark .info-box {
+      background: rgba(255,255,255,.05);
+      border-color: rgba(255,255,255,.08);
+      color: #d1d5db;
+    }
+
+    /* Tunnel commande */
+    .order-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin: 0.75rem 0;
+    }
+    .order-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      position: relative;
+    }
+    .order-step:not(:last-child)::before {
+      content: '';
+      position: absolute;
+      left: 15px;
+      top: 32px;
+      bottom: -8px;
+      width: 2px;
+      background: #fcd8cb;
+    }
+    .step-icon {
+      flex-shrink: 0;
+      width: 32px;
+      height: 32px;
+      background: #fff7f4;
+      border: 2px solid #fcd8cb;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 800;
+      color: #e64c19;
+      margin-bottom: 16px;
+    }
+    .dark .step-icon {
+      background: rgba(230,76,25,.1);
+      border-color: rgba(230,76,25,.3);
+    }
+    .step-content {
+      padding-top: 0.35rem;
+      padding-bottom: 0.75rem;
+    }
+    .step-content strong {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #1b110e;
+      display: block;
+    }
+    .dark .step-content strong { color: #f3f4f6; }
+    .step-content span {
+      font-size: 0.82rem;
+      color: #6b7280;
+    }
+    .dark .step-content span { color: #9ca3af; }
+  </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-gray-800 dark:text-white">
+
+  <div id="site-header"></div>
+  <div class="h-[64px]"></div>
+
+  <div class="min-h-screen flex flex-col">
+    <main class="flex-1 max-w-2xl w-full mx-auto px-4 py-10 space-y-6">
+
+      <!-- En-tête -->
+      <div class="space-y-1">
+        <p class="text-xs font-bold uppercase tracking-widest text-primary">Achat en ligne</p>
+        <h1 class="text-3xl font-black text-gray-900 dark:text-white">Conditions Générales de Vente</h1>
+        <p class="text-sm text-gray-500 dark:text-gray-400">
+          En passant commande sur racinesetrituels.com, vous acceptez les présentes conditions.
+        </p>
+      </div>
+
+      <!-- 1. Objet -->
+      <section class="legal-section">
+        <div class="section-title">
+          <span class="material-symbols-outlined text-2xl text-primary">description</span>
+          <h2>1. Objet</h2>
+        </div>
+        <p>
+          Les présentes Conditions Générales de Vente (ci-après « CGV ») régissent les relations
+          contractuelles entre <strong>Racines &amp; Rituels</strong>, marque exploitée par Alexandre BOEHLER,
+          entrepreneur individuel (SIREN 484 314 174), et toute personne (ci-après « le Client ») effectuant
+          un achat sur le site <strong>racinesetrituels.com</strong>.
+        </p>
+        <p class="mt-2">
+          Toute commande implique l'acceptation pleine et entière des présentes CGV. Racines &amp; Rituels
+          se réserve le droit de les modifier à tout moment ; la version applicable est celle en vigueur
+          à la date de la commande.
+        </p>
+      </section>
+
+      <!-- 2. Champ d'application -->
+      <section class="legal-section">
+        <div class="section-title">
+          <span class="material-symbols-outlined text-2xl text-primary">layers</span>
+          <h2>2. Champ d'application</h2>
+        </div>
+        <p>Les présentes CGV s'appliquent à :</p>
+        <ul class="data-list mt-2">
+          <li>La vente de produits physiques proposés sur le site (plantes, tisanes, accessoires…)</li>
+          <li>La souscription aux abonnements Racines &amp; Rituels</li>
+          <li>Toute commande passée depuis le site <strong>racinesetrituels.com</strong>, quel que soit
+              le mode d'accès (ordinateur, tablette, mobile)</li>
+        </ul>
+        <p class="mt-3">
+          Elles sont exclusivement applicables entre Racines &amp; Rituels et des clients consommateurs
+          ou non-professionnels. Pour toute demande professionnelle, nous contacter à
+          <a href="mailto:contact@racinesetrituels.com" class="text-primary font-semibold hover:underline">contact@racinesetrituels.com</a>.
+        </p>
+      </section>
+
+      <!-- 3. Produits -->
+      <section class="legal-section">
+        <div class="section-title">
+          <span class="material-symbols-outlined text-2xl text-primary">inventory_2</span>
+          <h2>3. Produits</h2>
+        </div>
+        <p>
+          Chaque produit fait l'objet d'une fiche descriptive présentant ses caractéristiques essentielles.
+          Racines &amp; Rituels s'efforce d'assurer l'exactitude de ces informations.
+        </p>
+        <ul class="data-list mt-2">
+          <li>Les photographies illustrant les produits sont aussi fidèles que possible, mais ne sont
+              pas contractuelles — des variations de teinte ou de présentation peuvent exister.</li>
+          <li>La disponibilité des produits est indiquée sur les fiches produit au moment de la navigation ;
+              cette information est fournie à titre indicatif.</li>
+          <li>Racines &amp; Rituels se réserve le droit de modifier, compléter ou retirer tout produit
+              du catalogue sans préavis.</li>
+          <li>En cas d'indisponibilité après la commande, le Client sera informé dans les meilleurs délais
+              et pourra obtenir un remboursement ou un avoir.</li>
+        </ul>
+      </section>
+
+      <!-- 4. Prix -->
+      <section class="legal-section">
+        <div class="section-title">
+          <span class="material-symbols-outlined text-2xl text-primary">euro</span>
+          <h2>4. Prix</h2>
+        </div>
+        <ul class="data-list">
+          <li>Les prix sont affichés en <strong>euros (€)</strong> et incluent les taxes applicables
+              selon le régime fiscal en vigueur.</li>
+          <li>Le prix applicable est celui affiché au moment de la validation de la commande.
+              Toute commande passée est réputée acceptée au prix en vigueur à cette date.</li>
+          <li>Racines &amp; Rituels se réserve le droit de modifier ses prix à tout moment pour
+              les commandes futures, sans que cela n'affecte les commandes déjà confirmées.</li>
+          <li>Des frais éventuels (livraison…) sont précisés lors du processus de commande,
+              avant confirmation du paiement.</li>
+        </ul>
+      </section>
+
+      <!-- 5. Commande -->
+      <section class="legal-section">
+        <div class="section-title">
+          <span class="material-symbols-outlined text-2xl text-primary">shopping_cart_checkout</span>
+          <h2>5. Commande</h2>
+        </div>
+        <p class="mb-4">Le processus de commande se déroule de la façon suivante :</p>
+
+        <div class="order-steps">
+          <div class="order-step">
+            <div class="step-icon">1</div>
+            <div class="step-content">
+              <strong>Panier</strong>
+              <span>Sélection des produits ou de l'abonnement souhaité.</span>
+            </div>
+          </div>
+          <div class="order-step">
+            <div class="step-icon">2</div>
+            <div class="step-content">
+              <strong>Checkout Stripe</strong>
+              <span>Saisie des informations de livraison et de paiement sur la page sécurisée Stripe.</span>
+            </div>
+          </div>
+          <div class="order-step">
+            <div class="step-icon">3</div>
+            <div class="step-content">
+              <strong>Paiement sécurisé</strong>
+              <span>Validation du paiement par Stripe — aucune coordonnée bancaire ne transite par nos serveurs.</span>
+            </div>
+          </div>
+          <div class="order-step">
+            <div class="step-icon">4</div>
+            <div class="step-content">
+              <strong>Confirmation</strong>
+              <span>Un email de confirmation est envoyé à l'adresse fournie. La commande est considérée comme ferme à réception de cet email.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-box mt-1">
+          Racines &amp; Rituels se réserve le droit d'annuler toute commande en cas de suspicion
+          de fraude, d'erreur manifeste de prix ou d'indisponibilité du produit.
+        </div>
+      </section>
+
+      <!-- 6. Paiement -->
+      <section class="legal-section">
+        <div class="section-title">
+          <span class="material-symbols-outlined text-2xl text-primary">credit_card</span>
+          <h2>6. Paiement</h2>
+        </div>
+        <p>
+          Le paiement est sécurisé par <strong>Stripe</strong>, prestataire de paiement certifié PCI-DSS.
+          Les moyens de paiement acceptés sont ceux proposés par Stripe au moment de la commande.
+        </p>
+        <div class="highlight-box mt-3">
+          Racines &amp; Rituels <strong>ne conserve jamais</strong> vos coordonnées bancaires.
+          Toutes les données de paiement sont traitées directement et de manière sécurisée par Stripe.
+        </div>
+        <p class="mt-3">
+          Le débit est effectué au moment de la validation de la commande. La commande n'est confirmée
+          qu'après encaissement effectif du paiement par Stripe.
+        </p>
+      </section>
+
+      <!-- 7. Livraison -->
+      <section class="legal-section">
+        <div class="section-title">
+          <span class="material-symbols-outlined text-2xl text-primary">local_shipping</span>
+          <h2>7. Livraison</h2>
+        </div>
+        <p>
+          Les commandes de produits physiques sont préparées avec soin avant expédition.
+          Les délais de préparation et de livraison sont indiqués à titre indicatif lors de la commande.
+        </p>
+        <ul class="data-list mt-2">
+          <li>Les délais de livraison dépendent du transporteur et de la destination ; ils peuvent
+              varier et ne constituent pas un engagement contractuel ferme.</li>
+          <li>La responsabilité du transporteur est engagée dès la remise du colis à ses services.</li>
+          <li>Le Client est invité à vérifier l'état du colis à la réception et à émettre
+              toute réserve nécessaire auprès du transporteur en cas de dommage apparent.</li>
+          <li>En cas de problème de livraison, le Client est invité à contacter
+              <a href="mailto:contact@racinesetrituels.com" class="text-primary font-semibold hover:underline">contact@racinesetrituels.com</a>
+              dans les meilleurs délais.</li>
+        </ul>
+        <p class="mt-3 text-sm text-gray-500 dark:text-gray-400">
+          Les abonnements numériques ne donnent pas lieu à livraison physique.
+        </p>
+      </section>
+
+      <!-- 8. Droit de rétractation -->
+      <section class="legal-section">
+        <div class="section-title">
+          <span class="material-symbols-outlined text-2xl text-primary">undo</span>
+          <h2>8. Droit de rétractation</h2>
+        </div>
+        <p>
+          Conformément aux articles L.221-18 et suivants du Code de la consommation, le Client
+          consommateur dispose d'un <strong>délai de 14 jours</strong> à compter de la réception du
+          bien (ou de la conclusion du contrat pour un service) pour exercer son droit de rétractation,
+          sans avoir à motiver sa décision.
+        </p>
+        <p class="mt-2">
+          Pour exercer ce droit, le Client peut contacter Racines &amp; Rituels à l'adresse
+          <a href="mailto:contact@racinesetrituels.com" class="text-primary font-semibold hover:underline">contact@racinesetrituels.com</a>
+          ou utiliser le formulaire de rétractation légal.
+        </p>
+
+        <div class="info-box mt-3">
+          <p class="font-semibold text-gray-800 dark:text-white text-sm mb-1">Exceptions légales (art. L.221-28 Code de la consommation)</p>
+          <p>
+            Le droit de rétractation ne s'applique pas notamment aux :
+          </p>
+          <ul class="data-list mt-1">
+            <li>Biens confectionnés selon les spécifications du Client ou nettement personnalisés</li>
+            <li>Biens susceptibles de se détériorer ou de se périmer rapidement</li>
+            <li>Contenus numériques fournis sur un support immatériel dont l'exécution a commencé
+                avec l'accord exprès du Client avant l'expiration du délai de rétractation</li>
+          </ul>
+        </div>
+
+        <p class="mt-3 text-sm text-gray-500 dark:text-gray-400">
+          Les modalités détaillées du droit de rétractation seront précisées lors de chaque commande
+          conformément aux dispositions légales applicables.
+        </p>
+      </section>
+
+      <!-- 9. Abonnements -->
+      <section class="legal-section">
+        <div class="section-title">
+          <span class="material-symbols-outlined text-2xl text-primary">autorenew</span>
+          <h2>9. Abonnements</h2>
+        </div>
+        <p>
+          Racines &amp; Rituels propose des abonnements permettant d'accéder à des contenus ou
+          services récurrents selon les formules disponibles sur le site.
+        </p>
+        <div class="space-y-2 mt-3">
+          <div class="right-item">
+            <strong>Formules disponibles</strong>
+            <span>Les abonnements peuvent être proposés à la mois ou à l'année selon les offres en vigueur au moment de la souscription.</span>
+          </div>
+          <div class="right-item">
+            <strong>Renouvellement automatique</strong>
+            <span>Les abonnements sont renouvelés automatiquement à l'issue de chaque période, sauf résiliation préalable par le Client.</span>
+          </div>
+          <div class="right-item">
+            <strong>Paiement</strong>
+            <span>Les paiements récurrents sont gérés par Stripe. Le montant débité est celui correspondant à la formule souscrite, indiqué avant confirmation.</span>
+          </div>
+          <div class="right-item">
+            <strong>Résiliation</strong>
+            <span>Le Client peut résilier son abonnement depuis son espace client ou en contactant Racines &amp; Rituels selon les modalités indiquées. La résiliation prend effet à la fin de la période en cours.</span>
+          </div>
+        </div>
+        <div class="info-box mt-3">
+          Racines &amp; Rituels se réserve le droit de modifier les conditions tarifaires des abonnements.
+          Le Client sera informé préalablement à tout changement. En cas de désaccord, il pourra
+          résilier son abonnement avant l'entrée en vigueur des nouvelles conditions.
+        </div>
+      </section>
+
+      <!-- 10. Responsabilité -->
+      <section class="legal-section">
+        <div class="section-title">
+          <span class="material-symbols-outlined text-2xl text-primary">info</span>
+          <h2>10. Responsabilité</h2>
+        </div>
+        <p>
+          Racines &amp; Rituels s'engage à exécuter les commandes avec le soin d'un professionnel raisonnable.
+          Sa responsabilité est limitée aux dommages directs et prévisibles résultant d'un manquement
+          à ses obligations, dans les limites autorisées par la loi française.
+        </p>
+        <ul class="data-list mt-2">
+          <li>Racines &amp; Rituels ne saurait être tenu responsable d'un usage impropre des produits
+              ou d'une négligence de la part du Client.</li>
+          <li>En cas d'interruption temporaire du site pour des raisons techniques ou de maintenance,
+              aucune indemnité ne pourra être réclamée.</li>
+          <li>La responsabilité pour des dommages indirects (perte de données, manque à gagner…)
+              est expressément exclue, dans les limites permises par la loi.</li>
+        </ul>
+        <p class="mt-3 text-sm text-gray-500 dark:text-gray-400">
+          Ces limitations ne remettent pas en cause les droits légaux du consommateur.
+        </p>
+      </section>
+
+      <!-- 11. Garanties légales -->
+      <section class="legal-section">
+        <div class="section-title">
+          <span class="material-symbols-outlined text-2xl text-primary">verified</span>
+          <h2>11. Garanties légales</h2>
+        </div>
+        <p>
+          Les produits vendus par Racines &amp; Rituels bénéficient des garanties légales prévues
+          par le Code de la consommation :
+        </p>
+        <div class="space-y-2 mt-3">
+          <div class="right-item">
+            <strong>Garantie légale de conformité</strong>
+            <span>
+              Le vendeur répond des défauts de conformité existant lors de la délivrance du bien.
+              Le consommateur peut choisir entre la réparation ou le remplacement, sous réserve
+              des conditions prévues par la loi.
+            </span>
+          </div>
+          <div class="right-item">
+            <strong>Garantie contre les vices cachés</strong>
+            <span>
+              Le vendeur répond des vices cachés du produit vendu qui le rendent impropre à l'usage
+              auquel on le destine, ou qui en diminuent tellement cet usage que l'acheteur ne l'aurait
+              pas acquis ou n'en aurait donné qu'un moindre prix, s'il les avait connus.
+            </span>
+          </div>
+        </div>
+        <p class="mt-3">
+          Pour toute demande de garantie, contacter :
+          <a href="mailto:contact@racinesetrituels.com"
+             class="text-primary font-semibold hover:underline">contact@racinesetrituels.com</a>
+        </p>
+      </section>
+
+      <!-- 12. Données personnelles -->
+      <section class="legal-section">
+        <div class="section-title">
+          <span class="material-symbols-outlined text-2xl text-primary">lock</span>
+          <h2>12. Données personnelles</h2>
+        </div>
+        <p>
+          Dans le cadre des commandes, Racines &amp; Rituels est amené à traiter des données
+          personnelles (nom, adresse, email, contenu de la commande…).
+        </p>
+        <a href="/confidentialite.html"
+           class="inline-flex items-center gap-2 mt-3 text-sm font-semibold text-primary hover:underline">
+          <span class="material-symbols-outlined text-base">arrow_forward</span>
+          Consulter notre Politique de confidentialité
+        </a>
+      </section>
+
+      <!-- 13. Propriété intellectuelle -->
+      <section class="legal-section">
+        <div class="section-title">
+          <span class="material-symbols-outlined text-2xl text-primary">copyright</span>
+          <h2>13. Propriété intellectuelle</h2>
+        </div>
+        <p>
+          L'ensemble des éléments du site racinesetrituels.com — textes, images, logo, visuels,
+          structure, contenus éditoriaux — est la propriété exclusive de Racines &amp; Rituels
+          ou fait l'objet d'une autorisation d'utilisation.
+        </p>
+        <p class="mt-2">
+          Toute reproduction, représentation ou utilisation, totale ou partielle, de ces éléments
+          sans autorisation écrite préalable est strictement interdite et constitue une contrefaçon
+          passible de poursuites.
+        </p>
+      </section>
+
+      <!-- 14. Droit applicable et litiges -->
+      <section class="legal-section">
+        <div class="section-title">
+          <span class="material-symbols-outlined text-2xl text-primary">balance</span>
+          <h2>14. Droit applicable et litiges</h2>
+        </div>
+        <p>
+          Les présentes CGV sont soumises au <strong>droit français</strong>.
+          En cas de litige, les parties s'efforceront de trouver une solution amiable.
+        </p>
+        <p class="mt-2">
+          À défaut d'accord amiable, les juridictions françaises compétentes seront saisies,
+          sous réserve des règles d'ordre public protectrices du consommateur (notamment celles
+          permettant au consommateur de saisir la juridiction de son lieu de résidence).
+        </p>
+        <p class="mt-2">
+          Conformément à l'article L.612-1 du Code de la consommation, le Client peut recourir
+          gratuitement à un médiateur de la consommation en cas de litige non résolu.
+          Les coordonnées du médiateur compétent seront communiquées sur demande à
+          <a href="mailto:contact@racinesetrituels.com"
+             class="text-primary font-semibold hover:underline">contact@racinesetrituels.com</a>.
+        </p>
+        <p class="mt-2">
+          La Commission européenne met à disposition une plateforme de règlement en ligne des litiges :
+          <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener noreferrer"
+             class="text-primary font-semibold hover:underline">ec.europa.eu/consumers/odr</a>.
+        </p>
+      </section>
+
+      <!-- 15. Contact -->
+      <section class="legal-section">
+        <div class="section-title">
+          <span class="material-symbols-outlined text-2xl text-primary">mail</span>
+          <h2>15. Contact</h2>
+        </div>
+        <p>
+          Pour toute question relative à une commande, un abonnement ou aux présentes CGV,
+          vous pouvez contacter Racines &amp; Rituels à l'adresse suivante :
+        </p>
+        <a href="mailto:contact@racinesetrituels.com"
+           class="inline-flex items-center gap-2 mt-3 text-base font-bold text-primary hover:underline">
+          <span class="material-symbols-outlined text-base">alternate_email</span>
+          contact@racinesetrituels.com
+        </a>
+        <p class="mt-3 text-sm text-gray-500 dark:text-gray-400">
+          Nous nous engageons à répondre à toute demande dans un délai raisonnable.
+        </p>
+      </section>
+
+      <!-- Date de mise à jour -->
+      <p class="text-xs text-gray-400 text-center pb-4">
+        CGV mises à jour le <time datetime="2026-06-21">21 juin 2026</time>.
+        En cas de modification, la version en vigueur est toujours consultable sur
+        <a href="https://racinesetrituels.com/cgv.html"
+           class="text-primary hover:underline">racinesetrituels.com/cgv.html</a>.
+      </p>
+
+    </main>
+  </div>
+
+  <script src="/public/js/config.js"></script>
+  <script type="module" src="/public/js/header-loader.js"></script>
+
+  <div id="site-footer"></div>
+  <script type="module" src="/public/js/footer-loader.js"></script>
+
+</body>
+</html>
