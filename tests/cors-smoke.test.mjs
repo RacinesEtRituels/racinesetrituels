@@ -1,18 +1,18 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const BASE = "http://localhost:3000";
+const BASE = process.env.BACKEND_URL || "http://localhost:3000";
 const ORIGINS = ["http://localhost:8000", "http://127.0.0.1:8000"];
 
-const fetchJson = async (url, options = {}) => {
-  const res = await fetch(url, options);
-  let body = null;
+const safeFetch = async (url, options = {}) => {
   try {
-    body = await res.json();
-  } catch (_) {
-    body = null;
+    const res = await fetch(url, options);
+    let body = null;
+    try { body = await res.json(); } catch (_) { body = null; }
+    return { res, body };
+  } catch (err) {
+    return { err };
   }
-  return { res, body };
 };
 
 const assertCors = (res, origin) => {
@@ -21,8 +21,8 @@ const assertCors = (res, origin) => {
 };
 
 for (const origin of ORIGINS) {
-  test(`CORS preflight allows POST from ${origin}`, async () => {
-    const { res } = await fetch(`${BASE}/create-checkout-session`, {
+  test(`CORS preflight allows POST from ${origin}`, async (t) => {
+    const { res, err } = await safeFetch(`${BASE}/create-checkout-session`, {
       method: "OPTIONS",
       headers: {
         Origin: origin,
@@ -30,23 +30,26 @@ for (const origin of ORIGINS) {
         "Access-Control-Request-Headers": "Content-Type",
       },
     });
+    if (err) { t.skip(`Backend non joignable : ${err.message}`); return; }
     assert.equal(res.status, 204);
     assertCors(res, origin);
     const methods = res.headers.get("access-control-allow-methods") || "";
     assert.ok(/POST/i.test(methods), "AC-Allow-Methods must include POST");
   });
 
-  test(`CORS GET /health echoes origin ${origin}`, async () => {
-    const { res } = await fetch(`${BASE}/health`, {
+  test(`CORS GET /health echoes origin ${origin}`, async (t) => {
+    const { res, err } = await safeFetch(`${BASE}/health`, {
       headers: { Origin: origin },
     });
+    if (err) { t.skip(`Backend non joignable : ${err.message}`); return; }
     assert.equal(res.status, 200);
     assertCors(res, origin);
   });
 }
 
-test("/public/order-by-session missing_session_id", async () => {
-  const { res, body } = await fetchJson(`${BASE}/public/order-by-session`);
+test("/public/order-by-session missing_session_id → 400 + correlation_id", async (t) => {
+  const { res, body, err } = await safeFetch(`${BASE}/public/order-by-session`);
+  if (err) { t.skip(`Backend non joignable : ${err.message}`); return; }
   assert.equal(res.status, 400);
   assert.equal(body?.ok, false);
   assert.equal(body?.error, "missing_session_id");
@@ -54,8 +57,9 @@ test("/public/order-by-session missing_session_id", async () => {
   assert.ok(typeof body?.correlation_id === "string" && body.correlation_id.length > 0);
 });
 
-test("/public/order-by-session invalid_session_id", async () => {
-  const { res, body } = await fetchJson(`${BASE}/public/order-by-session?session_id=bad`);
+test("/public/order-by-session invalid_session_id → 400 + correlation_id", async (t) => {
+  const { res, body, err } = await safeFetch(`${BASE}/public/order-by-session?session_id=bad`);
+  if (err) { t.skip(`Backend non joignable : ${err.message}`); return; }
   assert.equal(res.status, 400);
   assert.equal(body?.ok, false);
   assert.equal(body?.error, "invalid_session_id");

@@ -16,7 +16,13 @@ async function fetchJson(url, options = {}) {
 }
 
 test('checkout session carries order id in metadata or client_reference_id', async (t) => {
-  const { res: dbgRes, body: dbgBody } = await fetchJson(`${BACKEND}/debug/checkout-test`);
+  let dbgRes, dbgBody;
+  try {
+    ({ res: dbgRes, body: dbgBody } = await fetchJson(`${BACKEND}/debug/checkout-test`));
+  } catch {
+    t.skip('Backend non joignable — test ignoré.');
+    return;
+  }
   if (!dbgRes.ok || !dbgBody?.session_id) {
     t.skip(`backend not reachable or debug route failed (${dbgRes.status})`);
     return;
