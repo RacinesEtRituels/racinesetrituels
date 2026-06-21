@@ -98,6 +98,7 @@ const frontendPath = path.join(__dirname, '..');
   'admin-email-test',
   'admin-email-preview',
   'admin-email-logs',
+  'mentions-legales',
 ].forEach(p => {
   app.get(`/${p}.html`, (req, res) => {
     res.sendFile(path.join(frontendPath, 'pages', `${p}.html`));
