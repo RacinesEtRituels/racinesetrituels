@@ -2,5 +2,13 @@ User-agent: *
 Allow: /
 Disallow: /admin.html
 Disallow: /admin/
+Disallow: /admin-email-logs.html
+Disallow: /admin-email-preview.html
+Disallow: /admin-email-test.html
+Disallow: /checkout.html
+Disallow: /success.html
+Disallow: /cancel.html
+Disallow: /api/
+Disallow: /webhook/
 
-Sitemap: https://racinesetrituels.vercel.app/sitemap.xml
+Sitemap: https://racinesetrituels.com/sitemap.xml

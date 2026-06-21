@@ -9,6 +9,8 @@ import nodemailer from "nodemailer";
 import crypto from "crypto";
 import { sendTestEmail, orderConfirmationHtml, subscriptionConfirmationHtml, EmailService } from "./emails/index.js";
 import { buildOrderConfirmationData, buildSubscriptionConfirmationData } from "./emails/order-email.js";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
 
 // --- CONFIGURATION ---
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -36,16 +38,19 @@ const mailer = nodemailer.createTransport({
 });
 
 const app = express();
+app.disable('x-powered-by');
 
 // --- ROUTE WEBHOOK (isolée, avant tout middleware global) ---
 // express.raw() fournit req.body comme Buffer brut, sans aucune interférence
 app.post("/webhook/stripe", express.raw({ type: "application/json" }), async (req, res) => {
   const sig = req.headers["stripe-signature"];
-  console.log('\n=== 🕵️‍♂️ DEBUG WEBHOOK ===');
-  console.log('1. Secret .env lu ? :', process.env.STRIPE_WEBHOOK_SECRET ? 'OUI (' + process.env.STRIPE_WEBHOOK_SECRET.substring(0, 15) + '...)' : '❌ NON ! VIDE !');
-  console.log('2. Signature reçue ? :', sig ? 'OUI' : '❌ NON !');
-  console.log('3. Corps Brut (body buffer) présent ? :', Buffer.isBuffer(req.body));
-  console.log('==========================\n');
+  if (process.env.NODE_ENV !== 'production') {
+    console.log('\n=== DEBUG WEBHOOK ===');
+    console.log('1. Secret configuré :', !!process.env.STRIPE_WEBHOOK_SECRET);
+    console.log('2. Signature reçue :', !!sig);
+    console.log('3. Buffer présent :', Buffer.isBuffer(req.body));
+    console.log('=====================\n');
+  }
   try {
     const event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET.trim());
 
@@ -62,9 +67,12 @@ app.post("/webhook/stripe", express.raw({ type: "application/json" }), async (re
 // CORS — whitelist known origins only
 const allowedOrigins = new Set([
   process.env.SITE_URL,
+  'https://racinesetrituels.com',
+  'https://www.racinesetrituels.com',
   'https://racinesetrituels.vercel.app',
   'http://127.0.0.1:8000',
   'http://localhost:8000',
+  'http://127.0.0.1:3000',
   `http://localhost:${process.env.PORT || 3000}`,
 ].filter(Boolean));
 app.use(cors({
@@ -73,6 +81,33 @@ app.use(cors({
     cb(new Error(`CORS: origine non autorisée : ${origin}`));
   },
 }));
+
+// --- SÉCURITÉ : HEADERS HTTP ---
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc:  ["'self'", "'unsafe-inline'"],
+      styleSrc:   ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      fontSrc:    ["'self'", "https://fonts.gstatic.com"],
+      imgSrc:     ["'self'", "data:", "blob:"],
+      connectSrc: ["'self'", "https://*.supabase.co", "wss://*.supabase.co"],
+      frameAncestors: ["'none'"],
+      baseUri:    ["'self'"],
+      formAction: ["'self'"],
+    },
+  },
+  hsts: process.env.NODE_ENV === 'production'
+    ? { maxAge: 63072000, includeSubDomains: true, preload: true }
+    : false,
+  referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+  crossOriginEmbedderPolicy: false,
+  crossOriginOpenerPolicy: { policy: 'same-origin-allow-popups' },
+}));
+app.use((_req, res, next) => {
+  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=()');
+  next();
+});
 
 // Admin auth middleware — validates X-Admin-Secret header against ADMIN_SECRET env var
 const requireAdmin = (req, res, next) => {
@@ -85,6 +120,25 @@ const requireAdmin = (req, res, next) => {
 };
 
 app.use(express.json());
+
+// --- SÉCURITÉ : RATE LIMITING ---
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Trop de requêtes. Merci de réessayer dans quelques minutes.' },
+});
+const adminLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Trop de requêtes. Merci de réessayer dans quelques minutes.' },
+});
+app.use('/api/admin', adminLimiter);
+app.use('/api', apiLimiter);
+app.use('/create-checkout-session', apiLimiter);
 
 // --- FICHIERS STATIQUES (frontend) ---
 const frontendPath = path.join(__dirname, '..');
