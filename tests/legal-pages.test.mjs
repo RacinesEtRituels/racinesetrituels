@@ -44,8 +44,14 @@ test('contact.html contient contact@racinesetrituels.com', () => {
 
 // ── Contenu spécifique ────────────────────────────────────────────────────────
 
-test('mediateur-consommation.html contient "À compléter" (médiateur non encore désigné)', () => {
-  assert.ok(read('pages/mediateur-consommation.html').includes('À compléter'));
+test('mediateur-consommation.html : section médiateur présente et marquée obligatoire', () => {
+  const src = read('pages/mediateur-consommation.html');
+  // La section doit indiquer clairement que la désignation est obligatoire (Art. L.616-1)
+  assert.ok(src.includes('mediateur-a-completer'), 'id mediateur-a-completer absent');
+  assert.ok(src.includes('L.616-1'), 'Référence légale L.616-1 absente');
+  // Doit lister les informations concrètes à renseigner (pas un placeholder vague)
+  assert.ok(src.includes('Nom de l\'organisme'), 'Liste des informations requises absente');
+  assert.ok(src.includes('economie.gouv.fr/mediation-conso'), 'Lien registre CECMC officiel absent');
 });
 
 test('retractation-retours.html contient "14 jours"', () => {
