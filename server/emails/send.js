@@ -1,4 +1,5 @@
 import { getResendClient } from './resend.js';
+import { insertEmailLog } from './log.js';
 import { orderConfirmationHtml } from './templates/order-confirmation.js';
 import { subscriptionConfirmationHtml } from './templates/subscription-confirmation.js';
 import { testEmailHtml } from './templates/test-email.js';
@@ -39,12 +40,15 @@ const TEMPLATES = {
 export const EmailService = {
   /**
    * @param {object} opts
-   * @param {string} opts.template - Clé du template (voir TEMPLATES ci-dessus)
-   * @param {string|string[]} opts.to - Destinataire(s)
-   * @param {object} [opts.data]   - Données injectées dans le template
+   * @param {string}       opts.template      - Clé du template (voir TEMPLATES ci-dessus)
+   * @param {string|string[]} opts.to         - Destinataire(s)
+   * @param {object}       [opts.data]        - Données injectées dans le template
+   * @param {string|null}  [opts.orderId]     - UUID commande Supabase (pour email_logs)
+   * @param {string|null}  [opts.customerId]  - UUID client Supabase (pour email_logs)
+   * @param {object}       [opts.logMetadata] - Données contextuelles libres (pour email_logs)
    * @returns {Promise<{id: string}>} Résultat Resend
    */
-  async send({ template, to, data = {} }) {
+  async send({ template, to, data = {}, orderId, customerId, logMetadata }) {
     // Vérification du template en premier (fail-fast, sans appel réseau)
     const tpl = TEMPLATES[template];
     if (!tpl) {
@@ -58,17 +62,37 @@ export const EmailService = {
 
     const client = getResendClient(); // lève une erreur si RESEND_API_KEY absente
 
-    const { data: result, error } = await client.emails.send({
-      from: process.env.RESEND_FROM,
-      to,
-      subject: tpl.subject(data),
-      html: tpl.html(data),
-    });
+    // Tentative d'envoi — le résultat ou l'erreur est capturé pour le log
+    let result = null;
+    let sendError = null;
 
-    if (error) {
-      throw new Error(`Resend: ${error.message || JSON.stringify(error)}`);
+    try {
+      const { data: res, error } = await client.emails.send({
+        from: process.env.RESEND_FROM,
+        to,
+        subject: tpl.subject(data),
+        html: tpl.html(data),
+      });
+      if (error) throw new Error(`Resend: ${error.message || JSON.stringify(error)}`);
+      result = res;
+    } catch (err) {
+      sendError = err;
     }
 
+    // Traçabilité Supabase — jamais bloquante (insertEmailLog ne lève jamais)
+    await insertEmailLog({
+      orderId:           orderId ?? null,
+      customerId:        customerId ?? null,
+      template,
+      recipient:         Array.isArray(to) ? to[0] : to,
+      providerMessageId: result?.id ?? null,
+      status:            sendError ? 'error' : 'sent',
+      errorMessage:      sendError ? sendError.message.slice(0, 500) : null,
+      metadata:          { ...(logMetadata ?? {}), to },
+    });
+
+    // Rethrow après le log pour que l'appelant gère l'erreur normalement
+    if (sendError) throw sendError;
     return result;
   },
 

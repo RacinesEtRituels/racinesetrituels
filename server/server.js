@@ -418,6 +418,13 @@ async function processOrderSuccess(session) {
             template: 'order-confirmation',
             to: customerEmail,
             data: emailData,
+            orderId,
+            customerId: customer?.id ?? null,
+            logMetadata: {
+              source: 'stripe_webhook',
+              stripe_session_id: session.id,
+              mode: session.mode,
+            },
           });
           console.log(`✅ Email de confirmation Resend envoyé à ${customerEmail}`);
         } catch (mailErr) {
@@ -454,6 +461,14 @@ async function processOrderSuccess(session) {
             template: 'subscription-confirmation',
             to: subEmail,
             data: subEmailData,
+            orderId,
+            customerId: customer?.id ?? null,
+            logMetadata: {
+              source: 'stripe_webhook',
+              stripe_session_id: session.id,
+              mode: session.mode,
+              stripe_subscription_id: subStripeId,
+            },
           });
           console.log(`✅ Email abonnement Resend envoyé à ${subEmail}`);
         } catch (mailErr) {
