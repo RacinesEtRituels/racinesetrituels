@@ -12,32 +12,19 @@ export { EmailService } from './send.js';
 export { orderConfirmationHtml } from './templates/order-confirmation.js';
 export { subscriptionConfirmationHtml } from './templates/subscription-confirmation.js';
 
-import { getResendClient } from './resend.js';
-import { testEmailHtml } from './templates/test-email.js';
+import { EmailService } from './send.js';
 
 const TEST_RECIPIENT = 'alexandre.boehler@gmail.com';
 
 /**
  * Envoi d'un email de test de configuration.
  * Conservé pour compatibilité avec la route POST /api/test-email.
+ * Passe par EmailService.send() pour que l'envoi soit tracé dans email_logs.
  */
 export async function sendTestEmail(to = TEST_RECIPIENT) {
-  if (!process.env.RESEND_FROM) {
-    throw new Error('RESEND_FROM manquante dans .env.local');
-  }
-
-  const client = getResendClient();
-
-  const { data, error } = await client.emails.send({
-    from: process.env.RESEND_FROM,
+  return EmailService.send({
+    template: 'test',
     to,
-    subject: '🌿 Votre configuration email fonctionne !',
-    html: testEmailHtml(),
+    logMetadata: { source: 'admin_test' },
   });
-
-  if (error) {
-    throw new Error(`Resend: ${error.message || JSON.stringify(error)}`);
-  }
-
-  return data;
 }

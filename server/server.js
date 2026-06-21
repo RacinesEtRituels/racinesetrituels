@@ -9,6 +9,7 @@ import nodemailer from "nodemailer";
 import crypto from "crypto";
 import { sendTestEmail, orderConfirmationHtml, subscriptionConfirmationHtml, EmailService } from "./emails/index.js";
 import { buildOrderConfirmationData, buildSubscriptionConfirmationData } from "./emails/order-email.js";
+import { insertEmailLog } from "./emails/log.js";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 
@@ -459,8 +460,14 @@ async function processOrderSuccess(session) {
     }
 
     if (hasSubscriptionItems) {
-      await persistSubscriptionsForOrder(session, orderId, orderItemsForEffects || [], customer);
-      console.log('✅ Abonnement Core synchronisé.');
+      try {
+        await persistSubscriptionsForOrder(session, orderId, orderItemsForEffects || [], customer);
+        console.log('✅ Abonnement Core synchronisé.');
+      } catch (subErr) {
+        console.error(`❌ [CRITIQUE] Abonnement Core non créé pour commande ${orderId} : ${subErr.message}`);
+        // Non bloquant : l'email abonnement est envoyé même si la persistance Core échoue.
+        // L'abonnement Stripe est actif — la synchronisation Core peut être rejouée manuellement.
+      }
     }
 
     // 3. File d'attente Impression — table print_jobs absente en production, étape ignorée
@@ -493,10 +500,19 @@ async function processOrderSuccess(session) {
           });
           console.log(`✅ Email de confirmation Resend envoyé à ${customerEmail}`);
         } catch (mailErr) {
-          console.error('❌ Erreur email confirmation (non bloquant) :', mailErr.message);
+          console.error(`❌ Erreur email order-confirmation commande ${orderId} : ${mailErr.message}`);
         }
       } else {
-        console.warn("⚠️ Pas d'email client — email de confirmation non envoyé.");
+        console.warn(`⚠️ Pas d'email client — order-confirmation non envoyé (commande ${orderId}).`);
+        await insertEmailLog({
+          orderId,
+          customerId: customer?.id ?? null,
+          template: 'order-confirmation',
+          recipient: '',
+          status: 'skipped',
+          errorMessage: 'Adresse email client absente de la session Stripe',
+          metadata: { source: 'stripe_webhook', stripe_session_id: session.id },
+        });
       }
     } else {
       // 4b. Email de confirmation abonnement (Resend — mode subscription)
@@ -537,10 +553,19 @@ async function processOrderSuccess(session) {
           });
           console.log(`✅ Email abonnement Resend envoyé à ${subEmail}`);
         } catch (mailErr) {
-          console.error('❌ Erreur email abonnement (non bloquant) :', mailErr.message);
+          console.error(`❌ Erreur email subscription-confirmation commande ${orderId} : ${mailErr.message}`);
         }
       } else {
-        console.warn("⚠️ Pas d'email client — email abonnement non envoyé.");
+        console.warn(`⚠️ Pas d'email client — subscription-confirmation non envoyé (commande ${orderId}).`);
+        await insertEmailLog({
+          orderId,
+          customerId: customer?.id ?? null,
+          template: 'subscription-confirmation',
+          recipient: '',
+          status: 'skipped',
+          errorMessage: 'Adresse email client absente de la session Stripe',
+          metadata: { source: 'stripe_webhook', stripe_session_id: session.id, stripe_subscription_id: subStripeId },
+        });
       }
     }
   } catch (err) {
