@@ -7,7 +7,8 @@ import { fileURLToPath } from "url";
 import path from "path";
 import nodemailer from "nodemailer";
 import crypto from "crypto";
-import { sendTestEmail } from "./emails/index.js";
+import { sendTestEmail, orderConfirmationHtml, subscriptionConfirmationHtml, EmailService } from "./emails/index.js";
+import { buildOrderConfirmationData, buildSubscriptionConfirmationData } from "./emails/order-email.js";
 
 // --- CONFIGURATION ---
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -95,6 +96,7 @@ const frontendPath = path.join(__dirname, '..');
   'panier', 'checkout', 'success', 'cancel', 'profil', 'connexion', 'inscription',
   'assistantIA', 'conseil', 'confreinimotPass', 'recupmotdepass', 'admin', 'khamare',
   'admin-email-test',
+  'admin-email-preview',
 ].forEach(p => {
   app.get(`/${p}.html`, (req, res) => {
     res.sendFile(path.join(frontendPath, 'pages', `${p}.html`));
@@ -399,124 +401,67 @@ async function processOrderSuccess(session) {
     // 3. File d'attente Impression — table print_jobs absente en production, étape ignorée
     console.log('ℹ️ print_jobs non disponible en production — ignoré.');
 
-    // 4. Email de confirmation
-    const customerEmail = session.customer_details?.email;
-    const customerName = session.customer_details?.name || "Client";
-    if (customerEmail) {
-      try {
-        console.log('Récupération des articles de la commande...');
-        const { data: orderItems, error: itemsError } = await supabase
-          .from("order_items")
-          .select("qty, unit_sale_price_ttc_cents, products(name)")
-          .eq("order_id", orderId);
+    // 4. Email de confirmation (Resend — mode payment uniquement)
+    // Anti double-envoi : garanti par le UPDATE atomique .neq("payment_status","paid") ci-dessus.
+    // Un seul webhook concurrent obtient paidOrder non-null et atteint ce bloc.
+    if (!hasSubscriptionItems) {
+      const { customerEmail, emailData } = buildOrderConfirmationData({
+        session,
+        orderId,
+        orderItems: orderItemsForEffects,
+        customer,
+      });
 
-        if (itemsError) console.error('❌ Erreur récupération order_items :', itemsError.message);
-
-        const items = orderItems || [];
-        const totalCents = items.reduce((sum, i) => sum + i.unit_sale_price_ttc_cents * i.qty, 0);
-        const fmt = (cents) => (cents / 100).toFixed(2).replace('.', ',') + ' €';
-
-        const itemsText = items.map(i =>
-          `  • ${i.products?.name || 'Produit'} × ${i.qty}  →  ${fmt(i.unit_sale_price_ttc_cents * i.qty)}`
-        ).join('\n');
-
-        const itemsHtml = items.map(i => `
-          <tr>
-            <td style="padding:10px 12px;border-bottom:1px solid #1a1a1a;">${i.products?.name || 'Produit'}</td>
-            <td style="padding:10px 12px;border-bottom:1px solid #1a1a1a;text-align:center;">${i.qty}</td>
-            <td style="padding:10px 12px;border-bottom:1px solid #1a1a1a;text-align:right;">${fmt(i.unit_sale_price_ttc_cents)}</td>
-            <td style="padding:10px 12px;border-bottom:1px solid #1a1a1a;text-align:right;font-weight:700;">${fmt(i.unit_sale_price_ttc_cents * i.qty)}</td>
-          </tr>`).join('');
-
-        const textBody = `Bonjour ${customerName},
-
-Merci pour votre commande ! Nous avons bien reçu votre paiement.
-
-─────────────────────────────
-RÉCAPITULATIF — Commande #${orderId}
-─────────────────────────────
-${itemsText || '  (détail non disponible)'}
-
-TOTAL : ${fmt(totalCents)}
-─────────────────────────────
-
-Vous recevrez vos produits très prochainement.
-
-L'équipe Racines & Rituels`;
-
-        const htmlBody = `<!DOCTYPE html>
-<html lang="fr">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
-<body style="margin:0;padding:0;background:#0a0a0a;font-family:'Helvetica Neue',Arial,sans-serif;color:#e0e0e0;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:40px 0;">
-    <tr><td align="center">
-      <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#111;border-top:4px solid #ff5500;">
-        <!-- Header -->
-        <tr>
-          <td style="padding:36px 40px 24px;text-align:center;border-bottom:1px solid #1a1a1a;">
-            <div style="font-family:Georgia,serif;font-size:22px;font-weight:700;letter-spacing:2px;color:#fff;text-transform:uppercase;">Racines &amp; Rituels</div>
-            <div style="margin-top:6px;font-size:13px;color:#888;letter-spacing:1px;">Cosmétiques naturels</div>
-          </td>
-        </tr>
-        <!-- Confirmation message -->
-        <tr>
-          <td style="padding:32px 40px 20px;">
-            <p style="margin:0 0 8px;font-size:20px;font-weight:700;color:#fff;">Merci, ${customerName} !</p>
-            <p style="margin:0;font-size:15px;color:#aaa;line-height:1.6;">Votre commande a bien été reçue et votre paiement confirmé. Nous préparons votre colis avec soin.</p>
-          </td>
-        </tr>
-        <!-- Order summary -->
-        <tr>
-          <td style="padding:0 40px 28px;">
-            <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:#ff5500;text-transform:uppercase;margin-bottom:14px;">Récapitulatif de commande #${orderId}</div>
-            <table width="100%" cellpadding="0" cellspacing="0" style="font-size:14px;">
-              <thead>
-                <tr style="background:#1a1a1a;">
-                  <th style="padding:10px 12px;text-align:left;color:#888;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:1px;">Produit</th>
-                  <th style="padding:10px 12px;text-align:center;color:#888;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:1px;">Qté</th>
-                  <th style="padding:10px 12px;text-align:right;color:#888;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:1px;">Prix unit.</th>
-                  <th style="padding:10px 12px;text-align:right;color:#888;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:1px;">Sous-total</th>
-                </tr>
-              </thead>
-              <tbody style="color:#ddd;">
-                ${itemsHtml || '<tr><td colspan="4" style="padding:12px;color:#666;">Détail non disponible</td></tr>'}
-              </tbody>
-              <tfoot>
-                <tr style="background:#1a1a1a;">
-                  <td colspan="3" style="padding:14px 12px;text-align:right;font-weight:700;color:#fff;font-size:15px;text-transform:uppercase;letter-spacing:1px;">Total</td>
-                  <td style="padding:14px 12px;text-align:right;font-weight:700;color:#ff5500;font-size:18px;">${fmt(totalCents)}</td>
-                </tr>
-              </tfoot>
-            </table>
-          </td>
-        </tr>
-        <!-- Footer -->
-        <tr>
-          <td style="padding:24px 40px;border-top:1px solid #1a1a1a;text-align:center;">
-            <p style="margin:0;font-size:13px;color:#555;line-height:1.6;">Des questions ? Contactez-nous à <a href="mailto:contact@racinesetrituels.fr" style="color:#ff5500;text-decoration:none;">contact@racinesetrituels.fr</a></p>
-            <p style="margin:12px 0 0;font-size:12px;color:#333;">© ${new Date().getFullYear()} Racines &amp; Rituels — Tous droits réservés</p>
-          </td>
-        </tr>
-      </table>
-    </td></tr>
-  </table>
-</body>
-</html>`;
-
-        console.log(`Envoi email de confirmation à ${customerEmail}...`);
-        await mailer.sendMail({
-          from: process.env.MAIL_FROM || 'no-reply@racinesetrituels.local',
-          to: customerEmail,
-          subject: `✅ Confirmation de commande #${orderId} — Racines & Rituels`,
-          text: textBody,
-          html: htmlBody,
-        });
-        console.log('✅ Email de confirmation envoyé.');
-      } catch (mailErr) {
-        console.error('❌ Erreur envoi email (non bloquant) :', mailErr.message);
+      if (customerEmail) {
+        try {
+          await EmailService.send({
+            template: 'order-confirmation',
+            to: customerEmail,
+            data: emailData,
+          });
+          console.log(`✅ Email de confirmation Resend envoyé à ${customerEmail}`);
+        } catch (mailErr) {
+          console.error('❌ Erreur email confirmation (non bloquant) :', mailErr.message);
+        }
+      } else {
+        console.warn("⚠️ Pas d'email client — email de confirmation non envoyé.");
       }
     } else {
-      console.warn('⚠️ Pas d\'email client — email de confirmation non envoyé.');
+      // 4b. Email de confirmation abonnement (Resend — mode subscription)
+      // Anti double-envoi : garanti par le même UPDATE atomique .neq("payment_status","paid") ci-dessus.
+      // Un seul webhook concurrent atteint ce bloc par commande.
+      let renewalTimestamp = null;
+      const subStripeId = typeof session.subscription === 'string' ? session.subscription : null;
+      if (subStripeId) {
+        try {
+          const stripeSub = await stripe.subscriptions.retrieve(subStripeId);
+          renewalTimestamp = stripeSub.current_period_end ?? null;
+        } catch (e) {
+          console.warn('⚠️ Impossible de récupérer la date de renouvellement Stripe :', e.message);
+        }
+      }
+
+      const { customerEmail: subEmail, emailData: subEmailData } = buildSubscriptionConfirmationData({
+        session,
+        orderItems: orderItemsForEffects,
+        customer,
+        renewalTimestamp,
+      });
+
+      if (subEmail) {
+        try {
+          await EmailService.send({
+            template: 'subscription-confirmation',
+            to: subEmail,
+            data: subEmailData,
+          });
+          console.log(`✅ Email abonnement Resend envoyé à ${subEmail}`);
+        } catch (mailErr) {
+          console.error('❌ Erreur email abonnement (non bloquant) :', mailErr.message);
+        }
+      } else {
+        console.warn("⚠️ Pas d'email client — email abonnement non envoyé.");
+      }
     }
   } catch (err) {
     console.error('❌ CRASH DANS PROCESS ORDER SUCCESS :', err.message);
@@ -672,7 +617,47 @@ app.get("/admin/orders", requireAdmin, async (req, res) => {
 
 app.get("/health", (req, res) => res.json({ status: "ok" }));
 
-// --- EMAIL TEST ---
+// --- EMAIL ---
+
+// Données d'exemple pour les aperçus (aucun email envoyé)
+const EMAIL_PREVIEW_SAMPLES = {
+  'order-confirmation': {
+    customerName: 'Alexandre',
+    orderNumber: 'RR-2026-0001',
+    items: [
+      { name: 'Khamaré', quantity: 1, price: '12,00 €' },
+      { name: 'Hibiscus Rouge', quantity: 2, price: '6,00 €' },
+    ],
+    total: '24,00 €',
+  },
+  'subscription-confirmation': {
+    customerName: 'Alexandre',
+    planName: 'Box Bien-être Mensuel',
+    amount: '7,00 € / mois',
+    renewalDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+      .toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' }),
+  },
+};
+
+// Rendu HTML d'un template sans envoyer d'email (utilisé par admin-email-preview)
+app.get('/api/email-preview', (req, res) => {
+  const { template } = req.query;
+  const sample = EMAIL_PREVIEW_SAMPLES[template];
+  if (!sample) {
+    return res.status(400).json({
+      error: `Template inconnu : "${template}". Disponibles : ${Object.keys(EMAIL_PREVIEW_SAMPLES).join(', ')}`,
+    });
+  }
+
+  let html;
+  if (template === 'order-confirmation') html = orderConfirmationHtml(sample);
+  else if (template === 'subscription-confirmation') html = subscriptionConfirmationHtml(sample);
+
+  res.setHeader('Content-Type', 'text/html; charset=utf-8');
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+  res.send(html);
+});
+
 app.post("/api/test-email", async (req, res) => {
   try {
     const data = await sendTestEmail();
