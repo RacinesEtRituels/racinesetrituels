@@ -4,12 +4,14 @@ import { renderLayout } from './layout.js';
  * Email de confirmation de commande.
  *
  * @param {object} data
- * @param {string}   data.customerName  - Prénom ou nom complet du client
- * @param {string}   data.orderNumber   - Numéro de commande (ex: RR-2026-0001)
+ * @param {string}   data.customerName    - Prénom ou nom complet du client
+ * @param {string}   data.orderNumber     - Numéro de commande (ex: RR-2026-0001)
  * @param {Array<{name:string, quantity:number, price:string}>} data.items - Lignes de commande
- * @param {string}   data.total         - Total formaté (ex: "24,00 €")
+ * @param {string}   data.total           - Total formaté (ex: "24,00 €")
+ * @param {string}   [data.shippingName]  - Nom du destinataire (optionnel)
+ * @param {string}   [data.shippingAddress] - Adresse de livraison formatée (optionnel)
  */
-export function orderConfirmationHtml({ customerName, orderNumber, items = [], total }) {
+export function orderConfirmationHtml({ customerName, orderNumber, items = [], total, shippingName, shippingAddress }) {
   const siteUrl = process.env.SITE_URL || 'https://racinesetrituels.com';
 
   const itemRows = items.map((item) => `
@@ -54,6 +56,23 @@ export function orderConfirmationHtml({ customerName, orderNumber, items = [], t
               </td>
             </tr>`}
     </table>
+
+    ${shippingAddress ? `
+    <!-- Adresse de livraison -->
+    <p style="margin:24px 0 10px;font-size:11px;font-weight:700;letter-spacing:2px;color:#e64c19;
+      text-transform:uppercase;font-family:Arial,Helvetica,sans-serif;">
+      Adresse de livraison
+    </p>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
+      style="background:#f9f6f1;border-radius:6px;margin-bottom:24px;">
+      <tr>
+        <td style="padding:14px 20px;font-size:13px;color:#555555;line-height:1.7;
+          font-family:Arial,Helvetica,sans-serif;">
+          ${shippingName ? `<strong style="color:#333333;display:block;margin-bottom:2px;">${shippingName}</strong>` : ''}
+          ${shippingAddress}
+        </td>
+      </tr>
+    </table>` : ''}
 
     <!-- Total -->
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"

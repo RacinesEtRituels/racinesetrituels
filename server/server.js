@@ -10,6 +10,8 @@ import crypto from "crypto";
 import { sendTestEmail, orderConfirmationHtml, subscriptionConfirmationHtml, EmailService } from "./emails/index.js";
 import { buildOrderConfirmationData, buildSubscriptionConfirmationData } from "./emails/order-email.js";
 import { insertEmailLog } from "./emails/log.js";
+import { renderInvoice } from "./documents/invoice.js";
+import { renderPreparationSlip } from "./documents/preparation-slip.js";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 
@@ -429,6 +431,29 @@ async function processOrderSuccess(session) {
     }
     console.log('✅ Commande passée en PAID avec succès.');
 
+    // Générer les numéros séquentiels (order_number = RR-YYYY-NNNN, invoice_number = FAC-YYYY-NNNNN)
+    let generatedOrderNumber = null;
+    let generatedInvoiceNumber = null;
+    try {
+      const [rrResult, facResult] = await Promise.all([
+        supabase.rpc('next_document_number', { p_prefix: 'RR', p_padding: 4 }),
+        supabase.rpc('next_document_number', { p_prefix: 'FAC', p_padding: 5 }),
+      ]);
+      if (rrResult.error) console.error(`⚠️ order_number non généré : ${rrResult.error.message}`);
+      else generatedOrderNumber = rrResult.data;
+      if (facResult.error) console.error(`⚠️ invoice_number non généré : ${facResult.error.message}`);
+      else generatedInvoiceNumber = facResult.data;
+      if (generatedOrderNumber || generatedInvoiceNumber) {
+        await supabase.from('orders').update({
+          ...(generatedOrderNumber ? { order_number: generatedOrderNumber } : {}),
+          ...(generatedInvoiceNumber ? { invoice_number: generatedInvoiceNumber } : {}),
+        }).eq('id', orderId);
+        console.log(`✅ Numéros générés : commande=${generatedOrderNumber} / facture=${generatedInvoiceNumber}`);
+      }
+    } catch (seqErr) {
+      console.error(`⚠️ Génération numéros séquentiels échouée (non bloquant) : ${seqErr.message}`);
+    }
+
     const customer = await findOrCreateCustomerFromSession(session);
     if (customer) {
       const { error: customerUpdateError } = await supabase.from("orders").update({
@@ -444,6 +469,18 @@ async function processOrderSuccess(session) {
       .select("product_id, qty, unit_sale_price_ttc_cents, products(id, name, type)")
       .eq("order_id", orderId);
     if (effectsItemsError) throw new Error(`Erreur lecture articles commande : ${effectsItemsError.message}`);
+
+    // Snapshot product_name sur chaque order_item (protège contre les renommages produits futurs)
+    await Promise.all(
+      (orderItemsForEffects || [])
+        .filter((item) => item.products?.name)
+        .map((item) =>
+          supabase.from('order_items')
+            .update({ product_name: item.products.name })
+            .eq('order_id', orderId)
+            .eq('product_id', item.product_id)
+        )
+    );
 
     const hasPhysicalItems = (orderItemsForEffects || []).some((item) => !isSubscriptionProduct(item.products));
     const hasSubscriptionItems = (orderItemsForEffects || []).some((item) => isSubscriptionProduct(item.products));
@@ -483,6 +520,8 @@ async function processOrderSuccess(session) {
         orderId,
         orderItems: orderItemsForEffects,
         customer,
+        orderNumber: generatedOrderNumber,
+        shippingFields,
       });
 
       if (customerEmail) {
@@ -757,6 +796,96 @@ app.get('/api/admin/email-logs', requireAdmin, async (req, res) => {
   }
 });
 
+// --- DOCUMENTS COMMANDES (facture + bon de préparation) ---
+
+app.get('/admin/orders/:orderId/invoice', requireAdmin, async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const { data: order, error } = await supabase
+      .from('orders')
+      .select(`
+        id, order_number, invoice_number, ordered_at, total_ttc_cents, shipping_cost_cents,
+        shipping_name, shipping_address1, shipping_address2, shipping_postcode, shipping_city, shipping_country,
+        customers(id, full_name, email),
+        order_items(qty, unit_sale_price_ttc_cents, product_name, products(name))
+      `)
+      .eq('id', orderId)
+      .maybeSingle();
+    if (error) return res.status(500).json({ error: error.message });
+    if (!order) return res.status(404).json({ error: 'Commande introuvable' });
+
+    const html = renderInvoice({
+      invoice_number: order.invoice_number,
+      order_number: order.order_number,
+      ordered_at: order.ordered_at,
+      customer: order.customers,
+      shipping: {
+        name: order.shipping_name,
+        address1: order.shipping_address1,
+        address2: order.shipping_address2,
+        postcode: order.shipping_postcode,
+        city: order.shipping_city,
+        country: order.shipping_country,
+      },
+      items: (order.order_items || []).map((i) => ({
+        product_name: i.product_name || i.products?.name || 'Produit',
+        qty: i.qty,
+        unit_sale_price_ttc_cents: i.unit_sale_price_ttc_cents,
+      })),
+      total_ttc_cents: order.total_ttc_cents || 0,
+      shipping_cost_cents: order.shipping_cost_cents || 0,
+    });
+
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    res.send(html);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/admin/orders/:orderId/preparation', requireAdmin, async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const { data: order, error } = await supabase
+      .from('orders')
+      .select(`
+        id, order_number, ordered_at, notes,
+        shipping_name, shipping_address1, shipping_address2, shipping_postcode, shipping_city, shipping_country,
+        customers(id, full_name, email),
+        order_items(qty, product_name, products(name, sku))
+      `)
+      .eq('id', orderId)
+      .maybeSingle();
+    if (error) return res.status(500).json({ error: error.message });
+    if (!order) return res.status(404).json({ error: 'Commande introuvable' });
+
+    const html = renderPreparationSlip({
+      order_number: order.order_number,
+      ordered_at: order.ordered_at,
+      customer: order.customers,
+      shipping: {
+        name: order.shipping_name,
+        address1: order.shipping_address1,
+        address2: order.shipping_address2,
+        postcode: order.shipping_postcode,
+        city: order.shipping_city,
+        country: order.shipping_country,
+      },
+      items: (order.order_items || []).map((i) => ({
+        product_name: i.product_name || i.products?.name || 'Produit',
+        qty: i.qty,
+        product_sku: i.products?.sku || null,
+      })),
+      notes: order.notes || null,
+    });
+
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    res.send(html);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.get("/health", (req, res) => res.json({ status: "ok" }));
 
 // --- EMAIL ---
@@ -771,6 +900,8 @@ const EMAIL_PREVIEW_SAMPLES = {
       { name: 'Hibiscus Rouge', quantity: 2, price: '6,00 €' },
     ],
     total: '24,00 €',
+    shippingName: 'Alexandre Boehler',
+    shippingAddress: '12 rue des Herbes, 75011 Paris, FR',
   },
   'subscription-confirmation': {
     customerName: 'Alexandre',

@@ -17,7 +17,7 @@ const fmt = (cents) => (Number(cents) / 100).toFixed(2).replace('.', ',') + ' �
  * @param {object|null} opts.customer - Objet customer Supabase (peut être null)
  * @returns {{ customerEmail: string|null, emailData: object }}
  */
-export function buildOrderConfirmationData({ session, orderId, orderItems, customer }) {
+export function buildOrderConfirmationData({ session, orderId, orderItems, customer, orderNumber, shippingFields }) {
   const customerEmail = session?.customer_details?.email ?? null;
 
   // Priorité : nom Stripe > full_name Supabase > fallback générique
@@ -39,13 +39,35 @@ export function buildOrderConfirmationData({ session, orderId, orderItems, custo
     0
   );
 
+  // Adresse de livraison pour l'email (depuis les champs Stripe ou shippingFields)
+  const shipping = session?.shipping_details || session?.collected_information?.shipping_details;
+  const shippingAddress = shippingFields?.shipping_address1
+    ? [
+        shippingFields.shipping_address1,
+        shippingFields.shipping_address2,
+        [shippingFields.shipping_postcode, shippingFields.shipping_city].filter(Boolean).join(' '),
+        shippingFields.shipping_country,
+      ].filter(Boolean).join(', ')
+    : shipping?.address
+    ? [
+        shipping.address.line1,
+        shipping.address.line2,
+        [shipping.address.postal_code, shipping.address.city].filter(Boolean).join(' '),
+        shipping.address.country,
+      ].filter(Boolean).join(', ')
+    : null;
+
+  const shippingName = shippingFields?.shipping_name || shipping?.name || null;
+
   return {
     customerEmail,
     emailData: {
       customerName,
-      orderNumber: orderId,
+      orderNumber: orderNumber || orderId,
       items,
       total: fmt(totalCents),
+      shippingName,
+      shippingAddress,
     },
   };
 }
