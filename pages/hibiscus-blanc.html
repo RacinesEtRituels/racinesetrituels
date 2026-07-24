@@ -184,6 +184,7 @@
 
     const SLUG = 'hibiscus-blanc';
     const FALLBACK_IMAGE = '/public/images/hibiscus-blanc.jpg';
+    const RR_ACTIVITY_ID = '23823b14-7ed5-4ce2-a35d-87d1715ac95a';
 
     const btn = document.getElementById("addToCartBtn");
     const priceEl = document.getElementById("productPrice");
@@ -196,7 +197,7 @@
         btn.textContent = "Chargement...";
 
         const resp = await supabaseFetch(
-          `/rest/v1/products?slug=eq.${encodeURIComponent(SLUG)}&select=id,name,price_cents,slug&is_active=eq.true`
+          `/rest/v1/products?slug=eq.${encodeURIComponent(SLUG)}&select=id,name,price_cents,slug&is_active=eq.true&activity_id=eq.${RR_ACTIVITY_ID}`
         );
 
         if (!resp.ok) throw new Error(`Supabase error ${resp.status}`);

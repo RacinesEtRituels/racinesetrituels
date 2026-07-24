@@ -133,6 +133,8 @@
     import { addItem, getTotals } from "/public/js/cart.js";
     import { supabaseFetch } from "/public/js/supabase-public.js";
 
+    const RR_ACTIVITY_ID = '23823b14-7ed5-4ce2-a35d-87d1715ac95a';
+
     // Images statiques par slug (la DB n'a pas de colonne image)
     const imageMap = {
       'khamare': '/public/images/khamare.jpg',
@@ -172,7 +174,7 @@
 
         // 1) Priorité : UUID dans l'URL
         if (urlId) {
-          const resp = await supabaseFetch(`/rest/v1/products?id=eq.${encodeURIComponent(urlId)}&select=id,name,price_cents,slug`);
+          const resp = await supabaseFetch(`/rest/v1/products?id=eq.${encodeURIComponent(urlId)}&select=id,name,price_cents,slug&activity_id=eq.${RR_ACTIVITY_ID}`);
           if (resp.ok) {
             const d = await resp.json();
             if (Array.isArray(d) && d.length) data = d;
@@ -181,7 +183,7 @@
 
         // 2) Slug exact
         if (!data.length) {
-          const resp = await supabaseFetch(`/rest/v1/products?slug=eq.${encodeURIComponent(activeSlug)}&select=id,name,price_cents,slug`);
+          const resp = await supabaseFetch(`/rest/v1/products?slug=eq.${encodeURIComponent(activeSlug)}&select=id,name,price_cents,slug&activity_id=eq.${RR_ACTIVITY_ID}`);
           if (resp.ok) {
             const d = await resp.json();
             if (Array.isArray(d) && d.length) data = d;
@@ -196,7 +198,7 @@
             activeSlug.replace('_', '-'),
           ].filter(s => s !== activeSlug);
           for (const s of variants) {
-            const resp = await supabaseFetch(`/rest/v1/products?slug=eq.${encodeURIComponent(s)}&select=id,name,price_cents,slug`);
+            const resp = await supabaseFetch(`/rest/v1/products?slug=eq.${encodeURIComponent(s)}&select=id,name,price_cents,slug&activity_id=eq.${RR_ACTIVITY_ID}`);
             if (resp.ok) {
               const d = await resp.json();
               if (Array.isArray(d) && d.length) { data = d; break; }

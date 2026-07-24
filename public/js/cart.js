@@ -5,6 +5,7 @@ import { supabase } from "./supabase.js";
 // Cart implementation using localStorage only (key: rr_cart)
 const STORAGE_KEY = "rr_cart";
 const IS_DEV = window.location.hostname === "127.0.0.1";
+const RR_ACTIVITY_ID = "23823b14-7ed5-4ce2-a35d-87d1715ac95a";
 
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
@@ -79,6 +80,7 @@ async function fetchProductByKey(key, fallbackName = null) {
         .from("products")
         .select("id, name, price_cents, slug")
         .eq("slug", slug)
+        .eq("activity_id", RR_ACTIVITY_ID)
         .maybeSingle();
 
       if (error) {
@@ -96,6 +98,7 @@ async function fetchProductByKey(key, fallbackName = null) {
         .from("products")
         .select("id, name, price_cents, slug")
         .ilike("name", `%${fallbackName}%`)
+        .eq("activity_id", RR_ACTIVITY_ID)
         .maybeSingle();
 
       if (error && IS_DEV) console.error("[cart] name lookup error", error.message || error);
