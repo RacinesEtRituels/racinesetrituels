@@ -149,7 +149,7 @@ const frontendPath = path.join(__dirname, '..');
 // --- ROUTES HTML (URLs propres → /pages/) ---
 // Déclarées AVANT express.static pour prendre priorité sur les originaux à la racine
 [
-  'index', 'boutique', 'produits', 'abonnements', 'hibiscus-blanc', 'hibiscus-rouge',
+  'index', 'boutique', 'produits', 'hibiscus-blanc', 'hibiscus-rouge',
   'panier', 'checkout', 'success', 'cancel', 'profil', 'connexion', 'inscription',
   'assistantIA', 'conseil', 'confreinimotPass', 'recupmotdepass', 'admin', 'khamare',
   'admin-email-test',
@@ -166,6 +166,12 @@ const frontendPath = path.join(__dirname, '..');
   app.get(`/${p}.html`, (req, res) => {
     res.sendFile(path.join(frontendPath, 'pages', `${p}.html`));
   });
+});
+
+// Abonnements masqués pour le lancement (vente simple d'abord) — retirer cette route
+// et remettre 'abonnements' dans le tableau ci-dessus pour réactiver la page.
+app.get('/abonnements.html', (req, res) => {
+  res.redirect(302, '/boutique.html');
 });
 app.get('/déconnexion.html', (req, res) => {
   res.sendFile(path.join(frontendPath, 'pages', 'déconnexion.html'));
