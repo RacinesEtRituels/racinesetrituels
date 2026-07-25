@@ -162,9 +162,10 @@ const frontendPath = path.join(__dirname, '..');
 // --- ROUTES HTML (URLs propres → /pages/) ---
 // Déclarées AVANT express.static pour prendre priorité sur les originaux à la racine
 [
-  'index', 'boutique', 'produits', 'hibiscus-blanc', 'hibiscus-rouge',
+  'index', 'boutique', 'hibiscus-blanc', 'hibiscus-rouge',
   'panier', 'checkout', 'success', 'cancel', 'profil', 'connexion', 'inscription',
   'assistantIA', 'conseil', 'confreinimotPass', 'recupmotdepass', 'admin', 'khamare',
+  'notre-histoire',
   'admin-email-test',
   'admin-email-preview',
   'admin-email-logs',
@@ -185,6 +186,14 @@ const frontendPath = path.join(__dirname, '..');
 // et remettre 'abonnements' dans le tableau ci-dessus pour réactiver la page.
 app.get('/abonnements.html', (req, res) => {
   res.redirect(302, '/boutique.html');
+});
+
+// produits.html supprimée (contenu dupliqué avec khamare.html) — redirection permanente
+app.get('/produits.html', (req, res) => {
+  res.redirect(301, '/khamare.html');
+});
+app.get('/pages/produits.html', (req, res) => {
+  res.redirect(301, '/khamare.html');
 });
 app.get('/déconnexion.html', (req, res) => {
   res.sendFile(path.join(frontendPath, 'pages', 'déconnexion.html'));

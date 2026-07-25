@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 const BASE_URL = process.env.BASE_URL || 'http://127.0.0.1:8000';
-const PRODUCT_PATH = '/pages/produits.html';
+const PRODUCT_PATH = '/pages/khamare.html';
 const DEBUG = process.env.E2E_DEBUG === '1';
 
 // Collect console/network diagnostics for better failure messages
