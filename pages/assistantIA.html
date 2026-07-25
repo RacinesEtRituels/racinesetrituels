@@ -5,53 +5,177 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Assistant Bien-Être – Racines & Rituels</title>
-  <meta name="description" content="Votre conseiller bien-être personnalisé : plantes, rituels et conseils adaptés à votre énergie du moment." />
+  <title>Ton conseiller bien-être | Racines & Rituels</title>
+  <meta name="description" content="Trois plantes, trois moments. Dites-nous ce que vous cherchez, nous vous orientons vers l'infusion qui vous correspond." />
   <meta name="robots" content="index,follow" />
+  <link rel="canonical" href="https://www.racinesetrituels.com/assistantIA.html">
+
+  <meta property="og:title" content="Ton conseiller bien-être | Racines & Rituels" />
+  <meta property="og:description" content="Trois plantes, trois moments. Dites-nous ce que vous cherchez, nous vous orientons vers l'infusion qui vous correspond." />
+  <meta property="og:url" content="https://www.racinesetrituels.com/assistantIA.html" />
+  <meta property="og:image" content="https://www.racinesetrituels.com/public/images/hibiscus-rouge.jpg" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://www.racinesetrituels.com/public/images/hibiscus-rouge.jpg" />
 
   <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;600;700&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
-    <link rel="stylesheet" href="/public/css/tailwind.css">
+  <link rel="stylesheet" href="/public/css/tailwind.css">
 
   <style>
     body {
       font-family: 'Epilogue', sans-serif;
     }
-  </style>
 
+    .product-card:hover {
+      transform: translateY(-5px);
+    }
+  </style>
 </head>
 
 <body class="bg-background-light dark:bg-background-dark text-[#1b110e] dark:text-white">
 
   <div id="site-header"></div>
+  <div class="h-[80px]"></div>
 
-  <!-- CONTENU -->
-  <main class="pt-24 max-w-2xl mx-auto px-4 pb-40">
+  <main class="max-w-4xl mx-auto px-6 pb-20">
 
-    <h1 class="text-center text-3xl font-bold mb-6">Ton conseiller bien-être 🌿</h1>
+    <div class="text-center mb-12">
+      <h1 class="text-4xl md:text-5xl font-black mb-4">Ton conseiller bien-être</h1>
+      <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+        Trois plantes, trois moments. Dites-nous ce que vous cherchez, nous vous orientons vers l'infusion qui vous
+        correspond. Pas de catalogue interminable : chez Racines & Rituels, chaque produit est choisi, pas subi.
+      </p>
+    </div>
 
-    <!-- Chat -->
-    <div id="chat" class="flex flex-col gap-6"></div>
+    <h2 class="text-2xl font-bold text-center mb-8">Quel moment cherchez-vous ?</h2>
 
-    <!-- Zone d’écriture -->
-    <div class="fixed bottom-0 left-0 right-0 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-t border-gray-300 dark:border-gray-700 p-4">
-      <div class="max-w-2xl mx-auto flex gap-2">
-        <input id="userInput" type="text" placeholder="Poser une question..." 
-          class="flex-1 h-12 px-4 rounded-xl border border-gray-400 dark:border-gray-700 bg-white dark:bg-background-dark focus:ring-2 focus:ring-primary outline-none" />
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+      <button type="button" data-target="reco-blanc"
+        class="quiz-option bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-xl transition duration-300 border border-gray-100 dark:border-gray-700 p-6 text-center font-bold">
+        Un réconfort doux
+      </button>
+      <button type="button" data-target="reco-rouge"
+        class="quiz-option bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-xl transition duration-300 border border-gray-100 dark:border-gray-700 p-6 text-center font-bold">
+        De la couleur et du caractère
+      </button>
+      <button type="button" data-target="reco-khamare"
+        class="quiz-option bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-xl transition duration-300 border border-gray-100 dark:border-gray-700 p-6 text-center font-bold">
+        Un parfum rare
+      </button>
+    </div>
 
-        <button onclick="sendMessage()" class="h-12 px-6 rounded-xl bg-primary text-white font-bold hover:bg-primary/90 transition">
-          Envoyer
-        </button>
+    <!-- Recommandation : Hibiscus Blanc -->
+    <div id="reco-blanc" class="reco-card hidden mt-8">
+      <div
+        class="product-card bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden border border-gray-100 dark:border-gray-700 flex flex-col sm:flex-row">
+        <div class="sm:w-1/3 aspect-square bg-gray-100 overflow-hidden">
+          <img src="/public/images/hibiscus-blanc.jpg" alt="Fleurs d'Hibiscus Blanc"
+            class="w-full h-full object-cover">
+        </div>
+        <div class="p-6 flex flex-col flex-grow text-center sm:text-left">
+          <h3 class="text-xl font-bold mb-1">Fleurs d'Hibiscus Blanc</h3>
+          <p class="text-sm text-gray-500 mb-3">6,00 € — sachet de 100 g</p>
+          <p class="text-gray-600 dark:text-gray-300 text-sm mb-4 flex-grow">
+            Une infusion florale et délicate, légèrement acidulée, d'une belle teinte pâle. C'est celle qu'on prend
+            en fin d'après-midi, ou le soir sans crainte pour le sommeil : l'hibiscus ne contient pas de caféine.
+          </p>
+          <a href="/hibiscus-blanc.html"
+            class="mt-auto self-center sm:self-start bg-black dark:bg-white text-white dark:text-black font-bold py-2 px-6 rounded-full text-center">Voir
+            le produit</a>
+        </div>
       </div>
+    </div>
+
+    <!-- Recommandation : Hibiscus Rouge -->
+    <div id="reco-rouge" class="reco-card hidden mt-8">
+      <div
+        class="product-card bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden border border-gray-100 dark:border-gray-700 flex flex-col sm:flex-row">
+        <div class="sm:w-1/3 aspect-square bg-gray-100 overflow-hidden">
+          <img src="/public/images/hibiscus-rouge.jpg" alt="Fleurs d'Hibiscus Rouge"
+            class="w-full h-full object-cover">
+        </div>
+        <div class="p-6 flex flex-col flex-grow text-center sm:text-left">
+          <h3 class="text-xl font-bold mb-1">Fleurs d'Hibiscus Rouge</h3>
+          <p class="text-sm text-gray-500 mb-3">6,00 € — sachet de 100 g</p>
+          <p class="text-gray-600 dark:text-gray-300 text-sm mb-4 flex-grow">
+            Un rouge profond, presque grenat, et un goût franchement acidulé qui rappelle les fruits rouges.
+            Excellente chaude en hiver, remarquable glacée en été avec une rondelle de citron.
+          </p>
+          <a href="/hibiscus-rouge.html"
+            class="mt-auto self-center sm:self-start bg-black dark:bg-white text-white dark:text-black font-bold py-2 px-6 rounded-full text-center">Voir
+            le produit</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recommandation : Khamaré -->
+    <div id="reco-khamare" class="reco-card hidden mt-8">
+      <div
+        class="product-card bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden border border-gray-100 dark:border-gray-700 flex flex-col sm:flex-row">
+        <div class="sm:w-1/3 aspect-square bg-gray-100 overflow-hidden">
+          <img src="/public/images/khamare.jpg" alt="Khamaré (racine de vétiver)" class="w-full h-full object-cover">
+        </div>
+        <div class="p-6 flex flex-col flex-grow text-center sm:text-left">
+          <h3 class="text-xl font-bold mb-1">Khamaré (racine de vétiver)</h3>
+          <p class="text-sm text-gray-500 mb-3">12,00 € — sachet de 100 g</p>
+          <p class="text-gray-600 dark:text-gray-300 text-sm mb-4 flex-grow">
+            Des notes boisées et fraîches, très différentes d'une infusion classique. Le khamaré est une tradition
+            d'Afrique de l'Ouest, où l'on en parfume l'eau à boire. C'est le produit à découvrir si vous cherchez
+            autre chose que le déjà-connu.
+          </p>
+          <a href="/khamare.html"
+            class="mt-auto self-center sm:self-start bg-black dark:bg-white text-white dark:text-black font-bold py-2 px-6 rounded-full text-center">Voir
+            le produit</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bloc préparation -->
+    <div class="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white/60 dark:bg-gray-800/60 p-6 mt-16">
+      <h3 class="font-bold mb-3">Bien préparer votre infusion</h3>
+      <ul class="text-sm text-gray-600 dark:text-gray-300 space-y-2 list-disc list-inside">
+        <li>Fleurs d'hibiscus : une cuillère à soupe pour une grande tasse, eau très chaude, laissez infuser 5 à 7
+          minutes.</li>
+        <li>Khamaré : la racine demande plus de temps — comptez une infusion longue, ou laissez reposer en eau
+          froide pour un parfum plus subtil.</li>
+        <li>Toutes nos infusions se boivent aussi glacées : infusez normalement, laissez refroidir, placez au frais.
+        </li>
+      </ul>
+    </div>
+
+    <!-- Bloc final -->
+    <div class="text-center mt-16">
+      <h3 class="text-xl font-bold mb-2">Encore hésitant ?</h3>
+      <p class="text-gray-600 dark:text-gray-300 mb-4">Écrivez-nous, nous vous répondons personnellement.</p>
+      <a href="/contact.html" class="inline-block bg-accent text-white font-bold py-2 px-6 rounded-full">Nous
+        contacter</a>
     </div>
 
   </main>
 
-  <script src="/public/js/assistant.js"></script>
+  <div id="site-footer"></div>
+
   <script src="/public/js/config.js"></script>
   <script type="module" src="/public/js/header-loader.js"></script>
-
-  <div id="site-footer"></div>
   <script type="module" src="/public/js/footer-loader.js"></script>
+
+  <script>
+    document.querySelectorAll('.quiz-option').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.reco-card').forEach((card) => card.classList.add('hidden'));
+        document.querySelectorAll('.quiz-option').forEach((b) => b.classList.remove('ring-2', 'ring-primary'));
+
+        const target = document.getElementById(btn.dataset.target);
+        if (target) {
+          target.classList.remove('hidden');
+          target.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        btn.classList.add('ring-2', 'ring-primary');
+      });
+    });
+  </script>
+
 </body>
+
 </html>

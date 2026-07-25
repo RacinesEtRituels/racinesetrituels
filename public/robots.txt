@@ -11,4 +11,4 @@ Disallow: /cancel.html
 Disallow: /api/
 Disallow: /webhook/
 
-Sitemap: https://racinesetrituels.com/sitemap.xml
+Sitemap: https://www.racinesetrituels.com/sitemap.xml

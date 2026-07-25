@@ -42,6 +42,7 @@ const mailer = nodemailer.createTransport({
 
 const app = express();
 app.disable('x-powered-by');
+app.set('trust proxy', true);
 
 // --- ROUTE WEBHOOK (isolée, avant tout middleware global) ---
 // express.raw() fournit req.body comme Buffer brut, sans aucune interférence
@@ -66,6 +67,18 @@ app.post("/webhook/stripe", express.raw({ type: "application/json" }), async (re
     res.status(400).send(`Webhook Error: ${err.message}`);
   }
 });
+
+// --- SEO : DOMAINE CANONIQUE — une seule version doit répondre en 200 ---
+// racinesetrituels.vercel.app et l'apex non-www redirigent en 301 vers www.racinesetrituels.com
+const CANONICAL_HOST = 'www.racinesetrituels.com';
+if (process.env.NODE_ENV === 'production') {
+  app.use((req, res, next) => {
+    if (req.hostname && req.hostname !== CANONICAL_HOST) {
+      return res.redirect(301, `https://${CANONICAL_HOST}${req.originalUrl}`);
+    }
+    next();
+  });
+}
 
 // CORS — whitelist known origins only
 const allowedOrigins = new Set([
