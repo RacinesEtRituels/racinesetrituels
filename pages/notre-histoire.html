@@ -82,27 +82,100 @@
   <!-- CONTENU CENTRAL -->
   <div class="min-h-screen flex flex-col">
 
-    <main class="flex-1 p-4 max-w-2xl w-full mx-auto space-y-6">
+    <main class="flex-1 px-4 py-10 max-w-2xl w-full mx-auto space-y-10">
 
       <!-- Section d'intro -->
-      <section class="text-center space-y-2">
-        <h1 class="text-2xl font-bold">Deux personnes, deux pays</h1>
+      <section class="text-center space-y-4">
+        <p class="text-xs font-bold tracking-widest uppercase text-primary">Notre histoire</p>
+        <h1 class="text-3xl md:text-4xl font-bold leading-tight">Deux personnes, deux pays</h1>
+        <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
+          Racines &amp; Rituels tient en une phrase : Fanta choisit les plantes au Sénégal,
+          je les emballe en France. Entre les deux, personne.
+        </p>
       </section>
 
-      <!-- Carte : histoire -->
-      <section class="p-4 bg-white dark:bg-background-dark/40 rounded-xl shadow-md space-y-3">
-        <p>
-          Racines & Rituels est né d'une rencontre. Fanta est sénégalaise. Sur place, elle travaille avec plusieurs producteurs de confiance et sélectionne elle-même les meilleures récoltes. Moi, en France, j'ai toujours aimé ce que la nature donne simplement — et que nous avons largement oublié.
+      <!-- Fanta -->
+      <!-- À AJOUTER quand la photo sera disponible : un portrait de Fanta, idéalement
+           chez les producteurs. Emplacement prévu juste avant le <div class="p-6"> :
+           <img src="/public/images/fanta.jpg" alt="Fanta chez les producteurs au Sénégal"
+                class="w-full h-56 object-cover" loading="lazy" width="800" height="800" /> -->
+      <section class="bg-white dark:bg-background-dark/40 rounded-xl shadow-md overflow-hidden">
+        <div class="p-6 space-y-3">
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-3xl text-primary">potted_plant</span>
+            <h2 class="text-xl font-bold">Au Sénégal, Fanta choisit</h2>
+          </div>
+          <p class="leading-relaxed">
+            Fanta est sénégalaise. C'est elle qui travaille avec les producteurs, sur place, et qui
+            sélectionne elle-même les récoltes. Pas sur catalogue, pas à distance : en les voyant.
+          </p>
+          <p class="leading-relaxed">
+            Choisir soi-même, cela veut surtout dire pouvoir écarter. C'est toute la différence entre
+            acheter une marchandise et choisir une récolte — et c'est ce qui arrive ensuite dans
+            votre sachet.
+          </p>
+          <!-- À COMPLÉTER après en avoir parlé avec Fanta : sa région, comment elle
+               a rencontré ces producteurs, ce qu'elle faisait avant, pourquoi ces
+               plantes-là. Une citation d'elle, entre guillemets et signée, vaudrait
+               mieux que tout le reste de cette page. -->
+        </div>
+      </section>
+
+      <!-- Alexandre -->
+      <section class="bg-white dark:bg-background-dark/40 rounded-xl shadow-md overflow-hidden">
+        <div class="p-6 space-y-3">
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-3xl text-terracotta">package_2</span>
+            <h2 class="text-xl font-bold">En France, je reçois et j'emballe</h2>
+          </div>
+          <p class="leading-relaxed">
+            J'ai toujours aimé ce que la nature donne simplement, et que nous avons largement oublié.
+            Je reçois les récoltes de Fanta, je les pèse, je les emballe à la main. C'est aussi moi
+            qui réponds à vos messages : il n'y a pas de service client, il y a quelqu'un.
+          </p>
+          <p class="leading-relaxed">
+            Je m'occupe par ailleurs d'animaux, et c'est un peu la même idée : prendre soin de choses
+            vivantes, sans se presser, sans en faire trop.
+          </p>
+        </div>
+      </section>
+
+      <!-- Sans intermédiaire -->
+      <section class="bg-white dark:bg-background-dark/40 rounded-xl shadow-md overflow-hidden">
+        <div class="p-6 space-y-3">
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-3xl text-primary">handshake</span>
+            <h2 class="text-xl font-bold">Entre nous deux, personne</h2>
+          </div>
+          <p class="leading-relaxed">
+            Ni centrale d'achat, ni importateur, ni grossiste. Fanta choisit, nous recevons, nous
+            emballons. C'est plus lent qu'un circuit classique, et beaucoup moins pratique — mais
+            nous savons d'où vient chaque sachet, et qui l'a cueilli.
+          </p>
+          <p class="leading-relaxed">
+            Trois plantes seulement. Pas parce que nous manquons d'idées, mais parce que nous
+            préférons trois produits que nous connaissons bien à un catalogue que nous ne
+            maîtriserions pas.
+          </p>
+        </div>
+      </section>
+
+      <!-- Appel à l'action -->
+      <section class="text-center space-y-4">
+        <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
+          Une question sur une plante, une commande, ou simplement l'envie de savoir
+          d'où elle vient ? Écrivez-nous, c'est nous qui répondons.
         </p>
-        <p>
-          Entre nous, il n'y a pas d'intermédiaire ni de centrale d'achat. Fanta choisit, nous recevons les produits les plus naturels, et nous les emballons nous-mêmes. C'est aussi moi qui réponds à vos messages.
-        </p>
-        <p>
-          Je m'occupe par ailleurs d'animaux, et c'est un peu la même idée : prendre soin de choses vivantes, sans se presser, sans en faire trop.
-        </p>
-        <p>
-          Trois plantes seulement. Pas parce que nous manquons d'idées, mais parce que nous préférons trois produits que nous connaissons bien à un catalogue que nous ne maîtriserions pas.
-        </p>
+        <div class="flex flex-wrap gap-3 justify-center">
+          <a href="/boutique.html"
+             class="inline-flex items-center justify-center h-12 px-8 rounded-full bg-primary text-white font-bold shadow-lg hover:bg-primary/90 transition">
+            Voir la boutique
+          </a>
+          <a href="/contact.html"
+             class="inline-flex items-center justify-center h-12 px-8 rounded-full border border-primary text-primary font-bold hover:bg-primary/5 transition">
+            Nous écrire
+          </a>
+        </div>
       </section>
 
     </main>
