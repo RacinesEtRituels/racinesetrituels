@@ -53,6 +53,24 @@
           <span id="subtotal">0 €</span>
         </div>
 
+        <div class="flex justify-between items-center gap-3">
+          <label for="shippingCountry" class="text-sm">Livraison en</label>
+          <select id="shippingCountry"
+            class="h-10 px-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm">
+            <option value="FR" selected>France</option>
+            <option value="BE">Belgique</option>
+            <option value="LU">Luxembourg</option>
+            <option value="DE">Allemagne</option>
+            <option value="CH">Suisse</option>
+          </select>
+        </div>
+
+        <div class="flex justify-between">
+          <span>Livraison</span>
+          <span id="shippingCost">—</span>
+        </div>
+        <p id="shippingHint" class="text-xs text-gray-500 dark:text-gray-400"></p>
+
         <hr class="border-gray-300 dark:border-gray-700">
 
         <div class="flex justify-between font-bold text-lg">
@@ -177,11 +195,34 @@
       });
 
       const totals = await getTotals();
-      document.getElementById("subtotal").textContent = Number(totals.total || subtotal).toFixed(2) + " €";
-      document.getElementById("total").textContent = Number(totals.total || subtotal).toFixed(2) + " €";
+      cartSubtotal = Number(totals.total || subtotal);
+      document.getElementById("subtotal").textContent = cartSubtotal.toFixed(2).replace(".", ",") + " €";
+      renderShipping();
 
       enableButtons();
     }
+
+    // Mêmes règles que le serveur (server.js SHIPPING_ZONES) — le montant définitif est calculé au paiement
+    const SHIPPING = {
+      FR: { rate: 5.90, freeFrom: 40 },
+      EU: { rate: 9.90, freeFrom: null },
+    };
+    const shippingCountryEl = document.getElementById("shippingCountry");
+    let cartSubtotal = 0;
+
+    function renderShipping() {
+      const zone = shippingCountryEl.value === "FR" ? SHIPPING.FR : SHIPPING.EU;
+      const free = zone.freeFrom != null && cartSubtotal >= zone.freeFrom;
+      const shipping = free ? 0 : zone.rate;
+      document.getElementById("shippingCost").textContent = free ? "Offerte" : shipping.toFixed(2).replace(".", ",") + " €";
+      document.getElementById("total").textContent = (cartSubtotal + shipping).toFixed(2).replace(".", ",") + " €";
+      document.getElementById("shippingHint").textContent = zone.freeFrom == null
+        ? ""
+        : free
+          ? "Livraison offerte en France dès 40 € d'achat (après code promo)."
+          : `Plus que ${(zone.freeFrom - cartSubtotal).toFixed(2).replace(".", ",")} € pour la livraison offerte en France (après code promo).`;
+    }
+    shippingCountryEl.addEventListener("change", renderShipping);
 
     function enableButtons() {
       document.querySelectorAll(".deleteBtn").forEach(btn => {
@@ -288,7 +329,11 @@
         }
         storePromoCode(promoCode);
 
-        const payload = { items, ...(promoCode ? { promo_code: promoCode } : {}) };
+        const payload = {
+          items,
+          shipping_country: shippingCountryEl.value,
+          ...(promoCode ? { promo_code: promoCode } : {}),
+        };
         if (IS_DEV) {
           console.log("[checkout] payload ->", payload);
         }

@@ -17,7 +17,7 @@ const fmt = (cents) => (Number(cents) / 100).toFixed(2).replace('.', ',') + ' �
  * @param {object|null} opts.customer - Objet customer Supabase (peut être null)
  * @returns {{ customerEmail: string|null, emailData: object }}
  */
-export function buildOrderConfirmationData({ session, orderId, orderItems, customer, orderNumber, shippingFields, discountCents = 0, promoCode = null }) {
+export function buildOrderConfirmationData({ session, orderId, orderItems, customer, orderNumber, shippingFields, discountCents = 0, promoCode = null, shippingCents = 0 }) {
   const customerEmail = session?.customer_details?.email ?? null;
 
   // Priorité : nom Stripe > full_name Supabase > fallback générique
@@ -65,8 +65,9 @@ export function buildOrderConfirmationData({ session, orderId, orderItems, custo
       customerName,
       orderNumber: orderNumber || orderId,
       items,
-      total: fmt(totalCents - discountCents),
+      total: fmt(totalCents - discountCents + shippingCents),
       ...(discountCents > 0 ? { discount: `- ${fmt(discountCents)}`, promoCode } : {}),
+      shippingCost: shippingCents > 0 ? fmt(shippingCents) : 'Offerte',
       shippingName,
       shippingAddress,
     },
@@ -84,7 +85,7 @@ export function buildOrderConfirmationData({ session, orderId, orderItems, custo
  * @param {number|null} opts.renewalTimestamp - Unix timestamp (Stripe current_period_end), optionnel
  * @returns {{ customerEmail: string|null, emailData: object }}
  */
-export function buildSubscriptionConfirmationData({ session, orderItems, customer, renewalTimestamp = null }) {
+export function buildSubscriptionConfirmationData({ session, orderItems, customer, renewalTimestamp = null, shippingCents = 0 }) {
   const customerEmail = session?.customer_details?.email ?? null;
 
   const customerName =
@@ -102,7 +103,9 @@ export function buildSubscriptionConfirmationData({ session, orderItems, custome
   const freqLabel = isAnnual ? 'an' : 'mois';
 
   const priceCents = Number(subItem?.unit_sale_price_ttc_cents ?? 0);
-  const amount = `${(priceCents / 100).toFixed(2).replace('.', ',')} € / ${freqLabel}`;
+  // Livraison facturée à chaque envoi, incluse dans le montant récurrent
+  const amount = `${((priceCents + shippingCents) / 100).toFixed(2).replace('.', ',')} € / ${freqLabel}`
+    + (shippingCents > 0 ? ' (livraison incluse)' : '');
 
   // Formate la date de renouvellement en français, ou '—' si indisponible
   let renewalDate = '—';

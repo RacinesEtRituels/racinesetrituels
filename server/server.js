@@ -275,7 +275,7 @@ async function findActiveAffiliateByCode(code) {
   if (!AFFILIATE_CODE_RE.test(code)) return null;
   const { data, error } = await supabase
     .from("affiliates")
-    .select("id, code, commission_rate, stripe_promotion_code_id")
+    .select("id, code, commission_rate, discount_percent, stripe_promotion_code_id")
     .eq("activity_id", ACTIVITY_ID)
     .ilike("code", code)
     .eq("is_active", true)
@@ -284,13 +284,44 @@ async function findActiveAffiliateByCode(code) {
   return data?.stripe_promotion_code_id ? data : null;
 }
 
-// Lit la réduction réellement appliquée par Stripe (code passé par le site ou saisi sur la page Stripe),
-// l'enregistre sur la commande et crée la commission de l'influenceur.
+// --- FRAIS DE LIVRAISON ---
+// Le client choisit son pays dans le panier ; Stripe n'accepte ensuite qu'une adresse de ce pays.
+// Abonnements : la livraison est facturée à chaque envoi (12 envois pour un abonnement annuel).
+const SHIPPING_ZONES = {
+  FR: { countries: ["FR"], rateCents: 590, freeFromCents: 4000, label: "Livraison France" },
+  EU: { countries: ["BE", "LU", "DE", "CH"], rateCents: 990, freeFromCents: null, label: "Livraison Europe" },
+};
+const SHIPPING_LINE_NAME = "Livraison (à chaque envoi)";
+
+function shippingZoneFor(country) {
+  return Object.values(SHIPPING_ZONES).find((zone) => zone.countries.includes(country)) || null;
+}
+
+// Montant de livraison pour un envoi, selon le montant produits de cet envoi (après réduction)
+function shippingCentsFor(zone, perShipmentCents) {
+  if (zone.freeFromCents != null && perShipmentCents >= zone.freeFromCents) return 0;
+  return zone.rateCents;
+}
+
+// Lit les montants réellement facturés par Stripe et les enregistre sur la commande :
+// frais de port, réduction (code passé par le site ou saisi sur la page Stripe) et commission influenceur.
 // Base de commission = montant produits payé après réduction, hors frais de port.
-async function recordAffiliateSale(session, orderId) {
-  const full = await stripe.checkout.sessions.retrieve(session.id, { expand: ["total_details.breakdown"] });
+async function recordSessionAmounts(session, orderId) {
+  const full = await stripe.checkout.sessions.retrieve(session.id, { expand: ["total_details.breakdown", "line_items"] });
   const discountCents = full.total_details?.amount_discount || 0;
-  if (!discountCents) return { discountCents: 0, promoCode: null };
+  const lineItems = full.line_items?.data || [];
+  const shippingLine = lineItems.find((li) => li.description === SHIPPING_LINE_NAME);
+  const shippingCents = (full.total_details?.amount_shipping || 0) + (shippingLine?.amount_subtotal || 0);
+  const productsPaidCents = lineItems
+    .filter((li) => li !== shippingLine)
+    .reduce((sum, li) => sum + (li.amount_subtotal || 0) - (li.amount_discount || 0), 0);
+
+  if (shippingCents) {
+    const { error: shippingError } = await supabase.from("orders")
+      .update({ shipping_cost_cents: shippingCents }).eq("id", orderId);
+    if (shippingError) throw new Error(`Erreur enregistrement frais de port : ${shippingError.message}`);
+  }
+  if (!discountCents) return { discountCents: 0, promoCode: null, shippingCents };
 
   const promotionCodeIds = (full.total_details?.breakdown?.discounts || [])
     .map((d) => d.discount?.promotion_code)
@@ -316,7 +347,7 @@ async function recordAffiliateSale(session, orderId) {
   if (orderError) throw new Error(`Erreur enregistrement réduction : ${orderError.message}`);
 
   if (affiliate) {
-    const baseCents = Math.max(0, (full.amount_subtotal || 0) - discountCents);
+    const baseCents = Math.max(0, productsPaidCents);
     const rate = Number(affiliate.commission_rate);
     const { error: commissionError } = await supabase.from("affiliate_commissions").insert({
       affiliate_id: affiliate.id,
@@ -330,7 +361,7 @@ async function recordAffiliateSale(session, orderId) {
       throw new Error(`Erreur création commission : ${commissionError.message}`);
     }
   }
-  return { discountCents, promoCode: affiliate?.code || null };
+  return { discountCents, promoCode: affiliate?.code || null, shippingCents };
 }
 
 async function findOrCreateCustomerFromSession(session) {
@@ -555,12 +586,12 @@ async function processOrderSuccess(session) {
     }
     console.log('✅ Commande passée en PAID avec succès.');
 
-    let affiliateSale = { discountCents: 0, promoCode: null };
+    let sessionAmounts = { discountCents: 0, promoCode: null, shippingCents: 0 };
     try {
-      affiliateSale = await recordAffiliateSale(session, orderId);
-      if (affiliateSale.promoCode) console.log(`✅ Vente attribuée au code ${affiliateSale.promoCode}.`);
-    } catch (affErr) {
-      console.error(`❌ [CRITIQUE] Commission influenceur non enregistrée pour commande ${orderId} : ${affErr.message}`);
+      sessionAmounts = await recordSessionAmounts(session, orderId);
+      if (sessionAmounts.promoCode) console.log(`✅ Vente attribuée au code ${sessionAmounts.promoCode}.`);
+    } catch (amountsErr) {
+      console.error(`❌ [CRITIQUE] Frais de port / commission non enregistrés pour commande ${orderId} : ${amountsErr.message}`);
     }
 
     // Générer les numéros séquentiels (order_number = RR-YYYY-NNNN, invoice_number = FAC-YYYY-NNNNN)
@@ -654,8 +685,9 @@ async function processOrderSuccess(session) {
         customer,
         orderNumber: generatedOrderNumber,
         shippingFields,
-        discountCents: affiliateSale.discountCents,
-        promoCode: affiliateSale.promoCode,
+        discountCents: sessionAmounts.discountCents,
+        promoCode: sessionAmounts.promoCode,
+        shippingCents: sessionAmounts.shippingCents,
       });
 
       if (customerEmail) {
@@ -708,6 +740,7 @@ async function processOrderSuccess(session) {
         orderItems: orderItemsForEffects,
         customer,
         renewalTimestamp,
+        shippingCents: sessionAmounts.shippingCents,
       });
 
       if (subEmail) {
@@ -755,6 +788,12 @@ app.post("/create-checkout-session", async (req, res) => {
     const { items } = req.body;
     if (!Array.isArray(items) || items.length === 0) {
       return res.status(400).json({ error: "Panier vide ou invalide." });
+    }
+
+    const shippingCountry = typeof req.body.shipping_country === "string" ? req.body.shipping_country.toUpperCase() : "FR";
+    const shippingZone = shippingZoneFor(shippingCountry);
+    if (!shippingZone) {
+      return res.status(400).json({ error: "Pays de livraison non desservi." });
     }
 
     // Code influenceur saisi dans le panier ou mémorisé via lien ?ref=CODE
@@ -827,6 +866,30 @@ app.post("/create-checkout-session", async (req, res) => {
     const totalCents = resolvedProducts.reduce((sum, { product, qty }) => sum + product.price_cents * qty, 0);
     const checkoutMode = hasSubscriptionItems ? "subscription" : "payment";
 
+    // Livraison offerte au-delà du seuil, calculé après réduction du code influenceur
+    let shippingCents;
+    let subscriptionShippingLine = null;
+    if (checkoutMode === "payment") {
+      const discountCents = affiliate ? Math.round(totalCents * Number(affiliate.discount_percent) / 100) : 0;
+      shippingCents = shippingCentsFor(shippingZone, totalCents - discountCents);
+    } else {
+      const subscription = resolvedProducts.find(({ product }) => isSubscriptionProduct(product)).product;
+      const shipmentsPerPeriod = stripeRecurringInterval(subscription) === "year" ? 12 : 1;
+      const perShipmentCents = Math.round(totalCents / shipmentsPerPeriod);
+      shippingCents = shippingCentsFor(shippingZone, perShipmentCents) * shipmentsPerPeriod;
+      if (shippingCents > 0) {
+        subscriptionShippingLine = {
+          price_data: {
+            currency: "eur",
+            unit_amount: shippingCents,
+            product_data: { name: SHIPPING_LINE_NAME },
+            recurring: { interval: stripeRecurringInterval(subscription) },
+          },
+          quantity: 1,
+        };
+      }
+    }
+
     const { data: order, error: orderError } = await supabase.from("orders").insert({
       activity_id: ACTIVITY_ID,
       channel_id: CHANNEL_ID,
@@ -850,19 +913,32 @@ app.post("/create-checkout-session", async (req, res) => {
 
     const session = await stripe.checkout.sessions.create({
       mode: checkoutMode,
-      line_items: resolvedProducts.map(({ product, qty }) => ({
-        price_data: {
-          currency: "eur",
-          unit_amount: product.price_cents,
-          product_data: {
-            name: product.name,
+      line_items: [
+        ...resolvedProducts.map(({ product, qty }) => ({
+          price_data: {
+            currency: "eur",
+            unit_amount: product.price_cents,
+            product_data: {
+              name: product.name,
+            },
+            ...(isSubscriptionProduct(product) ? {
+              recurring: { interval: stripeRecurringInterval(product) },
+            } : {}),
           },
-          ...(isSubscriptionProduct(product) ? {
-            recurring: { interval: stripeRecurringInterval(product) },
-          } : {}),
-        },
-        quantity: qty,
-      })),
+          quantity: qty,
+        })),
+        ...(subscriptionShippingLine ? [subscriptionShippingLine] : []),
+      ],
+      // shipping_options n'existe qu'en mode paiement ; les abonnements ont une ligne « Livraison »
+      ...(checkoutMode === "payment" ? {
+        shipping_options: [{
+          shipping_rate_data: {
+            type: "fixed_amount",
+            fixed_amount: { amount: shippingCents, currency: "eur" },
+            display_name: shippingCents === 0 ? `${shippingZone.label} offerte` : shippingZone.label,
+          },
+        }],
+      } : {}),
       client_reference_id: order.id,
       metadata: { order_id: order.id },
       // Code connu → appliqué d'office ; sinon le client peut le saisir sur la page Stripe
@@ -870,7 +946,8 @@ app.post("/create-checkout-session", async (req, res) => {
         ? { discounts: [{ promotion_code: affiliate.stripe_promotion_code_id }] }
         : { allow_promotion_codes: true }),
       ...(checkoutMode === "payment" ? { customer_creation: "always" } : {}),
-      shipping_address_collection: { allowed_countries: ['FR', 'BE', 'CH', 'LU', 'DE'] },
+      // Seul le pays choisi dans le panier est accepté, pour que le tarif corresponde à l'adresse
+      shipping_address_collection: { allowed_countries: [shippingCountry] },
       success_url: `${process.env.SITE_URL}/success.html?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.SITE_URL}/cancel.html`,
     });
