@@ -90,6 +90,10 @@ const allowedOrigins = new Set([
   'http://localhost:8000',
   'http://127.0.0.1:3000',
   `http://localhost:${process.env.PORT || 3000}`,
+  // Pilotage360 (gestion des codes influenceurs)
+  'https://jarvis.racinesetrituels.com',
+  'https://pilotage360.vercel.app',
+  'http://localhost:5173',
 ].filter(Boolean));
 app.use(cors({
   origin: (origin, cb) => {
@@ -135,6 +139,32 @@ const requireAdmin = (req, res, next) => {
   next();
 };
 
+// Gestion des influenceurs : mot de passe admin du site, OU session Pilotage360
+// (Bearer JWT Supabase) d'un compte admin ou ayant accès à l'activité Racines & Rituels.
+const requireAffiliateManager = async (req, res, next) => {
+  const secret = process.env.ADMIN_SECRET;
+  if (secret && req.headers['x-admin-secret'] === secret) return next();
+
+  const header = req.headers.authorization || '';
+  const token = header.startsWith('Bearer ') ? header.slice(7) : null;
+  if (!token) return res.status(401).json({ error: 'Non autorisé.' });
+
+  try {
+    const { data: userData, error: userError } = await supabase.auth.getUser(token);
+    if (userError || !userData?.user) return res.status(401).json({ error: 'Session invalide ou expirée.' });
+    const userId = userData.user.id;
+
+    const [{ data: profile }, { data: access }] = await Promise.all([
+      supabase.from('user_profiles').select('role').eq('user_id', userId).maybeSingle(),
+      supabase.from('user_activities').select('activity_id').eq('user_id', userId).eq('activity_id', ACTIVITY_ID).maybeSingle(),
+    ]);
+    if (profile?.role !== 'admin' && !access) return res.status(403).json({ error: 'Accès refusé.' });
+    next();
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 app.use(express.json());
 
 // --- SÉCURITÉ : RATE LIMITING ---
@@ -169,6 +199,7 @@ const frontendPath = path.join(__dirname, '..');
   'admin-email-test',
   'admin-email-preview',
   'admin-email-logs',
+  'admin-affiliation',
   'mentions-legales',
   'confidentialite',
   'cgv',
@@ -236,6 +267,71 @@ const subscriptionBillingCycle = (product) => (
 const stripeRecurringInterval = (product) => (
   subscriptionBillingCycle(product) === "annual" ? "year" : "month"
 );
+
+// --- AFFILIATION INFLUENCEURS ---
+const AFFILIATE_CODE_RE = /^[A-Z0-9_-]{3,30}$/;
+
+async function findActiveAffiliateByCode(code) {
+  if (!AFFILIATE_CODE_RE.test(code)) return null;
+  const { data, error } = await supabase
+    .from("affiliates")
+    .select("id, code, commission_rate, stripe_promotion_code_id")
+    .eq("activity_id", ACTIVITY_ID)
+    .ilike("code", code)
+    .eq("is_active", true)
+    .maybeSingle();
+  if (error) throw new Error(`Erreur lecture code influenceur : ${error.message}`);
+  return data?.stripe_promotion_code_id ? data : null;
+}
+
+// Lit la réduction réellement appliquée par Stripe (code passé par le site ou saisi sur la page Stripe),
+// l'enregistre sur la commande et crée la commission de l'influenceur.
+// Base de commission = montant produits payé après réduction, hors frais de port.
+async function recordAffiliateSale(session, orderId) {
+  const full = await stripe.checkout.sessions.retrieve(session.id, { expand: ["total_details.breakdown"] });
+  const discountCents = full.total_details?.amount_discount || 0;
+  if (!discountCents) return { discountCents: 0, promoCode: null };
+
+  const promotionCodeIds = (full.total_details?.breakdown?.discounts || [])
+    .map((d) => d.discount?.promotion_code)
+    .map((p) => (typeof p === "string" ? p : p?.id))
+    .filter(Boolean);
+
+  let affiliate = null;
+  if (promotionCodeIds.length) {
+    const { data, error } = await supabase
+      .from("affiliates")
+      .select("id, code, commission_rate")
+      .in("stripe_promotion_code_id", promotionCodeIds)
+      .limit(1)
+      .maybeSingle();
+    if (error) throw new Error(`Erreur lecture influenceur : ${error.message}`);
+    affiliate = data;
+  }
+
+  const { error: orderError } = await supabase.from("orders").update({
+    discount_cents: discountCents,
+    ...(affiliate ? { affiliate_id: affiliate.id, promo_code: affiliate.code } : {}),
+  }).eq("id", orderId);
+  if (orderError) throw new Error(`Erreur enregistrement réduction : ${orderError.message}`);
+
+  if (affiliate) {
+    const baseCents = Math.max(0, (full.amount_subtotal || 0) - discountCents);
+    const rate = Number(affiliate.commission_rate);
+    const { error: commissionError } = await supabase.from("affiliate_commissions").insert({
+      affiliate_id: affiliate.id,
+      order_id: orderId,
+      base_cents: baseCents,
+      commission_rate: rate,
+      commission_cents: Math.round(baseCents * rate),
+    });
+    // 23505 = commission déjà enregistrée pour cette commande (webhook rejoué)
+    if (commissionError && commissionError.code !== "23505") {
+      throw new Error(`Erreur création commission : ${commissionError.message}`);
+    }
+  }
+  return { discountCents, promoCode: affiliate?.code || null };
+}
 
 async function findOrCreateCustomerFromSession(session) {
   const stripeCustomerId = typeof session.customer === "string" ? session.customer : null;
@@ -459,6 +555,14 @@ async function processOrderSuccess(session) {
     }
     console.log('✅ Commande passée en PAID avec succès.');
 
+    let affiliateSale = { discountCents: 0, promoCode: null };
+    try {
+      affiliateSale = await recordAffiliateSale(session, orderId);
+      if (affiliateSale.promoCode) console.log(`✅ Vente attribuée au code ${affiliateSale.promoCode}.`);
+    } catch (affErr) {
+      console.error(`❌ [CRITIQUE] Commission influenceur non enregistrée pour commande ${orderId} : ${affErr.message}`);
+    }
+
     // Générer les numéros séquentiels (order_number = RR-YYYY-NNNN, invoice_number = FAC-YYYY-NNNNN)
     let generatedOrderNumber = null;
     let generatedInvoiceNumber = null;
@@ -550,6 +654,8 @@ async function processOrderSuccess(session) {
         customer,
         orderNumber: generatedOrderNumber,
         shippingFields,
+        discountCents: affiliateSale.discountCents,
+        promoCode: affiliateSale.promoCode,
       });
 
       if (customerEmail) {
@@ -651,6 +757,16 @@ app.post("/create-checkout-session", async (req, res) => {
       return res.status(400).json({ error: "Panier vide ou invalide." });
     }
 
+    // Code influenceur saisi dans le panier ou mémorisé via lien ?ref=CODE
+    const promoCode = typeof req.body.promo_code === "string" ? req.body.promo_code.trim().toUpperCase() : "";
+    let affiliate = null;
+    if (promoCode) {
+      affiliate = await findActiveAffiliateByCode(promoCode);
+      if (!affiliate) {
+        return res.status(400).json({ error: `Le code « ${promoCode} » n'est pas valide.`, invalid_promo_code: true });
+      }
+    }
+
     console.log('[checkout] req.body:', JSON.stringify(req.body));
     const resolvedProducts = [];
     for (const item of items) {
@@ -718,6 +834,7 @@ app.post("/create-checkout-session", async (req, res) => {
       payment_status: "pending",
       fulfillment_status: "pending",
       total_ttc_cents: totalCents,
+      ...(affiliate ? { affiliate_id: affiliate.id, promo_code: affiliate.code } : {}),
     }).select().single();
     if (orderError) throw new Error(`Erreur création commande : ${orderError.message}`);
 
@@ -748,6 +865,10 @@ app.post("/create-checkout-session", async (req, res) => {
       })),
       client_reference_id: order.id,
       metadata: { order_id: order.id },
+      // Code connu → appliqué d'office ; sinon le client peut le saisir sur la page Stripe
+      ...(affiliate
+        ? { discounts: [{ promotion_code: affiliate.stripe_promotion_code_id }] }
+        : { allow_promotion_codes: true }),
       ...(checkoutMode === "payment" ? { customer_creation: "always" } : {}),
       shipping_address_collection: { allowed_countries: ['FR', 'BE', 'CH', 'LU', 'DE'] },
       success_url: `${process.env.SITE_URL}/success.html?session_id={CHECKOUT_SESSION_ID}`,
@@ -798,6 +919,120 @@ app.get("/admin/orders", requireAdmin, async (req, res) => {
   res.json({ orders: data });
 });
 
+// --- ADMIN : INFLUENCEURS / AFFILIATION ---
+app.get(['/api/admin/affiliates', '/api/affiliates'], requireAffiliateManager, async (req, res) => {
+  try {
+    const [{ data: affiliates, error: affError }, { data: commissions, error: comError }] = await Promise.all([
+      supabase.from('affiliates').select('*').eq('activity_id', ACTIVITY_ID).order('created_at', { ascending: false }),
+      supabase.from('affiliate_commissions')
+        .select('id, affiliate_id, order_id, base_cents, commission_rate, commission_cents, status, paid_at, created_at, orders(order_number)')
+        .order('created_at', { ascending: false })
+        .limit(500),
+    ]);
+    if (affError) throw new Error(affError.message);
+    if (comError) throw new Error(comError.message);
+    res.json({ affiliates: affiliates || [], commissions: commissions || [] });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post(['/api/admin/affiliates', '/api/affiliates'], requireAffiliateManager, async (req, res) => {
+  try {
+    const name = String(req.body.name || '').trim();
+    const code = String(req.body.code || '').trim().toUpperCase();
+    const commissionRate = Number(req.body.commission_percent ?? 10) / 100;
+    const discountPercent = Number(req.body.discount_percent ?? 10);
+    if (!name) return res.status(400).json({ error: 'Nom obligatoire.' });
+    if (!AFFILIATE_CODE_RE.test(code)) {
+      return res.status(400).json({ error: 'Code invalide : 3 à 30 caractères, lettres, chiffres, - ou _.' });
+    }
+    if (!(commissionRate >= 0 && commissionRate <= 0.5)) return res.status(400).json({ error: 'Commission entre 0 et 50 %.' });
+    if (!(discountPercent > 0 && discountPercent <= 50)) return res.status(400).json({ error: 'Réduction entre 1 et 50 %.' });
+
+    const { data: existing } = await supabase.from('affiliates').select('id').ilike('code', code).maybeSingle();
+    if (existing) return res.status(409).json({ error: `Le code ${code} existe déjà.` });
+
+    // duration "once" : pour un abonnement, la réduction ne s'applique qu'au 1er paiement
+    const coupon = await stripe.coupons.create({
+      percent_off: discountPercent,
+      duration: 'once',
+      name: `Influenceur ${name} -${discountPercent}%`,
+      metadata: { type: 'affiliate', affiliate_code: code },
+    });
+    const promotionCode = await stripe.promotionCodes.create({
+      coupon: coupon.id,
+      code,
+      metadata: { type: 'affiliate' },
+    });
+
+    const { data: affiliate, error } = await supabase.from('affiliates').insert({
+      activity_id: ACTIVITY_ID,
+      name,
+      email: String(req.body.email || '').trim() || null,
+      instagram: String(req.body.instagram || '').trim() || null,
+      code,
+      commission_rate: commissionRate,
+      discount_percent: discountPercent,
+      stripe_coupon_id: coupon.id,
+      stripe_promotion_code_id: promotionCode.id,
+      notes: String(req.body.notes || '').trim() || null,
+    }).select().single();
+    if (error) {
+      await stripe.promotionCodes.update(promotionCode.id, { active: false }).catch(() => {});
+      throw new Error(error.message);
+    }
+    res.json({ affiliate });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.patch(['/api/admin/affiliates/:id', '/api/affiliates/:id'], requireAffiliateManager, async (req, res) => {
+  try {
+    const { data: affiliate, error: readError } = await supabase
+      .from('affiliates').select('*').eq('id', req.params.id).eq('activity_id', ACTIVITY_ID).maybeSingle();
+    if (readError) throw new Error(readError.message);
+    if (!affiliate) return res.status(404).json({ error: 'Influenceur introuvable.' });
+
+    const updates = { updated_at: now() };
+    if (req.body.commission_percent !== undefined) {
+      const rate = Number(req.body.commission_percent) / 100;
+      if (!(rate >= 0 && rate <= 0.5)) return res.status(400).json({ error: 'Commission entre 0 et 50 %.' });
+      updates.commission_rate = rate;
+    }
+    if (typeof req.body.is_active === 'boolean') {
+      if (affiliate.stripe_promotion_code_id) {
+        await stripe.promotionCodes.update(affiliate.stripe_promotion_code_id, { active: req.body.is_active });
+      }
+      updates.is_active = req.body.is_active;
+    }
+    const { data, error } = await supabase.from('affiliates').update(updates).eq('id', affiliate.id).select().single();
+    if (error) throw new Error(error.message);
+    res.json({ affiliate: data });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Passe des commissions en "payée" (après virement) ou "annulée" (retour / remboursement)
+app.post('/api/admin/affiliate-commissions/status', requireAdmin, async (req, res) => {
+  try {
+    const ids = Array.isArray(req.body.ids) ? req.body.ids.filter((id) => typeof id === 'string') : [];
+    const status = req.body.status;
+    if (!ids.length) return res.status(400).json({ error: 'Aucune commission sélectionnée.' });
+    if (!['paid', 'cancelled', 'pending'].includes(status)) return res.status(400).json({ error: 'Statut invalide.' });
+    const { data, error } = await supabase.from('affiliate_commissions')
+      .update({ status, paid_at: status === 'paid' ? now() : null })
+      .in('id', ids)
+      .select('id');
+    if (error) throw new Error(error.message);
+    res.json({ updated: data?.length || 0 });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Interface admin temporaire — logs emails envoyés via Resend.
 // ATTENTION : route réservée aux environnements de développement ou si
 // ADMIN_EMAIL_LOGS_ENABLED=true est explicitement défini en production.
@@ -832,7 +1067,7 @@ app.get('/admin/orders/:orderId/invoice', requireAdmin, async (req, res) => {
     const { data: order, error } = await supabase
       .from('orders')
       .select(`
-        id, order_number, invoice_number, ordered_at, total_ttc_cents, shipping_cost_cents,
+        id, order_number, invoice_number, ordered_at, total_ttc_cents, shipping_cost_cents, discount_cents, promo_code,
         shipping_name, shipping_address1, shipping_address2, shipping_postcode, shipping_city, shipping_country,
         customers(id, full_name, email),
         order_items(qty, unit_sale_price_ttc_cents, product_name, products(name))
@@ -862,6 +1097,8 @@ app.get('/admin/orders/:orderId/invoice', requireAdmin, async (req, res) => {
       })),
       total_ttc_cents: order.total_ttc_cents || 0,
       shipping_cost_cents: order.shipping_cost_cents || 0,
+      discount_cents: order.discount_cents || 0,
+      promo_code: order.promo_code,
     });
 
     res.setHeader('Content-Type', 'text/html; charset=utf-8');

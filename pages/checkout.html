@@ -80,6 +80,7 @@
   <script type="module">
     import { getCart, getTotals, clearCart, normalizeCartIds, isUUID } from '/public/js/cart.js';
     import { BACKEND_URL } from '/public/js/backend-config.js';
+    import { getStoredPromoCode } from '/public/js/affiliate.js';
 
     async function renderSummary() {
       const items = await getCart();
@@ -158,7 +159,7 @@
           const resp = await fetch(`${BACKEND_URL}/create-checkout-session`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ items })
+            body: JSON.stringify({ items, ...(getStoredPromoCode() ? { promo_code: getStoredPromoCode() } : {}) })
           });
 
           if (!resp.ok) {

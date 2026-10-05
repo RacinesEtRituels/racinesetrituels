@@ -18,6 +18,8 @@ function fmtDate(iso) {
  * @param {Array}   opts.items              - [{ product_name, qty, unit_sale_price_ttc_cents }]
  * @param {number}  opts.total_ttc_cents
  * @param {number}  opts.shipping_cost_cents
+ * @param {number}  [opts.discount_cents]  - Réduction code promo (TTC)
+ * @param {string}  [opts.promo_code]
  */
 export function renderInvoice({
   invoice_number,
@@ -28,6 +30,8 @@ export function renderInvoice({
   items = [],
   total_ttc_cents = 0,
   shipping_cost_cents = 0,
+  discount_cents = 0,
+  promo_code = null,
 }) {
   const invoiceDate = fmtDate(ordered_at);
   const customerName = customer?.full_name || shipping?.name || 'Client';
@@ -61,7 +65,13 @@ export function renderInvoice({
         <td style="padding:8px 16px;font-size:13px;text-align:right;">${fmt(shipping_cost_cents)}</td>
       </tr>` : '';
 
-  const grandTotal = total_ttc_cents + shipping_cost_cents;
+  const discountRow = discount_cents > 0 ? `
+      <tr>
+        <td colspan="3" style="padding:8px 16px;font-size:13px;color:#777;text-align:right;">Réduction${promo_code ? ` (code ${promo_code})` : ''}</td>
+        <td style="padding:8px 16px;font-size:13px;text-align:right;">- ${fmt(discount_cents)}</td>
+      </tr>` : '';
+
+  const grandTotal = total_ttc_cents - discount_cents + shipping_cost_cents;
   const today = new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
   return `<!DOCTYPE html>
@@ -147,6 +157,7 @@ thead th:nth-child(3),thead th:nth-child(4){text-align:right}
     </thead>
     <tbody>
       ${itemRows || '<tr><td colspan="4" style="padding:16px;color:#bbb;text-align:center;font-size:13px;">Aucun article</td></tr>'}
+      ${discountRow}
       ${shippingRow}
     </tbody>
   </table>

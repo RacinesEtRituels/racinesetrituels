@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="robots" content="noindex, nofollow"/>
+  <title>Admin — Influenceurs</title>
+  <link rel="stylesheet" href="/public/css/tailwind.css">
+  <script>
+    const pwd = prompt("Mot de passe admin :");
+    if (!pwd) window.location.replace("/index.html");
+  </script>
+  <style>body { font-family: sans-serif; }</style>
+</head>
+<body class="bg-gray-100 p-4 md:p-6">
+
+  <div class="max-w-6xl mx-auto space-y-6">
+    <div class="flex items-center justify-between flex-wrap gap-3">
+      <h1 class="text-2xl font-bold">Influenceurs — Racines & Rituels</h1>
+      <a href="/admin.html" class="text-sm underline text-gray-600">← Commandes</a>
+    </div>
+
+    <p id="msg" class="hidden px-4 py-3 rounded-lg text-sm"></p>
+
+    <!-- Nouvel influenceur -->
+    <section class="bg-white rounded-xl shadow p-6">
+      <h2 class="font-bold text-lg mb-4">Ajouter un influenceur</h2>
+      <form id="createForm" class="grid md:grid-cols-3 gap-4">
+        <label class="text-sm">Nom *<input name="name" required class="mt-1 w-full border rounded px-3 py-2"></label>
+        <label class="text-sm">Code promo *<input name="code" required maxlength="30" pattern="[A-Za-z0-9_\-]{3,30}" placeholder="SOPHIE10" class="mt-1 w-full border rounded px-3 py-2 uppercase"></label>
+        <label class="text-sm">Instagram / TikTok<input name="instagram" placeholder="@compte" class="mt-1 w-full border rounded px-3 py-2"></label>
+        <label class="text-sm">Email<input name="email" type="email" class="mt-1 w-full border rounded px-3 py-2"></label>
+        <label class="text-sm">Commission influenceur (%)<input name="commission_percent" type="number" min="0" max="50" step="0.5" value="10" class="mt-1 w-full border rounded px-3 py-2"></label>
+        <label class="text-sm">Réduction client (%)<input name="discount_percent" type="number" min="1" max="50" step="1" value="10" class="mt-1 w-full border rounded px-3 py-2"></label>
+        <label class="text-sm md:col-span-2">Notes (IBAN, conditions…)<input name="notes" class="mt-1 w-full border rounded px-3 py-2"></label>
+        <div class="flex items-end">
+          <button class="w-full bg-black text-white px-4 py-2 rounded hover:bg-gray-800">Créer le code</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Liste -->
+    <section class="bg-white rounded-xl shadow p-6 overflow-x-auto">
+      <h2 class="font-bold text-lg mb-4">Influenceurs</h2>
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="text-left text-xs text-gray-500 uppercase border-b">
+            <th class="py-2 pr-3">Influenceur</th>
+            <th class="py-2 pr-3">Code / lien</th>
+            <th class="py-2 pr-3 text-right">Ventes</th>
+            <th class="py-2 pr-3 text-right">CA généré</th>
+            <th class="py-2 pr-3 text-right">Commission</th>
+            <th class="py-2 pr-3 text-right">À payer</th>
+            <th class="py-2 pr-3 text-right">Déjà payé</th>
+            <th class="py-2"></th>
+          </tr>
+        </thead>
+        <tbody id="affiliatesBody"><tr><td colspan="8" class="py-6 text-center text-gray-400">Chargement…</td></tr></tbody>
+      </table>
+    </section>
+
+    <!-- Commissions -->
+    <section class="bg-white rounded-xl shadow p-6 overflow-x-auto">
+      <div class="flex items-center justify-between flex-wrap gap-3 mb-4">
+        <h2 class="font-bold text-lg">Commissions</h2>
+        <div class="flex gap-2 flex-wrap">
+          <select id="filterStatus" class="border rounded px-3 py-2 text-sm">
+            <option value="pending" selected>À payer</option>
+            <option value="paid">Payées</option>
+            <option value="cancelled">Annulées</option>
+            <option value="">Toutes</option>
+          </select>
+          <button id="markPaid" class="bg-green-700 text-white px-3 py-2 rounded text-sm">Marquer payées</button>
+          <button id="markCancelled" class="bg-gray-200 px-3 py-2 rounded text-sm">Annuler (retour)</button>
+        </div>
+      </div>
+      <p class="text-xs text-gray-500 mb-3">Conseil : attendez 14 jours après la vente (délai de rétractation) avant de payer une commission.</p>
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="text-left text-xs text-gray-500 uppercase border-b">
+            <th class="py-2 pr-3"><input type="checkbox" id="checkAll"></th>
+            <th class="py-2 pr-3">Date</th>
+            <th class="py-2 pr-3">Influenceur</th>
+            <th class="py-2 pr-3">Commande</th>
+            <th class="py-2 pr-3 text-right">Base</th>
+            <th class="py-2 pr-3 text-right">Taux</th>
+            <th class="py-2 pr-3 text-right">Commission</th>
+            <th class="py-2">Statut</th>
+          </tr>
+        </thead>
+        <tbody id="commissionsBody"></tbody>
+      </table>
+    </section>
+  </div>
+
+  <script>
+    const SITE = 'https://www.racinesetrituels.com';
+    const fmt = (c) => (Number(c || 0) / 100).toFixed(2).replace('.', ',') + ' €';
+    const pct = (r) => (Number(r) * 100).toLocaleString('fr-FR', { maximumFractionDigits: 2 }) + ' %';
+    const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+    const STATUS = { pending: ['À payer', 'bg-yellow-100 text-yellow-800'], paid: ['Payée', 'bg-green-100 text-green-800'], cancelled: ['Annulée', 'bg-gray-100 text-gray-600'] };
+    let state = { affiliates: [], commissions: [] };
+
+    async function api(path, options = {}) {
+      const resp = await fetch(path, {
+        ...options,
+        headers: { 'X-Admin-Secret': pwd, 'Content-Type': 'application/json', ...(options.headers || {}) },
+      });
+      if (resp.status === 401) {
+        alert('Mot de passe incorrect.');
+        window.location.replace('/index.html');
+        throw new Error('401');
+      }
+      const data = await resp.json().catch(() => ({}));
+      if (!resp.ok) throw new Error(data.error || `Erreur ${resp.status}`);
+      return data;
+    }
+
+    function flash(text, ok = true) {
+      const el = document.getElementById('msg');
+      el.textContent = text;
+      el.className = `px-4 py-3 rounded-lg text-sm ${ok ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`;
+    }
+
+    function renderAffiliates() {
+      const body = document.getElementById('affiliatesBody');
+      if (!state.affiliates.length) {
+        body.innerHTML = '<tr><td colspan="8" class="py-6 text-center text-gray-400">Aucun influenceur pour le moment.</td></tr>';
+        return;
+      }
+      body.innerHTML = state.affiliates.map((a) => {
+        const mine = state.commissions.filter((c) => c.affiliate_id === a.id && c.status !== 'cancelled');
+        const sum = (list, key) => list.reduce((s, c) => s + Number(c[key] || 0), 0);
+        const due = mine.filter((c) => c.status === 'pending');
+        const paid = mine.filter((c) => c.status === 'paid');
+        const link = `${SITE}/?ref=${encodeURIComponent(a.code)}`;
+        return `
+          <tr class="border-b align-top ${a.is_active ? '' : 'opacity-50'}">
+            <td class="py-3 pr-3">
+              <p class="font-semibold">${esc(a.name)}</p>
+              <p class="text-xs text-gray-500">${esc(a.instagram || '')} ${esc(a.email || '')}</p>
+              ${a.notes ? `<p class="text-xs text-gray-400">${esc(a.notes)}</p>` : ''}
+            </td>
+            <td class="py-3 pr-3">
+              <p class="font-mono font-bold">${esc(a.code)}</p>
+              <p class="text-xs text-gray-500">-${Number(a.discount_percent)} % client · ${pct(a.commission_rate)} pour lui</p>
+              <button class="text-xs underline text-blue-700" data-copy="${esc(link)}">Copier le lien</button>
+            </td>
+            <td class="py-3 pr-3 text-right">${mine.length}</td>
+            <td class="py-3 pr-3 text-right">${fmt(sum(mine, 'base_cents'))}</td>
+            <td class="py-3 pr-3 text-right">${fmt(sum(mine, 'commission_cents'))}</td>
+            <td class="py-3 pr-3 text-right font-bold">${fmt(sum(due, 'commission_cents'))}</td>
+            <td class="py-3 pr-3 text-right">${fmt(sum(paid, 'commission_cents'))}</td>
+            <td class="py-3 text-right whitespace-nowrap">
+              <button class="text-xs underline" data-rate="${a.id}">Taux</button>
+              <button class="text-xs underline ml-2" data-toggle="${a.id}" data-active="${a.is_active}">${a.is_active ? 'Désactiver' : 'Réactiver'}</button>
+            </td>
+          </tr>`;
+      }).join('');
+    }
+
+    function renderCommissions() {
+      const status = document.getElementById('filterStatus').value;
+      const names = Object.fromEntries(state.affiliates.map((a) => [a.id, a.name]));
+      const list = status ? state.commissions.filter((c) => c.status === status) : state.commissions;
+      document.getElementById('checkAll').checked = false;
+      document.getElementById('commissionsBody').innerHTML = list.length ? list.map((c) => {
+        const [label, color] = STATUS[c.status] || [c.status, ''];
+        const ageDays = Math.floor((Date.now() - new Date(c.created_at)) / 86400000);
+        return `
+          <tr class="border-b">
+            <td class="py-2 pr-3"><input type="checkbox" class="rowCheck" value="${c.id}"></td>
+            <td class="py-2 pr-3">${new Date(c.created_at).toLocaleDateString('fr-FR')}${c.status === 'pending' && ageDays < 14 ? ' <span class="text-xs text-orange-600">(< 14 j)</span>' : ''}</td>
+            <td class="py-2 pr-3">${esc(names[c.affiliate_id] || '—')}</td>
+            <td class="py-2 pr-3 font-mono text-xs">${esc(c.orders?.order_number || c.order_id.slice(0, 8))}</td>
+            <td class="py-2 pr-3 text-right">${fmt(c.base_cents)}</td>
+            <td class="py-2 pr-3 text-right">${pct(c.commission_rate)}</td>
+            <td class="py-2 pr-3 text-right font-semibold">${fmt(c.commission_cents)}</td>
+            <td class="py-2"><span class="px-2 py-1 rounded-full text-xs ${color}">${label}</span>${c.paid_at ? ` <span class="text-xs text-gray-400">${new Date(c.paid_at).toLocaleDateString('fr-FR')}</span>` : ''}</td>
+          </tr>`;
+      }).join('') : '<tr><td colspan="8" class="py-6 text-center text-gray-400">Aucune commission.</td></tr>';
+    }
+
+    async function load() {
+      state = await api('/api/admin/affiliates');
+      renderAffiliates();
+      renderCommissions();
+    }
+
+    document.getElementById('createForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const body = Object.fromEntries(new FormData(form));
+      body.code = body.code.trim().toUpperCase();
+      try {
+        await api('/api/admin/affiliates', { method: 'POST', body: JSON.stringify(body) });
+        form.reset();
+        flash(`Code ${body.code} créé. Lien à envoyer : ${SITE}/?ref=${body.code}`);
+        await load();
+      } catch (err) { flash(err.message, false); }
+    });
+
+    document.getElementById('affiliatesBody').addEventListener('click', async (e) => {
+      const btn = e.target.closest('button');
+      if (!btn) return;
+      try {
+        if (btn.dataset.copy) {
+          await navigator.clipboard.writeText(btn.dataset.copy);
+          flash(`Lien copié : ${btn.dataset.copy}`);
+        } else if (btn.dataset.toggle) {
+          const active = btn.dataset.active === 'true';
+          if (active && !confirm('Désactiver ce code ? Il ne fonctionnera plus au paiement.')) return;
+          await api(`/api/admin/affiliates/${btn.dataset.toggle}`, { method: 'PATCH', body: JSON.stringify({ is_active: !active }) });
+          await load();
+        } else if (btn.dataset.rate) {
+          const value = prompt('Nouveau taux de commission (%) pour les prochaines ventes :');
+          if (value === null) return;
+          await api(`/api/admin/affiliates/${btn.dataset.rate}`, { method: 'PATCH', body: JSON.stringify({ commission_percent: Number(value.replace(',', '.')) }) });
+          await load();
+        }
+      } catch (err) { flash(err.message, false); }
+    });
+
+    async function setStatus(status) {
+      const ids = [...document.querySelectorAll('.rowCheck:checked')].map((el) => el.value);
+      if (!ids.length) return flash('Cochez au moins une commission.', false);
+      const label = status === 'paid' ? 'payées' : 'annulées';
+      if (!confirm(`Marquer ${ids.length} commission(s) comme ${label} ?`)) return;
+      try {
+        await api('/api/admin/affiliate-commissions/status', { method: 'POST', body: JSON.stringify({ ids, status }) });
+        flash(`${ids.length} commission(s) ${label}.`);
+        await load();
+      } catch (err) { flash(err.message, false); }
+    }
+
+    document.getElementById('markPaid').addEventListener('click', () => setStatus('paid'));
+    document.getElementById('markCancelled').addEventListener('click', () => setStatus('cancelled'));
+    document.getElementById('filterStatus').addEventListener('change', renderCommissions);
+    document.getElementById('checkAll').addEventListener('change', (e) => {
+      document.querySelectorAll('.rowCheck').forEach((el) => { el.checked = e.target.checked; });
+    });
+
+    load().catch((err) => flash('Erreur : ' + err.message, false));
+  </script>
+</body>
+</html>

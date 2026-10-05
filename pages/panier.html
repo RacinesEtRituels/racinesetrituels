@@ -71,6 +71,14 @@
           </button>
         </div>
 
+        <!-- Code influenceur / code promo -->
+        <div>
+          <label for="promoCode" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Code promo</label>
+          <input id="promoCode" type="text" maxlength="30" autocomplete="off" placeholder="Ex. : SOPHIE10"
+            class="w-full h-11 px-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white uppercase">
+          <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">La réduction s'affichera sur la page de paiement.</p>
+        </div>
+
         <!-- Error message -->
         <p id="payError"
           class="hidden text-red-600 dark:text-red-400 text-sm px-4 py-2 bg-red-50 dark:bg-red-900/20 rounded-lg"></p>
@@ -94,6 +102,10 @@
   <script type="module">
     import { getCart, removeFromCart, updateQuantity, clearCart, getTotals, normalizeCartIds, isUUID } from "/public/js/cart.js";
     import { BACKEND_URL } from "/public/js/backend-config.js";
+    import { getStoredPromoCode, storePromoCode, normalizePromoCode } from "/public/js/affiliate.js";
+
+    const promoInput = document.getElementById("promoCode");
+    promoInput.value = getStoredPromoCode();
 
     const cartItemsEl = document.getElementById("cartItems");
     const emptyCartEl = document.getElementById("emptyCart");
@@ -269,7 +281,14 @@
           }
         }
 
-        const payload = { items };
+        const rawPromo = promoInput.value.trim();
+        const promoCode = normalizePromoCode(rawPromo);
+        if (rawPromo && !promoCode) {
+          throw new Error("Ce code promo n'est pas valide.");
+        }
+        storePromoCode(promoCode);
+
+        const payload = { items, ...(promoCode ? { promo_code: promoCode } : {}) };
         if (IS_DEV) {
           console.log("[checkout] payload ->", payload);
         }

@@ -17,7 +17,7 @@ const fmt = (cents) => (Number(cents) / 100).toFixed(2).replace('.', ',') + ' �
  * @param {object|null} opts.customer - Objet customer Supabase (peut être null)
  * @returns {{ customerEmail: string|null, emailData: object }}
  */
-export function buildOrderConfirmationData({ session, orderId, orderItems, customer, orderNumber, shippingFields }) {
+export function buildOrderConfirmationData({ session, orderId, orderItems, customer, orderNumber, shippingFields, discountCents = 0, promoCode = null }) {
   const customerEmail = session?.customer_details?.email ?? null;
 
   // Priorité : nom Stripe > full_name Supabase > fallback générique
@@ -65,7 +65,8 @@ export function buildOrderConfirmationData({ session, orderId, orderItems, custo
       customerName,
       orderNumber: orderNumber || orderId,
       items,
-      total: fmt(totalCents),
+      total: fmt(totalCents - discountCents),
+      ...(discountCents > 0 ? { discount: `- ${fmt(discountCents)}`, promoCode } : {}),
       shippingName,
       shippingAddress,
     },

@@ -10,8 +10,10 @@ import { renderLayout } from './layout.js';
  * @param {string}   data.total           - Total formaté (ex: "24,00 €")
  * @param {string}   [data.shippingName]  - Nom du destinataire (optionnel)
  * @param {string}   [data.shippingAddress] - Adresse de livraison formatée (optionnel)
+ * @param {string}   [data.discount]  - Réduction formatée (ex: "- 2,40 €", optionnel)
+ * @param {string}   [data.promoCode] - Code promo appliqué (optionnel)
  */
-export function orderConfirmationHtml({ customerName, orderNumber, items = [], total, shippingName, shippingAddress }) {
+export function orderConfirmationHtml({ customerName, orderNumber, items = [], total, shippingName, shippingAddress, discount, promoCode }) {
   const siteUrl = process.env.SITE_URL || 'https://racinesetrituels.com';
 
   const itemRows = items.map((item) => `
@@ -70,6 +72,20 @@ export function orderConfirmationHtml({ customerName, orderNumber, items = [], t
           font-family:Arial,Helvetica,sans-serif;">
           ${shippingName ? `<strong style="color:#333333;display:block;margin-bottom:2px;">${shippingName}</strong>` : ''}
           ${shippingAddress}
+        </td>
+      </tr>
+    </table>` : ''}
+
+    ${discount ? `
+    <!-- Réduction -->
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:8px;">
+      <tr>
+        <td style="padding:4px 20px;font-size:14px;color:#555555;font-family:Arial,Helvetica,sans-serif;">
+          Réduction${promoCode ? ` (code ${promoCode})` : ''}
+        </td>
+        <td style="padding:4px 20px;font-size:14px;color:#555555;text-align:right;
+          font-family:Arial,Helvetica,sans-serif;white-space:nowrap;">
+          ${discount}
         </td>
       </tr>
     </table>` : ''}
