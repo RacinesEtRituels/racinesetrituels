@@ -8,7 +8,7 @@ import path from "path";
 import nodemailer from "nodemailer";
 import crypto from "crypto";
 import { sendTestEmail, orderConfirmationHtml, subscriptionConfirmationHtml, EmailService } from "./emails/index.js";
-import { buildOrderConfirmationData, buildSubscriptionConfirmationData } from "./emails/order-email.js";
+import { buildOrderConfirmationData, buildSubscriptionConfirmationData, buildOrderNotificationData } from "./emails/order-email.js";
 import { insertEmailLog } from "./emails/log.js";
 import { renderInvoice } from "./documents/invoice.js";
 import { renderPreparationSlip } from "./documents/preparation-slip.js";
@@ -292,6 +292,9 @@ const SHIPPING_ZONES = {
   EU: { countries: ["BE", "LU", "DE", "CH"], rateCents: 990, freeFromCents: null, label: "Livraison Europe" },
 };
 const SHIPPING_LINE_NAME = "Livraison (à chaque envoi)";
+
+// Destinataires de l'email interne « Nouvelle commande » (surchargeable : ORDER_NOTIFICATION_EMAILS="a@x,b@y")
+const ORDER_NOTIFICATION_DEFAULT = "commandes@racinesetrituels.com";
 
 function shippingZoneFor(country) {
   return Object.values(SHIPPING_ZONES).find((zone) => zone.countries.includes(country)) || null;
@@ -774,6 +777,34 @@ async function processOrderSuccess(session) {
           metadata: { source: 'stripe_webhook', stripe_session_id: session.id, stripe_subscription_id: subStripeId },
         });
       }
+    }
+
+    // 5. Email interne « Nouvelle commande » à l'équipe (Fanta) pour préparer le colis
+    // Même garantie anti double-envoi que l'email client (UPDATE atomique ci-dessus).
+    const notifyTo = (process.env.ORDER_NOTIFICATION_EMAILS || ORDER_NOTIFICATION_DEFAULT)
+      .split(',').map((s) => s.trim()).filter(Boolean);
+    try {
+      await EmailService.send({
+        template: 'order-notification',
+        to: notifyTo,
+        data: buildOrderNotificationData({
+          session,
+          orderId,
+          orderNumber: generatedOrderNumber,
+          orderItems: orderItemsForEffects,
+          shippingFields,
+          discountCents: sessionAmounts.discountCents,
+          promoCode: sessionAmounts.promoCode,
+          shippingCents: sessionAmounts.shippingCents,
+          isSubscription: hasSubscriptionItems,
+        }),
+        orderId,
+        customerId: customer?.id ?? null,
+        logMetadata: { source: 'stripe_webhook', stripe_session_id: session.id },
+      });
+      console.log(`✅ Email nouvelle commande envoyé à ${notifyTo.join(', ')}`);
+    } catch (mailErr) {
+      console.error(`❌ Erreur email order-notification commande ${orderId} : ${mailErr.message}`);
     }
   } catch (err) {
     console.error('❌ CRASH DANS PROCESS ORDER SUCCESS :', err.message);

@@ -127,3 +127,53 @@ export function buildSubscriptionConfirmationData({ session, orderItems, custome
     },
   };
 }
+
+/**
+ * Construit l'objet data attendu par EmailService.send({ template: 'order-notification', ... }) :
+ * email interne envoyé à l'équipe pour préparer la commande.
+ *
+ * @param {object} opts
+ * @param {object}  opts.session         - Session Stripe (checkout.session.completed)
+ * @param {string}  opts.orderId         - UUID Supabase de la commande
+ * @param {string|null} opts.orderNumber - Numéro RR-YYYY-NNNN
+ * @param {Array}   opts.orderItems      - Lignes order_items avec produits imbriqués
+ * @param {object}  [opts.shippingFields] - Champs shipping_* enregistrés sur la commande
+ * @param {number}  [opts.discountCents]
+ * @param {string|null} [opts.promoCode]
+ * @param {number}  [opts.shippingCents]
+ * @param {boolean} [opts.isSubscription]
+ * @returns {object}
+ */
+export function buildOrderNotificationData({
+  session, orderId, orderNumber, orderItems, shippingFields = {},
+  discountCents = 0, promoCode = null, shippingCents = 0, isSubscription = false,
+}) {
+  const safeItems = Array.isArray(orderItems) ? orderItems : [];
+  const productsCents = safeItems.reduce(
+    (sum, i) => sum + Number(i.unit_sale_price_ttc_cents ?? 0) * Number(i.qty ?? 0),
+    0
+  );
+
+  return {
+    orderNumber: orderNumber || orderId,
+    kind: isSubscription ? 'Abonnement' : 'Commande',
+    items: safeItems.map((i) => ({
+      name: i.products?.name || 'Produit',
+      quantity: Number(i.qty ?? 1),
+      price: fmt(Number(i.unit_sale_price_ttc_cents ?? 0) * Number(i.qty ?? 1)),
+    })),
+    customerName: session?.customer_details?.name || shippingFields.shipping_name || 'Client',
+    customerEmail: session?.customer_details?.email || null,
+    shippingName: shippingFields.shipping_name || null,
+    shippingLines: [
+      shippingFields.shipping_address1,
+      shippingFields.shipping_address2,
+      [shippingFields.shipping_postcode, shippingFields.shipping_city].filter(Boolean).join(' '),
+      shippingFields.shipping_country,
+    ].filter(Boolean),
+    ...(discountCents > 0 ? { discount: `- ${fmt(discountCents)}`, promoCode } : {}),
+    shippingCost: shippingCents > 0 ? fmt(shippingCents) : 'Offerte',
+    total: fmt(productsCents - discountCents + shippingCents),
+    dashboardUrl: 'https://jarvis.racinesetrituels.com/racines-rituels',
+  };
+}

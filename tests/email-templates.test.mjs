@@ -132,3 +132,29 @@ test('EmailService: rejette un template inconnu sans appel réseau', async () =>
     }
   );
 });
+
+// ─── Order notification (email interne équipe) ─────────────────────────────
+
+test('order-notification: contient produits, adresse, livraison, code et total', async () => {
+  const { orderNotificationHtml } = await import('../server/emails/templates/order-notification.js');
+  const { buildOrderNotificationData } = await import('../server/emails/order-email.js');
+  const data = buildOrderNotificationData({
+    session: { customer_details: { name: 'Awa <Diop>', email: 'awa@example.com' } },
+    orderId: 'uuid',
+    orderNumber: 'RR-2026-0042',
+    orderItems: [{ qty: 2, unit_sale_price_ttc_cents: 600, products: { name: "Fleurs d'Hibiscus Rouge" } }],
+    shippingFields: { shipping_name: 'Awa Diop', shipping_address1: '1 rue X', shipping_postcode: '75001', shipping_city: 'Paris', shipping_country: 'FR' },
+    discountCents: 120,
+    promoCode: 'SOPHIE10',
+    shippingCents: 590,
+  });
+  assert.equal(data.total, '16,70 €');
+  const html = orderNotificationHtml(data);
+  assert.ok(html.includes('RR-2026-0042'));
+  assert.ok(html.includes('Hibiscus Rouge'));
+  assert.ok(html.includes('75001 Paris'));
+  assert.ok(html.includes('SOPHIE10'));
+  assert.ok(html.includes('5,90 €'));
+  assert.ok(html.includes('Awa &lt;Diop&gt;'), 'nom client échappé');
+  assert.ok(EmailService.templates().includes('order-notification'));
+});

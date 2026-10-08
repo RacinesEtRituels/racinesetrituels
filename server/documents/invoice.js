@@ -59,10 +59,11 @@ export function renderInvoice({
       </tr>`;
   }).join('');
 
-  const shippingRow = shipping_cost_cents > 0 ? `
+  // Livraison : montant facturé, ou « Offerte » pour un colis expédié sans frais
+  const shippingRow = shipping_cost_cents > 0 || shipping?.address1 ? `
       <tr>
-        <td colspan="3" style="padding:8px 16px;font-size:13px;color:#777;text-align:right;">Frais de port</td>
-        <td style="padding:8px 16px;font-size:13px;text-align:right;">${fmt(shipping_cost_cents)}</td>
+        <td colspan="3" style="padding:8px 16px;font-size:13px;color:#777;text-align:right;">Livraison</td>
+        <td style="padding:8px 16px;font-size:13px;text-align:right;">${shipping_cost_cents > 0 ? fmt(shipping_cost_cents) : 'Offerte'}</td>
       </tr>` : '';
 
   const discountRow = discount_cents > 0 ? `

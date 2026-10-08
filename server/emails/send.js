@@ -3,6 +3,7 @@ import { insertEmailLog } from './log.js';
 import { orderConfirmationHtml } from './templates/order-confirmation.js';
 import { subscriptionConfirmationHtml } from './templates/subscription-confirmation.js';
 import { testEmailHtml } from './templates/test-email.js';
+import { orderNotificationHtml } from './templates/order-notification.js';
 
 /**
  * Registre des templates disponibles.
@@ -18,6 +19,10 @@ const TEMPLATES = {
   'subscription-confirmation': {
     subject: () => '🌿 Bienvenue dans le Cercle Bien-être — Racines & Rituels',
     html: subscriptionConfirmationHtml,
+  },
+  'order-notification': {
+    subject: (d) => `🛒 Nouvelle ${d.kind === 'Abonnement' ? 'souscription' : 'commande'} #${d.orderNumber} — ${d.total} à préparer`,
+    html: orderNotificationHtml,
   },
   'test': {
     subject: () => '🌿 Votre configuration email fonctionne !',
