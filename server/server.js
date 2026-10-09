@@ -189,6 +189,28 @@ app.use('/create-checkout-session', apiLimiter);
 // --- FICHIERS STATIQUES (frontend) ---
 const frontendPath = path.join(__dirname, '..');
 
+// Cache : le CDN Vercel garde pages et fichiers jusqu'au prochain déploiement (qui purge
+// son cache), sans rappeler la fonction à chaque visite. Le navigateur, lui, revérifie
+// régulièrement car les noms de fichiers ne sont pas versionnés. Désactivé en développement.
+const IS_PROD = process.env.NODE_ENV === 'production';
+const CDN_ONE_YEAR = 's-maxage=31536000, stale-while-revalidate=86400';
+const CACHE = {
+  page:  `public, max-age=0, ${CDN_ONE_YEAR}`,
+  asset: `public, max-age=3600, ${CDN_ONE_YEAR}`,
+  image: `public, max-age=604800, ${CDN_ONE_YEAR}`,
+};
+const cacheFor = (filePath) =>
+  /\.html$/i.test(filePath) ? CACHE.page
+  : /\.(jpe?g|png|webp|avif|svg|ico)$/i.test(filePath) ? CACHE.image
+  : CACHE.asset;
+const sendCached = (res, filePath) => {
+  if (IS_PROD) res.setHeader('Cache-Control', cacheFor(filePath));
+  res.sendFile(filePath);
+};
+const staticOptions = IS_PROD
+  ? { cacheControl: false, setHeaders: (res, filePath) => res.setHeader('Cache-Control', cacheFor(filePath)) }
+  : {};
+
 // --- ROUTES HTML (URLs propres → /pages/) ---
 // Déclarées AVANT express.static pour prendre priorité sur les originaux à la racine
 [
@@ -209,7 +231,7 @@ const frontendPath = path.join(__dirname, '..');
   'contact',
 ].forEach(p => {
   app.get(`/${p}.html`, (req, res) => {
-    res.sendFile(path.join(frontendPath, 'pages', `${p}.html`));
+    sendCached(res, path.join(frontendPath, 'pages', `${p}.html`));
   });
 });
 
@@ -227,20 +249,21 @@ app.get('/pages/produits.html', (req, res) => {
   res.redirect(301, '/khamare.html');
 });
 app.get('/déconnexion.html', (req, res) => {
-  res.sendFile(path.join(frontendPath, 'pages', 'déconnexion.html'));
+  sendCached(res, path.join(frontendPath, 'pages', 'déconnexion.html'));
 });
 
 // SEO technical files served from root URLs
-app.get('/robots.txt', (req, res) => res.sendFile(path.join(frontendPath, 'public', 'robots.txt')));
-app.get('/sitemap.xml', (req, res) => res.sendFile(path.join(frontendPath, 'public', 'sitemap.xml')));
-app.get('/manifest.json', (req, res) => res.sendFile(path.join(frontendPath, 'public', 'manifest.json')));
-app.get('/favicon.png', (req, res) => res.sendFile(path.join(frontendPath, 'public', 'favicon.png')));
-app.get('/favicon.ico', (req, res) => res.sendFile(path.join(frontendPath, 'public', 'favicon.png')));
+app.get('/robots.txt', (req, res) => sendCached(res, path.join(frontendPath, 'public', 'robots.txt')));
+app.get('/sitemap.xml', (req, res) => sendCached(res, path.join(frontendPath, 'public', 'sitemap.xml')));
+app.get('/manifest.json', (req, res) => sendCached(res, path.join(frontendPath, 'public', 'manifest.json')));
+app.get('/favicon.png', (req, res) => sendCached(res, path.join(frontendPath, 'public', 'favicon.png')));
+app.get('/favicon.ico', (req, res) => sendCached(res, path.join(frontendPath, 'public', 'favicon.png')));
 
 // Dynamic config.js — injects real env vars (overrides static file)
+// Les variables ne changent qu'avec un redéploiement, qui purge le cache CDN.
 app.get('/public/js/config.js', (req, res) => {
   res.setHeader('Content-Type', 'application/javascript');
-  res.setHeader('Cache-Control', 'no-store');
+  res.setHeader('Cache-Control', IS_PROD ? CACHE.page : 'no-store');
   res.send(`window.__ENV__ = ${JSON.stringify({
     SUPABASE_URL: process.env.SUPABASE_URL || '',
     SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY || '',
@@ -248,10 +271,12 @@ app.get('/public/js/config.js', (req, res) => {
   })};`);
 });
 
-app.use(express.static(frontendPath));
+// Seuls les dossiers utilisés par le site sont publics (le code serveur ne doit pas l'être)
+app.use('/public', express.static(path.join(frontendPath, 'public'), staticOptions));
+app.use('/components', express.static(path.join(frontendPath, 'components'), staticOptions));
 // Route racine → pages/index.html
 app.get('/', (req, res) => {
-  res.sendFile(path.join(frontendPath, 'pages', 'index.html'));
+  sendCached(res, path.join(frontendPath, 'pages', 'index.html'));
 });
 
 // --- LOGIQUE MÉTIER ---

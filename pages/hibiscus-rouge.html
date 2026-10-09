@@ -81,7 +81,7 @@
     <!-- IMAGE PRODUIT -->
     <section class="flex justify-center mb-6">
       <img id="productImage"
-        src="/public/images/hibiscus-rouge.jpg"
+        src="/public/images/hibiscus-rouge.webp"
         alt="Fleurs d'hibiscus rouge sur la plante"
         class="rounded-xl w-full max-w-lg object-cover shadow-md"
         loading="eager"
@@ -169,7 +169,7 @@
         data-product-id="hibiscus-rouge"
         data-name="Fleurs d'Hibiscus Rouge"
         data-price="6.00"
-        data-image="/public/images/hibiscus-rouge.jpg"
+        data-image="/public/images/hibiscus-rouge.webp"
         class="flex items-center justify-center w-full h-14 rounded-full bg-primary text-white text-lg font-bold shadow-lg hover:bg-primary/90 transition"
         data-testid="add-to-cart">
         Ajouter au panier
@@ -184,7 +184,7 @@
     import { supabaseFetch } from "/public/js/supabase-public.js";
 
     const SLUG = 'hibiscus-rouge';
-    const FALLBACK_IMAGE = '/public/images/hibiscus-rouge.jpg';
+    const FALLBACK_IMAGE = '/public/images/hibiscus-rouge.webp';
     const RR_ACTIVITY_ID = '23823b14-7ed5-4ce2-a35d-87d1715ac95a';
 
     const btn = document.getElementById("addToCartBtn");
