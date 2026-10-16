@@ -33,3 +33,6 @@ supabase/.temp/
 
 js/config.js
 public/js/config.js
+
+# Photos originales (PNG haute définition) — versions optimisées dans public/images
+/images/
