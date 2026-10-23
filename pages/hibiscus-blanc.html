@@ -78,14 +78,40 @@
 
   <main class="pt-24 max-w-3xl mx-auto px-6">
 
-    <!-- IMAGE PRODUIT -->
-    <section class="flex justify-center mb-6">
-      <img id="productImage"
-        src="/public/images/hibiscus-blanc-infusion.webp"
-        alt="Tasse d'infusion d'hibiscus blanc et fleurs séchées"
-        class="rounded-xl w-full max-w-lg object-cover shadow-md"
-        loading="eager"
-        width="800" height="800" />
+    <!-- IMAGES PRODUIT -->
+    <section class="mb-6">
+      <div class="mx-auto w-full max-w-lg">
+
+        <img id="productImage"
+          src="/public/images/hibiscus-blanc-infusion.webp"
+          alt="Tasse d'infusion d'hibiscus blanc et fleurs séchées"
+          class="rounded-xl w-full aspect-square object-contain bg-accent/5 shadow-md"
+          loading="eager"
+          width="800" height="800" />
+
+        <!-- Vignettes : photo de présentation et produit dans son emballage -->
+        <div class="mt-3 flex justify-center gap-3" id="productThumbs">
+          <button type="button"
+            class="product-thumb h-20 w-20 overflow-hidden rounded-lg shadow-sm ring-2 ring-primary transition"
+            data-full="/public/images/hibiscus-blanc-infusion.webp"
+            data-alt="Tasse d'infusion d'hibiscus blanc et fleurs séchées"
+            aria-label="Voir la photo de présentation"
+            aria-pressed="true">
+            <img src="/public/images/hibiscus-blanc-infusion-thumb.webp" alt=""
+              class="h-full w-full object-cover" loading="lazy" width="160" height="160" />
+          </button>
+          <button type="button"
+            class="product-thumb h-20 w-20 overflow-hidden rounded-lg shadow-sm ring-2 ring-transparent transition hover:ring-accent"
+            data-full="/public/images/hibiscus-blanc-sachet.webp"
+            data-alt="Le sachet de fleurs d'hibiscus blanc Racines & Rituels, avec les fleurs visibles par la fenêtre"
+            aria-label="Voir le produit dans son emballage"
+            aria-pressed="false">
+            <img src="/public/images/hibiscus-blanc-sachet-thumb.webp" alt=""
+              class="h-full w-full object-cover" loading="lazy" width="128" height="160" />
+          </button>
+        </div>
+
+      </div>
     </section>
 
     <!-- DESCRIPTION -->
@@ -285,6 +311,29 @@
   <div id="site-footer"></div>
   <script type="module" src="/public/js/footer-loader.js"></script>
 
+
+  <!-- Galerie produit : bascule entre la photo de présentation et le sachet -->
+  <script>
+    (function () {
+      const main = document.getElementById('productImage');
+      const thumbs = document.querySelectorAll('.product-thumb');
+      if (!main || !thumbs.length) return;
+
+      thumbs.forEach(function (thumb) {
+        thumb.addEventListener('click', function () {
+          main.src = thumb.dataset.full;
+          main.alt = thumb.dataset.alt;
+          thumbs.forEach(function (other) {
+            const active = other === thumb;
+            other.setAttribute('aria-pressed', String(active));
+            other.classList.toggle('ring-primary', active);
+            other.classList.toggle('ring-transparent', !active);
+            other.classList.toggle('hover:ring-accent', !active);
+          });
+        });
+      });
+    })();
+  </script>
 </body>
 
 </html>
