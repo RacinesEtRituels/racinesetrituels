@@ -253,18 +253,24 @@ const staticOptions = IS_PROD
   });
 });
 
+// Les redirections gardent les paramètres (ex. ?utm_source=chatgpt.com) pour le suivi des sources.
+const avecParametres = (req, cible) => {
+  const i = req.originalUrl.indexOf('?');
+  return i === -1 ? cible : cible + req.originalUrl.slice(i);
+};
+
 // Abonnements masqués pour le lancement (vente simple d'abord) — retirer cette route
 // et remettre 'abonnements' dans le tableau ci-dessus pour réactiver la page.
 app.get('/abonnements.html', (req, res) => {
-  res.redirect(302, '/boutique.html');
+  res.redirect(302, avecParametres(req, '/boutique.html'));
 });
 
 // produits.html supprimée (contenu dupliqué avec khamare.html) — redirection permanente
 app.get('/produits.html', (req, res) => {
-  res.redirect(301, '/khamare.html');
+  res.redirect(301, avecParametres(req, '/khamare.html'));
 });
 app.get('/pages/produits.html', (req, res) => {
-  res.redirect(301, '/khamare.html');
+  res.redirect(301, avecParametres(req, '/khamare.html'));
 });
 app.get('/déconnexion.html', (req, res) => {
   sendCached(res, path.join(frontendPath, 'pages', 'déconnexion.html'));
