@@ -159,7 +159,11 @@
           const resp = await fetch(`${BACKEND_URL}/create-checkout-session`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ items, ...(getStoredPromoCode() ? { promo_code: getStoredPromoCode() } : {}) })
+            body: JSON.stringify({
+              items,
+              ...(getStoredPromoCode() ? { promo_code: getStoredPromoCode() } : {}),
+              ...(window.rrSourceAcquisition?.() ? { source_acquisition: window.rrSourceAcquisition() } : {}),
+            })
           });
 
           if (!resp.ok) {

@@ -334,6 +334,7 @@
           items,
           shipping_country: shippingCountryEl.value,
           ...(promoCode ? { promo_code: promoCode } : {}),
+          ...(window.rrSourceAcquisition?.() ? { source_acquisition: window.rrSourceAcquisition() } : {}),
         };
         if (IS_DEV) {
           console.log("[checkout] payload ->", payload);

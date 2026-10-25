@@ -1,8 +1,11 @@
 // Simple header loader: fetches components/header.html and injects it into #site-header
 import { captureReferralFromUrl } from '/public/js/affiliate.js';
+import { suivreSource } from '/public/js/source-tracker.js';
 
 // Chargé sur toutes les pages : mémorise un éventuel lien influenceur ?ref=CODE
 captureReferralFromUrl();
+// …et compte les arrivées depuis Google, ChatGPT, etc.
+suivreSource();
 
 async function loadHeader() {
   const placeholder = document.getElementById('site-header');

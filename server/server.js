@@ -186,6 +186,24 @@ app.use('/api/admin', adminLimiter);
 app.use('/api', apiLimiter);
 app.use('/create-checkout-session', apiLimiter);
 
+// Sources d'arrivée des visiteurs (Google, ChatGPT…) : compteur agrégé, sans identifiant.
+const SOURCES_VISITE = ['google', 'bing', 'chatgpt', 'perplexity', 'claude', 'copilot', 'duckduckgo', 'autre_moteur', 'autre_site'];
+const ROBOTS = /bot|crawl|spider|slurp|preview|headless|lighthouse|facebookexternalhit/i;
+const visiteLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 20, standardHeaders: true, legacyHeaders: false });
+
+app.post('/api/visite', visiteLimiter, async (req, res) => {
+  const { source, page } = req.body || {};
+  if (!SOURCES_VISITE.includes(source) || typeof page !== 'string' || !page.startsWith('/')) return res.status(400).end();
+  if (ROBOTS.test(req.get('user-agent') || '')) return res.status(204).end();
+  const { error } = await supabase.rpc('site_visite_incrementer', {
+    p_site: 'racinesetrituels',
+    p_source: source,
+    p_page: page.split(/[?#]/)[0].slice(0, 200),
+  });
+  if (error) console.error('[visite] compteur :', error.message);
+  res.status(204).end();
+});
+
 // --- FICHIERS STATIQUES (frontend) ---
 const frontendPath = path.join(__dirname, '..');
 
@@ -852,6 +870,9 @@ app.post("/create-checkout-session", async (req, res) => {
       return res.status(400).json({ error: "Pays de livraison non desservi." });
     }
 
+    // Source d'arrivée (Google, ChatGPT…), transmise seulement si le client a accepté la mesure d'audience
+    const sourceAcquisition = SOURCES_VISITE.includes(req.body.source_acquisition) ? req.body.source_acquisition : null;
+
     // Code influenceur saisi dans le panier ou mémorisé via lien ?ref=CODE
     const promoCode = typeof req.body.promo_code === "string" ? req.body.promo_code.trim().toUpperCase() : "";
     let affiliate = null;
@@ -954,6 +975,7 @@ app.post("/create-checkout-session", async (req, res) => {
       fulfillment_status: "pending",
       total_ttc_cents: totalCents,
       ...(affiliate ? { affiliate_id: affiliate.id, promo_code: affiliate.code } : {}),
+      ...(sourceAcquisition ? { source_acquisition: sourceAcquisition } : {}),
     }).select().single();
     if (orderError) throw new Error(`Erreur création commande : ${orderError.message}`);
 

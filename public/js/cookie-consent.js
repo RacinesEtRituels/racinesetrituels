@@ -27,6 +27,10 @@
         date: new Date().toISOString(),
       }));
     } catch (e) {}
+    // Prévient les scripts qui attendent le choix (ex. source-tracker.js).
+    try {
+      window.dispatchEvent(new CustomEvent('rr:consent', { detail: { analytics: !!prefs.analytics, marketing: !!prefs.marketing } }));
+    } catch (e) {}
   }
 
   /* ── Helpers ──────────────────────────────────────────── */
