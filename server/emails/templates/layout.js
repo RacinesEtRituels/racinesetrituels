@@ -72,7 +72,7 @@ export function renderLayout({ title, body, ctaText, ctaUrl }) {
             </p>
             <p style="margin:8px 0 0;font-size:11px;color:#9a8b7d;letter-spacing:2px;
               text-transform:uppercase;font-family:Arial,Helvetica,sans-serif;">
-              Cosmétiques naturels africains
+              Infusions de plantes d'Afrique de l'Ouest
             </p>
           </td>
         </tr>
