@@ -4,6 +4,7 @@ import { orderConfirmationHtml } from './templates/order-confirmation.js';
 import { subscriptionConfirmationHtml } from './templates/subscription-confirmation.js';
 import { testEmailHtml } from './templates/test-email.js';
 import { orderNotificationHtml } from './templates/order-notification.js';
+import { avisDemandeHtml } from './templates/avis-demande.js';
 
 /**
  * Registre des templates disponibles.
@@ -23,6 +24,10 @@ const TEMPLATES = {
   'order-notification': {
     subject: (d) => `🛒 Nouvelle ${d.kind === 'Abonnement' ? 'souscription' : 'commande'} #${d.orderNumber} — ${d.total} à préparer`,
     html: orderNotificationHtml,
+  },
+  'avis-demande': {
+    subject: () => '🌿 Votre avis sur votre commande — Racines & Rituels',
+    html: avisDemandeHtml,
   },
   'test': {
     subject: () => '🌿 Votre configuration email fonctionne !',

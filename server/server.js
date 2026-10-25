@@ -14,6 +14,7 @@ import { renderInvoice } from "./documents/invoice.js";
 import { renderPreparationSlip } from "./documents/preparation-slip.js";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
+import { createAvisRouter } from "./avis.js";
 
 // --- CONFIGURATION ---
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -247,6 +248,7 @@ const staticOptions = IS_PROD
   'retractation-retours',
   'mediateur-consommation',
   'contact',
+  'avis',
 ].forEach(p => {
   app.get(`/${p}.html`, (req, res) => {
     sendCached(res, path.join(frontendPath, 'pages', `${p}.html`));
@@ -863,6 +865,9 @@ async function processOrderSuccess(session) {
 
 
 // --- ROUTES STANDARDS ---
+// Avis clients (demande par email, dépôt, lecture des avis publiés)
+app.use('/api/avis', createAvisRouter({ supabase, activityId: ACTIVITY_ID, siteUrl: process.env.SITE_URL || 'https://www.racinesetrituels.com' }));
+
 app.post("/create-checkout-session", async (req, res) => {
   try {
     const { items } = req.body;

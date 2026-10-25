@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html class="light" lang="fr">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Votre avis | Racines & Rituels</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="stylesheet" href="/public/css/tailwind.css">
+  <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+  <style>
+    body { font-family: 'Epilogue', sans-serif; min-height: 100dvh; }
+    .carte { background: white; border-radius: 1rem; padding: 1.5rem; box-shadow: 0 1px 8px rgba(0,0,0,.06); }
+    .dark .carte { background: rgba(33,21,17,.4); }
+    .etoiles { display: flex; gap: .25rem; }
+    .etoiles button { font-size: 2rem; line-height: 1; color: #d6cfc9; background: none; border: 0; cursor: pointer; padding: 0 .1rem; }
+    .etoiles button.active { color: #e64c19; }
+    .etoiles button:focus-visible { outline: 2px solid #e64c19; border-radius: 4px; }
+    textarea, input[type=text] { width: 100%; border: 1px solid #e8ddd8; border-radius: .75rem; padding: .75rem; font-size: .95rem; }
+    .dark textarea, .dark input[type=text] { background: rgba(255,255,255,.04); border-color: rgba(255,255,255,.1); color: white; }
+  </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-gray-800 dark:text-white">
+  <div id="site-header"></div>
+  <div class="h-[64px]"></div>
+
+  <main class="max-w-xl w-full mx-auto px-4 py-10 space-y-6">
+    <div class="space-y-1">
+      <p class="text-xs font-bold uppercase tracking-widest text-primary">Votre avis</p>
+      <h1 class="text-3xl font-black text-gray-900 dark:text-white">Qu'avez-vous pensé de vos plantes ?</h1>
+      <p class="text-sm text-gray-500 dark:text-gray-400">
+        Bon ou moins bon, votre avis sera publié tel quel sur la fiche du produit, avec la mention « Achat vérifié ».
+      </p>
+    </div>
+
+    <p id="message" class="carte text-sm" hidden></p>
+
+    <form id="formulaire" class="space-y-6" hidden>
+      <div id="produits" class="space-y-6"></div>
+
+      <div class="carte space-y-2">
+        <label for="auteur" class="font-bold">Nom affiché avec votre avis</label>
+        <input type="text" id="auteur" maxlength="40" placeholder="Par exemple : Marie L." autocomplete="off" required>
+        <p class="text-xs text-gray-500 dark:text-gray-400">Votre prénom et l'initiale de votre nom suffisent. Votre email n'est jamais affiché.</p>
+      </div>
+
+      <button type="submit" id="envoyer"
+        class="flex items-center justify-center w-full h-14 rounded-full bg-primary text-white text-lg font-bold hover:bg-primary/90 transition">
+        Envoyer mon avis
+      </button>
+      <p class="text-xs text-gray-500 dark:text-gray-400">
+        Nous publions tous les avis, positifs comme négatifs. Seuls sont écartés les avis injurieux, hors sujet,
+        contenant des données personnelles ou des promesses de santé.
+        <a href="/cgv.html#avis" class="underline">Comment nous gérons les avis</a>
+      </p>
+    </form>
+  </main>
+
+  <script src="/public/js/config.js"></script>
+  <script type="module" src="/public/js/header-loader.js"></script>
+  <div id="site-footer"></div>
+  <script type="module" src="/public/js/footer-loader.js"></script>
+
+  <script type="module">
+    const jeton = new URLSearchParams(location.search).get('t') || '';
+    const message = document.getElementById('message');
+    const formulaire = document.getElementById('formulaire');
+    const notes = {};
+
+    function afficherMessage(texte) {
+      message.textContent = texte;
+      message.hidden = false;
+      formulaire.hidden = true;
+    }
+
+    function blocProduit(p) {
+      const bloc = document.createElement('div');
+      bloc.className = 'carte space-y-3';
+      bloc.innerHTML = `
+        <p class="font-bold text-lg"></p>
+        <div class="etoiles" role="radiogroup" aria-label="Note sur 5"></div>
+        <textarea rows="4" maxlength="1000" placeholder="Votre avis en quelques mots (facultatif) : goût, préparation, ce que vous en faites…"></textarea>`;
+      bloc.querySelector('p').textContent = p.nom;
+      const etoiles = bloc.querySelector('.etoiles');
+      for (let n = 1; n <= 5; n++) {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.textContent = '★';
+        b.setAttribute('role', 'radio');
+        b.setAttribute('aria-label', `${n} sur 5`);
+        b.addEventListener('click', () => {
+          notes[p.slug] = n;
+          etoiles.querySelectorAll('button').forEach((x, i) => {
+            x.classList.toggle('active', i < n);
+            x.setAttribute('aria-checked', String(i + 1 === n));
+          });
+        });
+        etoiles.appendChild(b);
+      }
+      bloc.querySelector('textarea').dataset.produit = p.slug;
+      return bloc;
+    }
+
+    async function charger() {
+      const rep = await fetch(`/api/avis/commande?t=${encodeURIComponent(jeton)}`);
+      const data = await rep.json().catch(() => ({}));
+      if (!rep.ok) return afficherMessage(data.error || "Ce lien n'est plus valable.");
+      const conteneur = document.getElementById('produits');
+      data.produits.forEach((p) => conteneur.appendChild(blocProduit(p)));
+      formulaire.hidden = false;
+    }
+
+    formulaire.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const avis = Object.entries(notes).map(([produit, note]) => ({
+        produit,
+        note,
+        texte: document.querySelector(`textarea[data-produit="${produit}"]`).value,
+      }));
+      if (avis.length === 0) { alert('Donnez une note (en étoiles) à au moins un produit.'); return; }
+      const bouton = document.getElementById('envoyer');
+      bouton.disabled = true;
+      const rep = await fetch('/api/avis/commande', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ t: jeton, auteur: document.getElementById('auteur').value, avis }),
+      });
+      const data = await rep.json().catch(() => ({}));
+      if (rep.ok) return afficherMessage("Merci beaucoup ! Votre avis sera publié après une rapide relecture (pour écarter les éventuels propos injurieux), généralement sous quelques jours.");
+      bouton.disabled = false;
+      alert(data.error || 'Envoi impossible, réessayez dans un instant.');
+    });
+
+    charger();
+  </script>
+</body>
+
+</html>
