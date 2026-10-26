@@ -1,3 +1,5 @@
+import { escapeHtml as e } from '../html-escape.js';
+
 function fmtDate(iso) {
   if (!iso) return new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
   return new Date(iso).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
@@ -24,19 +26,19 @@ export function renderPreparationSlip({
   notes,
 }) {
   const date = fmtDate(ordered_at);
-  const customerName = customer?.full_name || shipping?.name || '—';
+  const customerName = e(customer?.full_name || shipping?.name || '—');
 
   const addressLines = [];
   if (shipping) {
-    addressLines.push(`<strong>${shipping.name || customerName}</strong>`);
-    if (shipping.address1) addressLines.push(shipping.address1);
-    if (shipping.address2) addressLines.push(shipping.address2);
+    addressLines.push(`<strong>${shipping.name ? e(shipping.name) : customerName}</strong>`);
+    if (shipping.address1) addressLines.push(e(shipping.address1));
+    if (shipping.address2) addressLines.push(e(shipping.address2));
     const cityLine = [shipping.postcode, shipping.city].filter(Boolean).join(' ');
-    if (cityLine) addressLines.push(cityLine);
-    addressLines.push(shipping.country || 'France');
+    if (cityLine) addressLines.push(e(cityLine));
+    addressLines.push(e(shipping.country || 'France'));
   } else {
     addressLines.push(`<strong>${customerName}</strong>`);
-    if (customer?.email) addressLines.push(customer.email);
+    if (customer?.email) addressLines.push(e(customer.email));
   }
 
   const itemRows = items.map((item) => `
@@ -44,14 +46,14 @@ export function renderPreparationSlip({
       <td style="padding:12px 16px;border-bottom:1px solid #e8dfd3;vertical-align:middle;">
         <span style="display:inline-flex;align-items:center;gap:10px;">
           <input type="checkbox" style="width:18px;height:18px;flex-shrink:0;accent-color:#e64c19;">
-          <span style="font-size:14px;font-weight:600;">${item.product_name || 'Produit'}</span>
+          <span style="font-size:14px;font-weight:600;">${e(item.product_name || 'Produit')}</span>
         </span>
       </td>
       <td style="padding:12px 16px;border-bottom:1px solid #e8dfd3;text-align:center;font-size:16px;font-weight:700;color:#e64c19;">
-        × ${item.qty ?? 1}
+        × ${e(item.qty ?? 1)}
       </td>
       <td style="padding:12px 16px;border-bottom:1px solid #e8dfd3;font-size:11px;color:#bbb;font-family:monospace;">
-        ${item.product_sku || '—'}
+        ${e(item.product_sku || '—')}
       </td>
     </tr>`).join('');
 
@@ -62,7 +64,7 @@ export function renderPreparationSlip({
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Bon de préparation ${order_number || ''}</title>
+<title>Bon de préparation ${e(order_number || '')}</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#1b110e;background:#fff;padding:24px;max-width:800px;margin:0 auto}
@@ -98,7 +100,7 @@ thead th{background:#f0ebe3;padding:10px 16px;font-size:11px;font-weight:700;tex
     <div class="title-sub">Racines &amp; Rituels — Usage interne</div>
   </div>
   <div style="text-align:right">
-    <div class="order-number">${order_number || '—'}</div>
+    <div class="order-number">${e(order_number || '—')}</div>
     <div style="font-size:12px;color:#777;margin-top:4px">Commandé le : ${date}</div>
   </div>
 </div>
@@ -123,7 +125,7 @@ thead th{background:#f0ebe3;padding:10px 16px;font-size:11px;font-weight:700;tex
 ${notes ? `
 <div class="notes-box">
   <div class="notes-label">Notes</div>
-  <div style="font-size:13px;line-height:1.7;color:#555">${notes}</div>
+  <div style="font-size:13px;line-height:1.7;color:#555">${e(notes)}</div>
 </div>` : ''}
 
 <div class="sign-block">

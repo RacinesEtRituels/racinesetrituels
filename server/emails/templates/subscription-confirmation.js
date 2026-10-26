@@ -1,4 +1,5 @@
 import { renderLayout } from './layout.js';
+import { escapeHtml as e } from '../../html-escape.js';
 
 /**
  * Email de confirmation d'abonnement.
@@ -17,7 +18,7 @@ export function subscriptionConfirmationHtml({ customerName, planName, amount, r
       Bienvenue dans le Cercle Bien-&ecirc;tre &#127807;
     </p>
     <p style="margin:0 0 28px;font-size:15px;color:#555555;line-height:1.7;">
-      Bonjour <strong>${customerName}</strong>,<br>
+      Bonjour <strong>${e(customerName)}</strong>,<br>
       votre abonnement est actif. Merci de rejoindre notre cercle de bien-&ecirc;tre.
     </p>
 
@@ -37,7 +38,7 @@ export function subscriptionConfirmationHtml({ customerName, planName, amount, r
             </td>
             <td style="font-size:15px;font-weight:700;color:#1b110e;
               font-family:Arial,Helvetica,sans-serif;">
-              ${planName}
+              ${e(planName)}
             </td>
           </tr>
         </table>
@@ -53,7 +54,7 @@ export function subscriptionConfirmationHtml({ customerName, planName, amount, r
             </td>
             <td style="font-size:15px;font-weight:700;color:#e64c19;
               font-family:Arial,Helvetica,sans-serif;">
-              ${amount}
+              ${e(amount)}
             </td>
           </tr>
         </table>
@@ -68,7 +69,7 @@ export function subscriptionConfirmationHtml({ customerName, planName, amount, r
             </td>
             <td style="font-size:15px;color:#1b110e;
               font-family:Arial,Helvetica,sans-serif;">
-              ${renewalDate}
+              ${e(renewalDate)}
             </td>
           </tr>
         </table>

@@ -31,12 +31,14 @@
     const status = document.getElementById('status');
 
     btn.addEventListener('click', async () => {
+      const secret = prompt('Mot de passe admin :');
+      if (!secret) return;
       btn.disabled = true;
       status.textContent = 'Envoi en cours…';
       status.className = '';
 
       try {
-        const res = await fetch('/api/test-email', { method: 'POST' });
+        const res = await fetch('/api/test-email', { method: 'POST', headers: { 'x-admin-secret': secret } });
         const json = await res.json().catch(() => ({}));
 
         if (res.ok && json.ok) {

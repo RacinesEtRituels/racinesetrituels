@@ -1,3 +1,4 @@
+import { escapeHtml } from '../../html-escape.js';
 /**
  * Layout email partagé — Racines & Rituels.
  *
@@ -47,7 +48,7 @@ export function renderLayout({ title, body, ctaText, ctaUrl }) {
     <o:PixelsPerInch>96</o:PixelsPerInch>
   </o:OfficeDocumentSettings></xml></noscript>
   <![endif]-->
-  <title>${title}</title>
+  <title>${escapeHtml(title)}</title>
 </head>
 <body style="margin:0;padding:0;background:#f5f2ed;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;">
   <!-- Wrapper -->

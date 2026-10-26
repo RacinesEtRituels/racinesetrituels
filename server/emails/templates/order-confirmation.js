@@ -1,4 +1,5 @@
 import { renderLayout } from './layout.js';
+import { escapeHtml as e } from '../../html-escape.js';
 
 /**
  * Email de confirmation de commande.
@@ -21,15 +22,15 @@ export function orderConfirmationHtml({ customerName, orderNumber, items = [], t
             <tr>
               <td style="padding:10px 0;border-bottom:1px solid #f0ebe3;font-size:14px;color:#333333;
                 font-family:Arial,Helvetica,sans-serif;">
-                ${item.name}
+                ${e(item.name)}
               </td>
               <td style="padding:10px 0;border-bottom:1px solid #f0ebe3;font-size:14px;color:#777777;
                 text-align:center;font-family:Arial,Helvetica,sans-serif;white-space:nowrap;">
-                &times;${item.quantity}
+                &times;${e(item.quantity)}
               </td>
               <td style="padding:10px 0;border-bottom:1px solid #f0ebe3;font-size:14px;color:#333333;
                 text-align:right;font-family:Arial,Helvetica,sans-serif;white-space:nowrap;">
-                ${item.price}
+                ${e(item.price)}
               </td>
             </tr>`).join('');
 
@@ -38,8 +39,8 @@ export function orderConfirmationHtml({ customerName, orderNumber, items = [], t
       Merci pour votre commande &#127807;
     </p>
     <p style="margin:0 0 28px;font-size:15px;color:#555555;line-height:1.7;">
-      Bonjour <strong>${customerName}</strong>,<br>
-      votre commande <strong>#${orderNumber}</strong> a bien &eacute;t&eacute; re&ccedil;ue.
+      Bonjour <strong>${e(customerName)}</strong>,<br>
+      votre commande <strong>#${e(orderNumber)}</strong> a bien &eacute;t&eacute; re&ccedil;ue.
       Nous la pr&eacute;parons avec soin.
     </p>
 
@@ -71,8 +72,8 @@ export function orderConfirmationHtml({ customerName, orderNumber, items = [], t
       <tr>
         <td style="padding:14px 20px;font-size:13px;color:#555555;line-height:1.7;
           font-family:Arial,Helvetica,sans-serif;">
-          ${shippingName ? `<strong style="color:#333333;display:block;margin-bottom:2px;">${shippingName}</strong>` : ''}
-          ${shippingAddress}
+          ${shippingName ? `<strong style="color:#333333;display:block;margin-bottom:2px;">${e(shippingName)}</strong>` : ''}
+          ${e(shippingAddress)}
         </td>
       </tr>
     </table>` : ''}
@@ -82,11 +83,11 @@ export function orderConfirmationHtml({ customerName, orderNumber, items = [], t
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:8px;">
       <tr>
         <td style="padding:4px 20px;font-size:14px;color:#555555;font-family:Arial,Helvetica,sans-serif;">
-          Réduction${promoCode ? ` (code ${promoCode})` : ''}
+          Réduction${promoCode ? ` (code ${e(promoCode)})` : ''}
         </td>
         <td style="padding:4px 20px;font-size:14px;color:#555555;text-align:right;
           font-family:Arial,Helvetica,sans-serif;white-space:nowrap;">
-          ${discount}
+          ${e(discount)}
         </td>
       </tr>
     </table>` : ''}
@@ -100,7 +101,7 @@ export function orderConfirmationHtml({ customerName, orderNumber, items = [], t
         </td>
         <td style="padding:4px 20px;font-size:14px;color:#555555;text-align:right;
           font-family:Arial,Helvetica,sans-serif;white-space:nowrap;">
-          ${shippingCost}
+          ${e(shippingCost)}
         </td>
       </tr>
     </table>` : ''}
@@ -115,7 +116,7 @@ export function orderConfirmationHtml({ customerName, orderNumber, items = [], t
         </td>
         <td style="padding:16px 20px;font-size:18px;font-weight:700;color:#e64c19;
           text-align:right;font-family:Arial,Helvetica,sans-serif;white-space:nowrap;">
-          ${total}
+          ${e(total)}
         </td>
       </tr>
     </table>

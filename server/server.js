@@ -15,6 +15,7 @@ import { renderPreparationSlip } from "./documents/preparation-slip.js";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import { createAvisRouter } from "./avis.js";
+import { requireAffiliateManagerWith, supabaseActivityAccess } from "./affiliate-auth.js";
 
 // --- CONFIGURATION ---
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -141,30 +142,18 @@ const requireAdmin = (req, res, next) => {
 };
 
 // Gestion des influenceurs : mot de passe admin du site, OU session Pilotage360
-// (Bearer JWT Supabase) d'un compte admin ou ayant accès à l'activité Racines & Rituels.
-const requireAffiliateManager = async (req, res, next) => {
-  const secret = process.env.ADMIN_SECRET;
-  if (secret && req.headers['x-admin-secret'] === secret) return next();
-
-  const header = req.headers.authorization || '';
-  const token = header.startsWith('Bearer ') ? header.slice(7) : null;
-  if (!token) return res.status(401).json({ error: 'Non autorisé.' });
-
-  try {
-    const { data: userData, error: userError } = await supabase.auth.getUser(token);
-    if (userError || !userData?.user) return res.status(401).json({ error: 'Session invalide ou expirée.' });
-    const userId = userData.user.id;
-
-    const [{ data: profile }, { data: access }] = await Promise.all([
-      supabase.from('user_profiles').select('role').eq('user_id', userId).maybeSingle(),
-      supabase.from('user_activities').select('activity_id').eq('user_id', userId).eq('activity_id', ACTIVITY_ID).maybeSingle(),
-    ]);
-    if (profile?.role !== 'admin' && !access) return res.status(403).json({ error: 'Accès refusé.' });
-    next();
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
+// (Bearer JWT Supabase). La base décide avec le jeton de l'appelant : administrateur
+// ou membre de l'activité Racines & Rituels, avec second facteur si son profil l'exige.
+const requireAffiliateManager = requireAffiliateManagerWith({
+  adminSecret: process.env.ADMIN_SECRET,
+  checkAccess: (token) => supabaseActivityAccess({
+    createClient,
+    url: process.env.SUPABASE_URL,
+    anonKey: process.env.SUPABASE_ANON_KEY,
+    activityId: ACTIVITY_ID,
+    getUser: (jwt) => supabase.auth.getUser(jwt),
+  })(token),
+});
 
 app.use(express.json());
 
@@ -1362,7 +1351,9 @@ app.get('/api/email-preview', (req, res) => {
   res.send(html);
 });
 
-app.post("/api/test-email", async (req, res) => {
+// Outil interne (pages/admin-email-test.html) : réservé au mot de passe admin,
+// pour qu'un appel anonyme ne puisse pas déclencher d'envoi.
+app.post("/api/test-email", adminLimiter, requireAdmin, async (req, res) => {
   try {
     const data = await sendTestEmail();
     console.log('[test-email] ✅ envoyé —', data?.id);
@@ -1370,7 +1361,7 @@ app.post("/api/test-email", async (req, res) => {
   } catch (err) {
     console.error('[test-email] ❌', err.message);
     const isConfig = err.message.includes('manquante');
-    res.status(isConfig ? 503 : 500).json({ ok: false, error: err.message });
+    res.status(isConfig ? 503 : 500).json({ ok: false, error: isConfig ? 'Envoi des emails non configuré.' : 'Envoi impossible. Consultez les journaux du serveur.' });
   }
 });
 

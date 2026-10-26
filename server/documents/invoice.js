@@ -1,3 +1,5 @@
+import { escapeHtml as e } from '../html-escape.js';
+
 const fmt = (cents) => (Number(cents) / 100).toFixed(2).replace('.', ',') + ' €';
 
 function fmtDate(iso) {
@@ -34,17 +36,17 @@ export function renderInvoice({
   promo_code = null,
 }) {
   const invoiceDate = fmtDate(ordered_at);
-  const customerName = customer?.full_name || shipping?.name || 'Client';
-  const customerEmail = customer?.email || '';
+  const customerName = e(customer?.full_name || shipping?.name || 'Client');
+  const customerEmail = e(customer?.email || '');
 
   const addressLines = [];
   if (shipping) {
-    if (shipping.name && shipping.name !== customerName) addressLines.push(shipping.name);
-    if (shipping.address1) addressLines.push(shipping.address1);
-    if (shipping.address2) addressLines.push(shipping.address2);
+    if (shipping.name && e(shipping.name) !== customerName) addressLines.push(e(shipping.name));
+    if (shipping.address1) addressLines.push(e(shipping.address1));
+    if (shipping.address2) addressLines.push(e(shipping.address2));
     const cityLine = [shipping.postcode, shipping.city].filter(Boolean).join(' ');
-    if (cityLine) addressLines.push(cityLine);
-    addressLines.push(shipping.country || 'France');
+    if (cityLine) addressLines.push(e(cityLine));
+    addressLines.push(e(shipping.country || 'France'));
   }
 
   const itemRows = items.map((item) => {
@@ -52,8 +54,8 @@ export function renderInvoice({
     const unitCents = Number(item.unit_sale_price_ttc_cents ?? 0);
     return `
       <tr>
-        <td style="padding:10px 16px;border-bottom:1px solid #f0ebe3;font-size:13px;">${item.product_name || 'Produit'}</td>
-        <td style="padding:10px 16px;border-bottom:1px solid #f0ebe3;font-size:13px;text-align:center;">${qty}</td>
+        <td style="padding:10px 16px;border-bottom:1px solid #f0ebe3;font-size:13px;">${e(item.product_name || 'Produit')}</td>
+        <td style="padding:10px 16px;border-bottom:1px solid #f0ebe3;font-size:13px;text-align:center;">${e(qty)}</td>
         <td style="padding:10px 16px;border-bottom:1px solid #f0ebe3;font-size:13px;text-align:right;">${fmt(unitCents)}</td>
         <td style="padding:10px 16px;border-bottom:1px solid #f0ebe3;font-size:13px;text-align:right;font-weight:600;">${fmt(qty * unitCents)}</td>
       </tr>`;
@@ -68,7 +70,7 @@ export function renderInvoice({
 
   const discountRow = discount_cents > 0 ? `
       <tr>
-        <td colspan="3" style="padding:8px 16px;font-size:13px;color:#777;text-align:right;">Réduction${promo_code ? ` (code ${promo_code})` : ''}</td>
+        <td colspan="3" style="padding:8px 16px;font-size:13px;color:#777;text-align:right;">Réduction${promo_code ? ` (code ${e(promo_code)})` : ''}</td>
         <td style="padding:8px 16px;font-size:13px;text-align:right;">- ${fmt(discount_cents)}</td>
       </tr>` : '';
 
@@ -80,7 +82,7 @@ export function renderInvoice({
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Facture ${invoice_number || order_number || ''}</title>
+<title>Facture ${e(invoice_number || order_number || '')}</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#333;background:#fff;padding:32px;max-width:800px;margin:0 auto}
@@ -124,8 +126,8 @@ thead th:nth-child(3),thead th:nth-child(4){text-align:right}
     <div class="brand-sub">Produits naturels &amp; artisanaux</div>
   </div>
   <div class="inv-meta">
-    <div class="inv-number">${invoice_number || '—'}</div>
-    ${order_number ? `<div class="inv-date">Commande : ${order_number}</div>` : ''}
+    <div class="inv-number">${e(invoice_number || '—')}</div>
+    ${order_number ? `<div class="inv-date">Commande : ${e(order_number)}</div>` : ''}
     <div class="inv-date">Date : ${invoiceDate}</div>
   </div>
 </div>
