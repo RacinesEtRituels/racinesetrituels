@@ -193,6 +193,7 @@
     <section class="py-6">
       <div class="flex items-center justify-between mb-4">
         <span class="text-xl font-bold text-primary" id="productPrice" data-testid="product-price"></span>
+        <span class="text-sm text-gray-500 dark:text-gray-400" id="productUnitPrice" data-testid="product-unit-price"></span>
       </div>
 
       <button id="addToCartBtn"
@@ -285,6 +286,9 @@
         // Mise à jour du prix depuis Supabase
         if (priceEl && typeof fetchedProduct.price_cents === 'number') {
           priceEl.textContent = (fetchedProduct.price_cents / 100).toFixed(2).replace('.', ',') + ' €';
+          // Prix au kilogramme du sachet de 100 g (information obligatoire des produits préemballés)
+          const unitEl = document.getElementById("productUnitPrice");
+          if (unitEl) unitEl.textContent = 'soit ' + (fetchedProduct.price_cents * 10 / 100).toFixed(2).replace('.', ',') + ' € le kg';
         }
 
         btn.disabled = false;

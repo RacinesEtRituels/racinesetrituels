@@ -108,9 +108,9 @@ test('robots.txt : /api/ et /webhook/ bloqués', () => {
   assert.ok(robots.includes('Disallow: /webhook/'), '/webhook/ doit être bloqué');
 });
 
-test('robots.txt : sitemap pointe vers racinesetrituels.com', () => {
+test('robots.txt : sitemap pointe vers le domaine canonique www.racinesetrituels.com', () => {
   assert.ok(
-    read('public/robots.txt').includes('Sitemap: https://racinesetrituels.com/sitemap.xml'),
+    read('public/robots.txt').includes('Sitemap: https://www.racinesetrituels.com/sitemap.xml'),
     'Sitemap doit pointer vers le domaine production'
   );
 });

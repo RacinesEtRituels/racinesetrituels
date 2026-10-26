@@ -1,5 +1,13 @@
 import { escapeHtml as e } from '../html-escape.js';
 
+// Identité du vendeur, identique aux mentions légales (pages/mentions-legales.html).
+const SELLER = {
+  legalName: 'Alexandre BOEHLER, entrepreneur individuel',
+  address: ['24 Rue Gilbert Ollier, Bât A les Bleuets', '38780 Pont-Évêque — France'],
+  siren: '484 314 174',
+  email: 'contact@racinesetrituels.com',
+};
+
 const fmt = (cents) => (Number(cents) / 100).toFixed(2).replace('.', ',') + ' €';
 
 function fmtDate(iso) {
@@ -136,7 +144,12 @@ thead th:nth-child(3),thead th:nth-child(4){text-align:right}
   <div class="party">
     <div class="party-label">Vendeur</div>
     <div class="party-name">Racines &amp; Rituels</div>
-    <div class="party-info">contact@racinesetrituels.com</div>
+    <div class="party-info">
+      ${SELLER.legalName}<br>
+      ${SELLER.address.join('<br>')}<br>
+      SIREN ${SELLER.siren}<br>
+      ${SELLER.email}
+    </div>
   </div>
   <div class="party">
     <div class="party-label">Client</div>

@@ -5,7 +5,6 @@ import dotenv from "dotenv";
 import { createClient } from "@supabase/supabase-js";
 import { fileURLToPath } from "url";
 import path from "path";
-import nodemailer from "nodemailer";
 import crypto from "crypto";
 import { sendTestEmail, orderConfirmationHtml, subscriptionConfirmationHtml, EmailService } from "./emails/index.js";
 import { buildOrderConfirmationData, buildSubscriptionConfirmationData, buildOrderNotificationData } from "./emails/order-email.js";
@@ -16,6 +15,7 @@ import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import { createAvisRouter } from "./avis.js";
 import { requireAffiliateManagerWith, supabaseActivityAccess } from "./affiliate-auth.js";
+import { createOrderProcessor, SHIPPING_LINE_NAME } from "./order-processing.js";
 
 // --- CONFIGURATION ---
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -36,11 +36,6 @@ for (const _v of ['SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY', 'STRIPE_SECRET_KE
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: "2024-06-20" });
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
-const mailer = nodemailer.createTransport({
-  host: process.env.MAIL_HOST || "127.0.0.1",
-  port: process.env.MAIL_PORT || 54325,
-  secure: false
-});
 
 const app = express();
 app.disable('x-powered-by');
@@ -57,16 +52,26 @@ app.post("/webhook/stripe", express.raw({ type: "application/json" }), async (re
     console.log('3. Buffer présent :', Buffer.isBuffer(req.body));
     console.log('=====================\n');
   }
+  let event;
   try {
-    const event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET.trim());
-
-    if (event.type === "checkout.session.completed") {
+    event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET.trim());
+  } catch (err) {
+    console.error(`❌ Webhook Signature Error: ${err.message}`);
+    return res.status(400).send("Webhook Error: signature invalide.");
+  }
+  try {
+    // Les paiements différés sont confirmés par async_payment_succeeded ; processOrderSuccess
+    // ne prépare jamais une session dont le paiement n'est pas encore reçu.
+    if (["checkout.session.completed", "checkout.session.async_payment_succeeded"].includes(event.type)) {
       await processOrderSuccess(event.data.object);
+    } else if (event.type === "checkout.session.async_payment_failed") {
+      await recordAsyncPaymentFailure(event.data.object);
     }
     res.json({ received: true });
   } catch (err) {
-    console.error(`❌ Webhook Signature Error: ${err.message}`);
-    res.status(400).send(`Webhook Error: ${err.message}`);
+    // 500 : Stripe relivre l'événement ; les étapes déjà faites ne sont pas refaites.
+    console.error(`❌ Webhook ${event.type} ${event.id} non terminé : ${err.message}`);
+    res.status(500).json({ error: "Traitement incomplet, nouvelle tentative attendue." });
   }
 });
 
@@ -331,7 +336,6 @@ const SHIPPING_ZONES = {
   FR: { countries: ["FR"], rateCents: 590, freeFromCents: 4000, label: "Livraison France" },
   EU: { countries: ["BE", "LU", "DE", "CH"], rateCents: 990, freeFromCents: null, label: "Livraison Europe" },
 };
-const SHIPPING_LINE_NAME = "Livraison (à chaque envoi)";
 
 // Destinataires de l'email interne « Nouvelle commande » (surchargeable : ORDER_NOTIFICATION_EMAILS="a@x,b@y")
 const ORDER_NOTIFICATION_DEFAULT = "commandes@racinesetrituels.com";
@@ -346,512 +350,13 @@ function shippingCentsFor(zone, perShipmentCents) {
   return zone.rateCents;
 }
 
-// Lit les montants réellement facturés par Stripe et les enregistre sur la commande :
-// frais de port, réduction (code passé par le site ou saisi sur la page Stripe) et commission influenceur.
-// Base de commission = montant produits payé après réduction, hors frais de port.
-async function recordSessionAmounts(session, orderId) {
-  const full = await stripe.checkout.sessions.retrieve(session.id, { expand: ["total_details.breakdown", "line_items"] });
-  const discountCents = full.total_details?.amount_discount || 0;
-  const lineItems = full.line_items?.data || [];
-  const shippingLine = lineItems.find((li) => li.description === SHIPPING_LINE_NAME);
-  const shippingCents = (full.total_details?.amount_shipping || 0) + (shippingLine?.amount_subtotal || 0);
-  const productsPaidCents = lineItems
-    .filter((li) => li !== shippingLine)
-    .reduce((sum, li) => sum + (li.amount_subtotal || 0) - (li.amount_discount || 0), 0);
-
-  if (shippingCents) {
-    const { error: shippingError } = await supabase.from("orders")
-      .update({ shipping_cost_cents: shippingCents }).eq("id", orderId);
-    if (shippingError) throw new Error(`Erreur enregistrement frais de port : ${shippingError.message}`);
-  }
-  if (!discountCents) return { discountCents: 0, promoCode: null, shippingCents };
-
-  const promotionCodeIds = (full.total_details?.breakdown?.discounts || [])
-    .map((d) => d.discount?.promotion_code)
-    .map((p) => (typeof p === "string" ? p : p?.id))
-    .filter(Boolean);
-
-  let affiliate = null;
-  if (promotionCodeIds.length) {
-    const { data, error } = await supabase
-      .from("affiliates")
-      .select("id, code, commission_rate")
-      .in("stripe_promotion_code_id", promotionCodeIds)
-      .limit(1)
-      .maybeSingle();
-    if (error) throw new Error(`Erreur lecture influenceur : ${error.message}`);
-    affiliate = data;
-  }
-
-  const { error: orderError } = await supabase.from("orders").update({
-    discount_cents: discountCents,
-    ...(affiliate ? { affiliate_id: affiliate.id, promo_code: affiliate.code } : {}),
-  }).eq("id", orderId);
-  if (orderError) throw new Error(`Erreur enregistrement réduction : ${orderError.message}`);
-
-  if (affiliate) {
-    const baseCents = Math.max(0, productsPaidCents);
-    const rate = Number(affiliate.commission_rate);
-    const { error: commissionError } = await supabase.from("affiliate_commissions").insert({
-      affiliate_id: affiliate.id,
-      order_id: orderId,
-      base_cents: baseCents,
-      commission_rate: rate,
-      commission_cents: Math.round(baseCents * rate),
-    });
-    // 23505 = commission déjà enregistrée pour cette commande (webhook rejoué)
-    if (commissionError && commissionError.code !== "23505") {
-      throw new Error(`Erreur création commission : ${commissionError.message}`);
-    }
-  }
-  return { discountCents, promoCode: affiliate?.code || null, shippingCents };
-}
-
-async function findOrCreateCustomerFromSession(session) {
-  const stripeCustomerId = typeof session.customer === "string" ? session.customer : null;
-  const email = session.customer_details?.email || null;
-  const fullName = session.customer_details?.name || null;
-  if (!stripeCustomerId && !email) return null;
-
-  const customerUpdates = {
-    ...(stripeCustomerId ? { stripe_customer_id: stripeCustomerId } : {}),
-    ...(email ? { email } : {}),
-    ...(fullName ? { full_name: fullName } : {}),
-    stage: "client",
-    is_active: true,
-  };
-
-  if (stripeCustomerId) {
-    const { data: stripeCustomer, error: stripeReadError } = await supabase
-      .from("customers")
-      .select("id")
-      .eq("activity_id", ACTIVITY_ID)
-      .eq("stripe_customer_id", stripeCustomerId)
-      .maybeSingle();
-
-    if (stripeReadError) throw new Error(`Erreur lecture client Stripe : ${stripeReadError.message}`);
-    if (stripeCustomer) {
-      const { error: updateError } = await supabase
-        .from("customers")
-        .update(customerUpdates)
-        .eq("id", stripeCustomer.id);
-      if (updateError) throw new Error(`Erreur mise à jour client Stripe : ${updateError.message}`);
-      return stripeCustomer;
-    }
-  }
-
-  if (!email) return null;
-
-  const { data: existingCustomers, error: readError } = await supabase
-    .from("customers")
-    .select("id, stripe_customer_id, stage, is_active, created_at")
-    .eq("activity_id", ACTIVITY_ID)
-    .eq("email", email)
-    .order("created_at", { ascending: true })
-    .limit(20);
-
-  if (readError) throw new Error(`Erreur lecture client : ${readError.message}`);
-  const existingCustomer = (existingCustomers || []).sort((a, b) => {
-    const rank = (customer) => (
-      (customer.is_active ? 0 : 10) +
-      ({ client: 0, prospect: 1, inactive: 2 }[customer.stage] ?? 3)
-    );
-    return rank(a) - rank(b);
-  })[0];
-
-  if (existingCustomer) {
-    const emailUpdatePayload = {
-      ...(fullName ? { full_name: fullName } : {}),
-      stage: "client",
-      is_active: true,
-      // Ne jamais écraser un stripe_customer_id existant — on le définit seulement s'il manque
-      ...(!existingCustomer.stripe_customer_id && stripeCustomerId
-        ? { stripe_customer_id: stripeCustomerId }
-        : {}),
-    };
-    const { error: updateError } = await supabase
-      .from("customers")
-      .update(emailUpdatePayload)
-      .eq("id", existingCustomer.id);
-    if (updateError) throw new Error(`Erreur mise à jour client : ${updateError.message}`);
-    return existingCustomer;
-  }
-
-  const { data: createdCustomer, error: insertError } = await supabase
-    .from("customers")
-    .insert({
-      activity_id: ACTIVITY_ID,
-      source: "stripe",
-      full_name: session.customer_details?.name || null,
-      email,
-      type: "individual",
-      stage: "client",
-      is_active: true,
-      ...(stripeCustomerId ? { stripe_customer_id: stripeCustomerId } : {}),
-    })
-    .select("id")
-    .single();
-
-  if (insertError) {
-    // Contrainte unique sur email : deux webhooks concurrents — le premier a déjà créé le customer
-    if (insertError.code === "23505") {
-      const { data: raceFallback } = await supabase
-        .from("customers")
-        .select("id")
-        .eq("activity_id", ACTIVITY_ID)
-        .eq("email", email)
-        .maybeSingle();
-      if (raceFallback) return raceFallback;
-    }
-    throw new Error(`Erreur création client : ${insertError.message}`);
-  }
-  return createdCustomer;
-}
-
-async function persistSubscriptionsForOrder(session, orderId, orderItems, customer) {
-  const stripeSubscriptionId = typeof session.subscription === "string" ? session.subscription : null;
-  if (!stripeSubscriptionId) {
-    console.warn("⚠️ Session abonnement sans stripe_subscription_id — subscription Core non créée.");
-    return;
-  }
-
-  if (!customer) {
-    console.warn("⚠️ Session abonnement sans client résolu — subscription Core non créée.");
-    return;
-  }
-
-  await supabase.from("orders").update({
-    customer_id: customer.id,
-    stripe_customer_id: typeof session.customer === "string" ? session.customer : null,
-  }).eq("id", orderId);
-
-  for (const item of orderItems.filter((i) => isSubscriptionProduct(i.products))) {
-    const product = item.products;
-    const billingCycle = subscriptionBillingCycle(product);
-    const { data: existingSubscription, error: readError } = await supabase
-      .from("subscriptions")
-      .select("id")
-      .eq("stripe_subscription_id", stripeSubscriptionId)
-      .eq("product_id", item.product_id)
-      .maybeSingle();
-
-    if (readError) throw new Error(`Erreur lecture abonnement : ${readError.message}`);
-    if (existingSubscription) continue;
-
-    const { error: insertError } = await supabase.from("subscriptions").insert({
-      customer_id: customer.id,
-      product_id: item.product_id,
-      status: "active",
-      frequency: billingCycle,
-      billing_cycle: billingCycle,
-      price_cents: item.unit_sale_price_ttc_cents,
-      stripe_subscription_id: stripeSubscriptionId,
-      notes: JSON.stringify({
-        order_id: orderId,
-        stripe_customer_id: typeof session.customer === "string" ? session.customer : null,
-        customer_email: session.customer_details?.email || null,
-      }),
-    });
-
-    if (insertError) throw new Error(`Erreur création abonnement : ${insertError.message}`);
-  }
-}
-
-async function processOrderSuccess(session) {
-  console.log('--- 🚀 DÉBUT PROCESS ORDER SUCCESS ---');
-  // payment_intent is null for subscription mode — do not use it as a presence check
-  if (!session.client_reference_id || !session.metadata?.order_id) {
-    console.log('Session webhook incomplète — récupération Stripe API :', session.id);
-    session = await stripe.checkout.sessions.retrieve(session.id);
-  }
-  const orderId = session.client_reference_id || session.metadata?.order_id;
-  console.log('ID de commande trouvé par Stripe :', orderId);
-  if (!orderId) {
-    console.log('❌ ERREUR : Aucun orderId trouvé dans la session Stripe.');
-    return;
-  }
-
-  try {
-    const { data: existingOrder, error: readError } = await supabase
-      .from("orders")
-      .select("id,payment_status")
-      .eq("id", orderId)
-      .maybeSingle();
-
-    if (readError) throw new Error(`Erreur lecture commande : ${readError.message}`);
-    if (!existingOrder) {
-      console.error(`❌ Commande introuvable pour Stripe session ${session.id}`);
-      return;
-    }
-
-    if (existingOrder.payment_status === "paid") {
-      await supabase.from("orders").update({
-        stripe_checkout_session_id: session.id,
-        stripe_payment_intent_id: typeof session.payment_intent === "string" ? session.payment_intent : null,
-        stripe_customer_id: typeof session.customer === "string" ? session.customer : null,
-      }).eq("id", orderId);
-      console.log('ℹ️ Commande déjà payée — effets secondaires ignorés.');
-      return;
-    }
-
-    // 1. Mise à jour statut + adresse de livraison
-    console.log('Mise à jour de la commande en paid dans Supabase...');
-    const shipping = session.shipping_details || session.collected_information?.shipping_details;
-    const shippingFields = shipping ? {
-      shipping_name: shipping.name || null,
-      shipping_address1: shipping.address?.line1 || null,
-      shipping_address2: shipping.address?.line2 || null,
-      shipping_postcode: shipping.address?.postal_code || null,
-      shipping_city: shipping.address?.city || null,
-      shipping_country: shipping.address?.country || null,
-    } : {};
-    const { data: paidOrder, error: updateError } = await supabase.from("orders").update({
-        status: "paid",
-        payment_status: "paid",
-        fulfillment_status: "pending",
-        stripe_checkout_session_id: session.id,
-        stripe_payment_intent_id: typeof session.payment_intent === "string" ? session.payment_intent : null,
-        stripe_customer_id: typeof session.customer === "string" ? session.customer : null,
-        ...shippingFields,
-        notes: JSON.stringify({
-          customer_email: session.customer_details?.email,
-          paid_at: now(),
-        }),
-      })
-      .eq("id", orderId)
-      .neq("payment_status", "paid")
-      .select("id")
-      .maybeSingle();
-    if (updateError) throw new Error(`Erreur Supabase Update : ${updateError.message}`);
-    if (!paidOrder) {
-      console.log('ℹ️ Commande déjà payée par un webhook concurrent — effets secondaires ignorés.');
-      return;
-    }
-    console.log('✅ Commande passée en PAID avec succès.');
-
-    let sessionAmounts = { discountCents: 0, promoCode: null, shippingCents: 0 };
-    try {
-      sessionAmounts = await recordSessionAmounts(session, orderId);
-      if (sessionAmounts.promoCode) console.log(`✅ Vente attribuée au code ${sessionAmounts.promoCode}.`);
-    } catch (amountsErr) {
-      console.error(`❌ [CRITIQUE] Frais de port / commission non enregistrés pour commande ${orderId} : ${amountsErr.message}`);
-    }
-
-    // Générer les numéros séquentiels (order_number = RR-YYYY-NNNN, invoice_number = FAC-YYYY-NNNNN)
-    let generatedOrderNumber = null;
-    let generatedInvoiceNumber = null;
-    try {
-      const [rrResult, facResult] = await Promise.all([
-        supabase.rpc('next_document_number', { p_prefix: 'RR', p_padding: 4 }),
-        supabase.rpc('next_document_number', { p_prefix: 'FAC', p_padding: 5 }),
-      ]);
-      if (rrResult.error) console.error(`⚠️ order_number non généré : ${rrResult.error.message}`);
-      else generatedOrderNumber = rrResult.data;
-      if (facResult.error) console.error(`⚠️ invoice_number non généré : ${facResult.error.message}`);
-      else generatedInvoiceNumber = facResult.data;
-      if (generatedOrderNumber || generatedInvoiceNumber) {
-        await supabase.from('orders').update({
-          ...(generatedOrderNumber ? { order_number: generatedOrderNumber } : {}),
-          ...(generatedInvoiceNumber ? { invoice_number: generatedInvoiceNumber } : {}),
-        }).eq('id', orderId);
-        console.log(`✅ Numéros générés : commande=${generatedOrderNumber} / facture=${generatedInvoiceNumber}`);
-      }
-    } catch (seqErr) {
-      console.error(`⚠️ Génération numéros séquentiels échouée (non bloquant) : ${seqErr.message}`);
-    }
-
-    const customer = await findOrCreateCustomerFromSession(session);
-    if (customer) {
-      const { error: customerUpdateError } = await supabase.from("orders").update({
-        customer_id: customer.id,
-        stripe_customer_id: typeof session.customer === "string" ? session.customer : null,
-      }).eq("id", orderId);
-      if (customerUpdateError) throw new Error(`Erreur liaison client commande : ${customerUpdateError.message}`);
-      console.log('✅ Client Core lié à la commande.');
-    }
-
-    const { data: orderItemsForEffects, error: effectsItemsError } = await supabase
-      .from("order_items")
-      .select("product_id, qty, unit_sale_price_ttc_cents, products(id, name, type)")
-      .eq("order_id", orderId);
-    if (effectsItemsError) throw new Error(`Erreur lecture articles commande : ${effectsItemsError.message}`);
-
-    // Snapshot product_name sur chaque order_item (protège contre les renommages produits futurs)
-    await Promise.all(
-      (orderItemsForEffects || [])
-        .filter((item) => item.products?.name)
-        .map((item) =>
-          supabase.from('order_items')
-            .update({ product_name: item.products.name })
-            .eq('order_id', orderId)
-            .eq('product_id', item.product_id)
-        )
-    );
-
-    const hasPhysicalItems = (orderItemsForEffects || []).some((item) => !isSubscriptionProduct(item.products));
-    const hasSubscriptionItems = (orderItemsForEffects || []).some((item) => isSubscriptionProduct(item.products));
-
-    if (hasPhysicalItems) {
-      console.log('Décrémentation du stock...');
-      const { error: rpcError } = await supabase.rpc("decrement_stock_for_order", { order_id: orderId });
-      if (rpcError) {
-        console.error(`❌ [CRITIQUE] Stock non décrémenté pour commande ${orderId} : ${rpcError.message}`);
-      } else {
-        console.log(`✅ Stock décrémenté avec succès (commande ${orderId}).`);
-      }
-    } else {
-      console.log('ℹ️ Commande abonnement — décrémentation stock ignorée.');
-    }
-
-    if (hasSubscriptionItems) {
-      try {
-        await persistSubscriptionsForOrder(session, orderId, orderItemsForEffects || [], customer);
-        console.log('✅ Abonnement Core synchronisé.');
-      } catch (subErr) {
-        console.error(`❌ [CRITIQUE] Abonnement Core non créé pour commande ${orderId} : ${subErr.message}`);
-        // Non bloquant : l'email abonnement est envoyé même si la persistance Core échoue.
-        // L'abonnement Stripe est actif — la synchronisation Core peut être rejouée manuellement.
-      }
-    }
-
-    // 3. File d'attente Impression — table print_jobs absente en production, étape ignorée
-    console.log('ℹ️ print_jobs non disponible en production — ignoré.');
-
-    // 4. Email de confirmation (Resend — mode payment uniquement)
-    // Anti double-envoi : garanti par le UPDATE atomique .neq("payment_status","paid") ci-dessus.
-    // Un seul webhook concurrent obtient paidOrder non-null et atteint ce bloc.
-    if (!hasSubscriptionItems) {
-      const { customerEmail, emailData } = buildOrderConfirmationData({
-        session,
-        orderId,
-        orderItems: orderItemsForEffects,
-        customer,
-        orderNumber: generatedOrderNumber,
-        shippingFields,
-        discountCents: sessionAmounts.discountCents,
-        promoCode: sessionAmounts.promoCode,
-        shippingCents: sessionAmounts.shippingCents,
-      });
-
-      if (customerEmail) {
-        try {
-          await EmailService.send({
-            template: 'order-confirmation',
-            to: customerEmail,
-            data: emailData,
-            orderId,
-            customerId: customer?.id ?? null,
-            logMetadata: {
-              source: 'stripe_webhook',
-              stripe_session_id: session.id,
-              mode: session.mode,
-            },
-          });
-          console.log(`✅ Email de confirmation Resend envoyé à ${customerEmail}`);
-        } catch (mailErr) {
-          console.error(`❌ Erreur email order-confirmation commande ${orderId} : ${mailErr.message}`);
-        }
-      } else {
-        console.warn(`⚠️ Pas d'email client — order-confirmation non envoyé (commande ${orderId}).`);
-        await insertEmailLog({
-          orderId,
-          customerId: customer?.id ?? null,
-          template: 'order-confirmation',
-          recipient: '',
-          status: 'skipped',
-          errorMessage: 'Adresse email client absente de la session Stripe',
-          metadata: { source: 'stripe_webhook', stripe_session_id: session.id },
-        });
-      }
-    } else {
-      // 4b. Email de confirmation abonnement (Resend — mode subscription)
-      // Anti double-envoi : garanti par le même UPDATE atomique .neq("payment_status","paid") ci-dessus.
-      // Un seul webhook concurrent atteint ce bloc par commande.
-      let renewalTimestamp = null;
-      const subStripeId = typeof session.subscription === 'string' ? session.subscription : null;
-      if (subStripeId) {
-        try {
-          const stripeSub = await stripe.subscriptions.retrieve(subStripeId);
-          renewalTimestamp = stripeSub.current_period_end ?? null;
-        } catch (e) {
-          console.warn('⚠️ Impossible de récupérer la date de renouvellement Stripe :', e.message);
-        }
-      }
-
-      const { customerEmail: subEmail, emailData: subEmailData } = buildSubscriptionConfirmationData({
-        session,
-        orderItems: orderItemsForEffects,
-        customer,
-        renewalTimestamp,
-        shippingCents: sessionAmounts.shippingCents,
-      });
-
-      if (subEmail) {
-        try {
-          await EmailService.send({
-            template: 'subscription-confirmation',
-            to: subEmail,
-            data: subEmailData,
-            orderId,
-            customerId: customer?.id ?? null,
-            logMetadata: {
-              source: 'stripe_webhook',
-              stripe_session_id: session.id,
-              mode: session.mode,
-              stripe_subscription_id: subStripeId,
-            },
-          });
-          console.log(`✅ Email abonnement Resend envoyé à ${subEmail}`);
-        } catch (mailErr) {
-          console.error(`❌ Erreur email subscription-confirmation commande ${orderId} : ${mailErr.message}`);
-        }
-      } else {
-        console.warn(`⚠️ Pas d'email client — subscription-confirmation non envoyé (commande ${orderId}).`);
-        await insertEmailLog({
-          orderId,
-          customerId: customer?.id ?? null,
-          template: 'subscription-confirmation',
-          recipient: '',
-          status: 'skipped',
-          errorMessage: 'Adresse email client absente de la session Stripe',
-          metadata: { source: 'stripe_webhook', stripe_session_id: session.id, stripe_subscription_id: subStripeId },
-        });
-      }
-    }
-
-    // 5. Email interne « Nouvelle commande » à l'équipe (Fanta) pour préparer le colis
-    // Même garantie anti double-envoi que l'email client (UPDATE atomique ci-dessus).
-    const notifyTo = (process.env.ORDER_NOTIFICATION_EMAILS || ORDER_NOTIFICATION_DEFAULT)
-      .split(',').map((s) => s.trim()).filter(Boolean);
-    try {
-      await EmailService.send({
-        template: 'order-notification',
-        to: notifyTo,
-        data: buildOrderNotificationData({
-          session,
-          orderId,
-          orderNumber: generatedOrderNumber,
-          orderItems: orderItemsForEffects,
-          shippingFields,
-          discountCents: sessionAmounts.discountCents,
-          promoCode: sessionAmounts.promoCode,
-          shippingCents: sessionAmounts.shippingCents,
-          isSubscription: hasSubscriptionItems,
-        }),
-        orderId,
-        customerId: customer?.id ?? null,
-        logMetadata: { source: 'stripe_webhook', stripe_session_id: session.id },
-      });
-      console.log(`✅ Email nouvelle commande envoyé à ${notifyTo.join(', ')}`);
-    } catch (mailErr) {
-      console.error(`❌ Erreur email order-notification commande ${orderId} : ${mailErr.message}`);
-    }
-  } catch (err) {
-    console.error('❌ CRASH DANS PROCESS ORDER SUCCESS :', err.message);
-  }
-}
-
-
+const { processOrderSuccess, recordAsyncPaymentFailure } = createOrderProcessor({
+  supabase, stripe, EmailService, insertEmailLog, activityId: ACTIVITY_ID,
+  notificationRecipients: (process.env.ORDER_NOTIFICATION_EMAILS || ORDER_NOTIFICATION_DEFAULT)
+    .split(",").map((s) => s.trim()).filter(Boolean),
+  isSubscriptionProduct, subscriptionBillingCycle,
+  buildOrderConfirmationData, buildSubscriptionConfirmationData, buildOrderNotificationData,
+});
 
 // --- ROUTES STANDARDS ---
 // Avis clients (demande par email, dépôt, lecture des avis publiés)

@@ -148,8 +148,8 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 
-test('server.js: la garde processOrderSuccess n\'inclut plus !session.payment_intent', () => {
-  const src = readFileSync(join(ROOT, 'server/server.js'), 'utf8');
+test('order-processing.js : la garde processOrderSuccess n\'inclut plus !session.payment_intent', () => {
+  const src = readFileSync(join(ROOT, 'server/order-processing.js'), 'utf8');
   // payment_intent est null pour les abonnements — inclure ce check déclenchait un appel Stripe inutile
   const condLine = src.match(/if \(!session\.client_reference_id[^\n]+/);
   assert.ok(condLine, 'La condition de garde processOrderSuccess doit exister');
