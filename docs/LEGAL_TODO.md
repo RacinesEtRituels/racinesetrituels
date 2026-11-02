@@ -47,11 +47,7 @@
 ## ⚠ Actions manuelles restantes
 
 ### Priorité haute
-- [ ] **Choisir et renseigner un médiateur de la consommation** dans `pages/mediateur-consommation.html`
-  - Remplacer le bloc "À compléter" par le nom, coordonnées et URL du médiateur choisi
-  - Organismes possibles : FEVAD, médiateur e-commerce, CM2C, ou autre organisme agréé CECMC
-  - Liste officielle : https://www.economie.gouv.fr/mediation-conso
-  - Une fois choisi, mettre à jour aussi les CGV (section 14)
+- [x] **Médiateur de la consommation : CM2C** (cotisation réglée le 2 novembre 2026 pour 3 ans, échéance le 2 novembre 2029) — coordonnées dans `pages/mediateur-consommation.html` et CGV section 14
 
 ### Priorité moyenne
 - [ ] Confirmer les exceptions légales à la rétractation pour les produits du catalogue
@@ -72,7 +68,6 @@
 
 ## Notes
 
-- `mediateur-consommation.html` contient un bloc TODO visible "À compléter" — à remplacer avant mise en production.
 - La plateforme ODR européenne est référencée : `ec.europa.eu/consumers/odr`.
 - Le formulaire de rétractation dans `retractation-retours.html` est copiable via un bouton JS.
 - Le domaine `racinesetrituels.com` est utilisé dans tous les canonical URLs — vérifier config Vercel.
