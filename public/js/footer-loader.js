@@ -1,7 +1,8 @@
 // Footer loader: fetches components/footer.html and injects into #site-footer
 document.addEventListener('DOMContentLoaded', async () => {
   const placeholder = document.getElementById('site-footer');
-  if (!placeholder) return;
+  // Déjà présent dans la page (scripts/inline-components.mjs) : ses scripts ont tourné
+  if (!placeholder || placeholder.firstElementChild) return;
 
   try {
     const res = await fetch('/components/footer.html');

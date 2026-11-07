@@ -15,16 +15,17 @@ async function loadHeader() {
   }
 
   try {
-    const headerPath = '/components/header.html';
-    console.log('[header-loader] fetching header from:', headerPath);
-    const res = await fetch(headerPath);
-    if (!res.ok) {
-      console.error(`Failed to fetch header: ${res.status} ${res.statusText}. URL attempted: ${headerPath}`);
-      return;
+    // Les pages contiennent déjà l'en-tête (scripts/inline-components.mjs) : le fetch
+    // ne sert plus qu'aux pages qui n'auraient que le placeholder vide.
+    if (!placeholder.firstElementChild) {
+      const headerPath = '/components/header.html';
+      const res = await fetch(headerPath);
+      if (!res.ok) {
+        console.error(`Failed to fetch header: ${res.status} ${res.statusText}. URL attempted: ${headerPath}`);
+        return;
+      }
+      placeholder.innerHTML = await res.text();
     }
-    const html = await res.text();
-    placeholder.innerHTML = html;
-    console.log('[header-loader] header injected, placeholder innerHTML length:', placeholder.innerHTML.length);
 
     // Attach mobile menu toggle if present
     const btn = placeholder.querySelector('#mobileMenuBtn');

@@ -870,5 +870,17 @@ app.post("/api/test-email", adminLimiter, requireAdmin, async (req, res) => {
   }
 });
 
+// Toute URL inconnue : vraie réponse 404 (pas de « soft 404 ») avec une page qui renvoie
+// vers la boutique. Les appels d'API gardent une réponse JSON.
+app.use((req, res) => {
+  if ((req.method === 'GET' || req.method === 'HEAD') && !req.path.startsWith('/api/')
+      && req.accepts(['html', 'json']) === 'html') {
+    // Cache CDN court : une URL qui n'existe pas encore ne doit pas rester en 404 un an
+    if (IS_PROD) res.setHeader('Cache-Control', 'public, max-age=0, s-maxage=600');
+    return res.status(404).sendFile(path.join(frontendPath, 'pages', '404.html'));
+  }
+  res.status(404).json({ error: 'Introuvable' });
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`🚀 Backend Racines & Rituels opérationnel sur port ${PORT}`));

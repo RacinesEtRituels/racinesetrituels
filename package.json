@@ -50,6 +50,8 @@
     "test:cors": "bash scripts/check-cors.sh",
     "build:css": "tailwindcss -i public/css/tailwind.input.css -o public/css/tailwind.css --minify",
     "build": "npm run build:css",
+    "inline:components": "node scripts/inline-components.mjs",
+    "test:components-inline": "node --test tests/components-inline.test.mjs",
     "audit:security": "node scripts/security/security-audit.js",
     "audit:security:debug": "DEBUG=1 node scripts/security/security-audit.js"
   },
