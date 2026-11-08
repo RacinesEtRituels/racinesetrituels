@@ -98,7 +98,6 @@ const server = http.createServer((req, res) => {
   const directRoots = [
     { prefix: "/public/", dir: path.join(ROOT, "public"), strip: "/public/" },
     { prefix: "/components/", dir: path.join(ROOT, "components"), strip: "/components/" },
-    { prefix: "/admin/", dir: path.join(ROOT, "admin"), strip: "/admin/" },
   ];
 
   for (const root of directRoots) {

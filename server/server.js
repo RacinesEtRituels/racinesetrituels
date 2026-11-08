@@ -229,7 +229,7 @@ const staticOptions = IS_PROD
 [
   'index', 'boutique', 'hibiscus-blanc', 'hibiscus-rouge',
   'panier', 'checkout', 'success', 'cancel', 'profil', 'connexion', 'inscription',
-  'assistantIA', 'conseil', 'confreinimotPass', 'recupmotdepass', 'admin', 'khamare',
+  'assistantIA', 'conseil', 'confreinimotPass', 'recupmotdepass', 'khamare',
   'notre-histoire',
   'admin-email-test',
   'admin-email-preview',
@@ -572,15 +572,6 @@ app.get("/public/order-by-session", async (req, res) => {
     }
     res.json({ ok: false, order: null, error: err.message });
   }
-});
-
-app.get("/admin/orders", requireAdmin, async (req, res) => {
-  const { data } = await supabase
-    .from("orders")
-    .select("*, order_items(qty, unit_sale_price_ttc_cents, products(name, slug))")
-    .order("created_at", { ascending: false })
-    .limit(100);
-  res.json({ orders: data });
 });
 
 // --- ADMIN : INFLUENCEURS / AFFILIATION ---

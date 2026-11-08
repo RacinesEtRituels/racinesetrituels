@@ -1,6 +1,5 @@
 User-agent: *
 Allow: /
-Disallow: /admin.html
 Disallow: /admin/
 Disallow: /admin-email-logs.html
 Disallow: /admin-email-preview.html
