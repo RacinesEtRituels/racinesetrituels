@@ -187,7 +187,7 @@
         <!-- Vignettes : photo de présentation et produit dans son emballage -->
         <div class="mt-3 flex justify-center gap-3" id="productThumbs">
           <button type="button"
-            class="product-thumb h-20 w-20 overflow-hidden rounded-lg shadow-sm ring-2 ring-primary transition"
+            class="product-thumb h-16 w-16 sm:h-20 sm:w-20 shrink-0 overflow-hidden rounded-lg shadow-sm ring-2 ring-primary transition"
             data-full="/public/images/khamare-cuillere.webp"
             data-alt="Racines de khamaré (vétiver) séchées dans une cuillère en bois"
             aria-label="Voir la photo de présentation"
@@ -196,7 +196,7 @@
               class="h-full w-full object-cover" loading="lazy" width="160" height="160" />
           </button>
           <button type="button"
-            class="product-thumb h-20 w-20 overflow-hidden rounded-lg shadow-sm ring-2 ring-transparent transition hover:ring-accent"
+            class="product-thumb h-16 w-16 sm:h-20 sm:w-20 shrink-0 overflow-hidden rounded-lg shadow-sm ring-2 ring-transparent transition hover:ring-accent"
             data-full="/public/images/khamare-sachet.webp"
             data-alt="Le sachet de khamaré Racines & Rituels, avec les racines de vétiver visibles par la fenêtre"
             aria-label="Voir le produit dans son emballage"
@@ -205,7 +205,7 @@
               class="h-full w-full object-cover" loading="lazy" width="128" height="160" />
           </button>
           <button type="button"
-            class="product-thumb h-20 w-20 overflow-hidden rounded-lg shadow-sm ring-2 ring-transparent transition hover:ring-accent"
+            class="product-thumb h-16 w-16 sm:h-20 sm:w-20 shrink-0 overflow-hidden rounded-lg shadow-sm ring-2 ring-transparent transition hover:ring-accent"
             data-full="/public/images/khamare-infusion.webp"
             data-alt="Une tasse d'infusion de khamaré, à côté des racines de vétiver séchées"
             aria-label="Voir l'infusion"
@@ -226,6 +226,48 @@
         parfume traditionnellement l'eau à boire. Son infusion développe des notes boisées et fraîches, très
         différentes d'une tisane de fleurs.
       </p>
+    </section>
+
+    <!-- ACHAT : remonté sous la description pour être visible sans défiler sur mobile -->
+    <section class="pb-8" id="buy-box">
+      <div class="flex items-center justify-between mb-4">
+        <span class="text-xl font-bold text-primary" id="productPrice" data-testid="product-price">12,00 €</span>
+        <span class="text-sm text-gray-500 dark:text-gray-400" id="productUnitPrice" data-testid="product-unit-price">soit 120,00 € le kg</span>
+      </div>
+
+      <button id="addToCartBtn"
+        data-product-id="khamare"
+        data-name="Khamaré (Racine de Vétiver)"
+        data-price="12.00"
+        data-image="/public/images/khamare-cuillere.webp"
+        class="flex items-center justify-center w-full h-14 rounded-full bg-primary text-white text-lg font-bold shadow-lg hover:bg-primary/90 transition"
+        data-testid="add-to-cart"
+        aria-label="Ajouter Khamaré au panier">
+        Ajouter au panier
+      </button>
+      <!-- Réassurance : livraison, paiement, garantie, contact -->
+      <ul class="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm" aria-label="Nos engagements">
+        <li class="flex gap-3 items-start">
+          <span class="material-symbols-outlined text-primary" aria-hidden="true">local_shipping</span>
+          <span><strong>Expédié avec Colissimo</strong><br>
+            <span class="text-gray-500 dark:text-gray-400">Environ 3 jours ouvrés en France · 5,90 €, offerte dès 40 € · 9,90 € vers la Belgique, le Luxembourg, l'Allemagne et la Suisse</span></span>
+        </li>
+        <li class="flex gap-3 items-start">
+          <span class="material-symbols-outlined text-primary" aria-hidden="true">lock</span>
+          <span><strong>Paiement sécurisé par Stripe</strong><br>
+            <span class="text-gray-500 dark:text-gray-400">Vos données bancaires ne passent jamais par notre site</span></span>
+        </li>
+        <li class="flex gap-3 items-start">
+          <span class="material-symbols-outlined text-primary" aria-hidden="true">sentiment_satisfied</span>
+          <span><strong>Satisfait ou remboursé</strong><br>
+            <span class="text-gray-500 dark:text-gray-400">Le goût ne vous plaît pas ? 7 jours pour un produit entamé, 14 jours s'il n'est pas ouvert (<a href="/cgv.html#garantie" class="underline">conditions</a>)</span></span>
+        </li>
+        <li class="flex gap-3 items-start">
+          <span class="material-symbols-outlined text-primary" aria-hidden="true">mail</span>
+          <span><strong>Une question ?</strong><br>
+            <span class="text-gray-500 dark:text-gray-400"><a href="mailto:contact@racinesetrituels.com" class="underline">contact@racinesetrituels.com</a> : c'est nous qui vous répondons</span></span>
+        </li>
+      </ul>
     </section>
 
     <!-- INFORMATIONS PRODUIT -->
@@ -286,47 +328,6 @@
       <p class="text-gray-500 text-sm mb-4">Ce produit n'existe pas ou n'est plus disponible.</p>
       <a href="/boutique.html" class="text-primary font-bold underline">Retourner à la boutique</a>
     </div>
-
-    <section class="py-6">
-      <div class="flex items-center justify-between mb-4">
-        <span class="text-xl font-bold text-primary" id="productPrice" data-testid="product-price">12,00 €</span>
-        <span class="text-sm text-gray-500 dark:text-gray-400" id="productUnitPrice" data-testid="product-unit-price">soit 120,00 € le kg</span>
-      </div>
-
-      <button id="addToCartBtn"
-        data-product-id="khamare"
-        data-name="Khamaré (Racine de Vétiver)"
-        data-price="12.00"
-        data-image="/public/images/khamare-cuillere.webp"
-        class="flex items-center justify-center w-full h-14 rounded-full bg-primary text-white text-lg font-bold shadow-lg hover:bg-primary/90 transition"
-        data-testid="add-to-cart"
-        aria-label="Ajouter Khamaré au panier">
-        Ajouter au panier
-      </button>
-      <!-- Réassurance : livraison, paiement, garantie, contact -->
-      <ul class="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm" aria-label="Nos engagements">
-        <li class="flex gap-3 items-start">
-          <span class="material-symbols-outlined text-primary" aria-hidden="true">local_shipping</span>
-          <span><strong>Expédié avec Colissimo</strong><br>
-            <span class="text-gray-500 dark:text-gray-400">Environ 3 jours ouvrés en France · 5,90 €, offerte dès 40 € · 9,90 € vers la Belgique, le Luxembourg, l'Allemagne et la Suisse</span></span>
-        </li>
-        <li class="flex gap-3 items-start">
-          <span class="material-symbols-outlined text-primary" aria-hidden="true">lock</span>
-          <span><strong>Paiement sécurisé par Stripe</strong><br>
-            <span class="text-gray-500 dark:text-gray-400">Vos données bancaires ne passent jamais par notre site</span></span>
-        </li>
-        <li class="flex gap-3 items-start">
-          <span class="material-symbols-outlined text-primary" aria-hidden="true">sentiment_satisfied</span>
-          <span><strong>Satisfait ou remboursé</strong><br>
-            <span class="text-gray-500 dark:text-gray-400">Le goût ne vous plaît pas ? 7 jours pour un produit entamé, 14 jours s'il n'est pas ouvert (<a href="/cgv.html#garantie" class="underline">conditions</a>)</span></span>
-        </li>
-        <li class="flex gap-3 items-start">
-          <span class="material-symbols-outlined text-primary" aria-hidden="true">mail</span>
-          <span><strong>Une question ?</strong><br>
-            <span class="text-gray-500 dark:text-gray-400"><a href="mailto:contact@racinesetrituels.com" class="underline">contact@racinesetrituels.com</a> : c'est nous qui vous répondons</span></span>
-        </li>
-      </ul>
-    </section>
 
     <!-- Avis clients publiés (remplis par /public/js/avis-produit.js, masqué s'il n'y en a pas) -->
     <section id="avis-clients" data-produit="khamare" class="py-6 border-t border-gray-200 dark:border-white/10" hidden></section>
@@ -496,7 +497,6 @@
 </footer>
 <!-- /site-footer --></div>
   <script type="module" src="/public/js/footer-loader.js"></script>
-
 
   <!-- Galerie produit : bascule entre la photo de présentation et le sachet -->
   <script>

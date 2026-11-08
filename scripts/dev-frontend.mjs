@@ -110,7 +110,7 @@ const server = http.createServer((req, res) => {
     return sendFile(res, target);
   }
 
-  const rootAssets = new Set(["/favicon.png", "/favicon.ico", "/manifest.json", "/robots.txt", "/sitemap.xml"]);
+  const rootAssets = new Set(["/favicon.png", "/favicon.ico", "/manifest.json", "/robots.txt", "/sitemap.xml", "/llms.txt"]);
   if (rootAssets.has(pathname)) {
     const target = safeResolve(path.join(ROOT, "public"), pathname.slice(1));
     if (target && fs.existsSync(target)) return sendFile(res, target);

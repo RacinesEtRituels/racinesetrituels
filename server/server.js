@@ -275,6 +275,10 @@ app.get('/déconnexion.html', (req, res) => {
 // SEO technical files served from root URLs
 app.get('/robots.txt', (req, res) => sendCached(res, path.join(frontendPath, 'public', 'robots.txt')));
 app.get('/sitemap.xml', (req, res) => sendCached(res, path.join(frontendPath, 'public', 'sitemap.xml')));
+app.get('/llms.txt', (req, res) => {
+  res.type('text/plain; charset=utf-8');
+  sendCached(res, path.join(frontendPath, 'public', 'llms.txt'));
+});
 app.get('/manifest.json', (req, res) => sendCached(res, path.join(frontendPath, 'public', 'manifest.json')));
 app.get('/favicon.png', (req, res) => sendCached(res, path.join(frontendPath, 'public', 'favicon.png')));
 app.get('/favicon.ico', (req, res) => sendCached(res, path.join(frontendPath, 'public', 'favicon.png')));
