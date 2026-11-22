@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Mot de passe réinitialisé - Racines & Rituels</title>
+  <title>Nouveau mot de passe - Racines & Rituels</title>
 
   <!-- Meta SEO -->
-  <meta name="description" content="Votre mot de passe a été réinitialisé avec succès. Connectez-vous à votre espace Racines & Rituels pour accéder à votre compte.">
+  <meta name="description" content="Choisissez un nouveau mot de passe pour votre compte Racines & Rituels.">
   <meta name="robots" content="noindex, follow"/>
 
   <!-- TailwindCSS -->
@@ -88,26 +88,74 @@
 
     <!-- Contenu principal -->
     <main class="flex-1 p-4 flex justify-center items-center">
-      <div class="bg-white dark:bg-background-dark/30 rounded-xl p-8 w-full max-w-[420px] text-center shadow-md">
+      <div class="bg-white dark:bg-background-dark/30 rounded-xl p-8 w-full max-w-[420px] shadow-md">
 
-        <div class="flex justify-center mb-6">
-          <div class="flex items-center justify-center w-20 h-20 rounded-full bg-primary/20 dark:bg-primary/30">
-            <span class="material-symbols-outlined text-primary text-4xl">check_circle</span>
-          </div>
+        <!-- 1. Vérification du lien reçu par e-mail -->
+        <div id="etatChargement" class="text-center" role="status">
+          <p class="text-gray-700 dark:text-gray-300">Vérification de votre lien…</p>
         </div>
 
-        <h2 class="text-2xl font-bold mb-3">Mot de passe réinitialisé</h2>
+        <!-- 2. Saisie du nouveau mot de passe -->
+        <div id="etatFormulaire" hidden>
+          <h1 class="text-2xl font-bold mb-3 text-center">Choisissez un nouveau mot de passe</h1>
+          <p class="text-gray-700 dark:text-gray-300 mb-6 text-center leading-relaxed">
+            Il remplacera l'ancien pour votre compte Racines &amp; Rituels.
+          </p>
 
-        <p class="text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">
-          Votre mot de passe a bien été mis à jour.<br>
-          Vous pouvez maintenant vous connecter à votre compte.
-        </p>
+          <form id="nouveauMdpForm" method="post">
+            <!-- Identifiant caché : permet au gestionnaire de mots de passe d'enregistrer le bon compte -->
+            <input id="username" name="username" type="email" autocomplete="username" hidden readonly>
 
-        <!-- Bouton retour -->
-        <a href="/connexion.html"
-           class="block w-full h-12 rounded-xl bg-primary text-white font-bold text-lg flex items-center justify-center hover:bg-primary/90 transition">
-          Retour à la connexion
-        </a>
+            <label for="newPassword" class="block text-sm font-medium mb-2">Nouveau mot de passe</label>
+            <input id="newPassword" name="new-password" type="password" autocomplete="new-password"
+              minlength="6" required aria-describedby="aideMdp"
+              class="w-full h-12 px-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-background-light dark:bg-background-dark focus:ring-2 focus:ring-primary/50 outline-none" />
+            <p id="aideMdp" class="mt-2 text-xs text-gray-500 dark:text-gray-400">6 caractères minimum.</p>
+
+            <label class="mt-3 flex items-center gap-2 text-sm">
+              <input id="afficherMdp" type="checkbox"> Afficher le mot de passe
+            </label>
+
+            <div id="erreurMdp" hidden role="alert"
+              class="mt-4 p-3 rounded-lg bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200 text-sm"></div>
+
+            <button id="enregistrerBtn" type="submit"
+              class="mt-6 w-full h-12 rounded-xl bg-primary text-white font-bold text-lg hover:bg-primary/90 transition disabled:opacity-60">
+              Enregistrer le mot de passe
+            </button>
+          </form>
+        </div>
+
+        <!-- 3. Mot de passe changé -->
+        <div id="etatSucces" hidden class="text-center">
+          <div class="flex justify-center mb-6">
+            <div class="flex items-center justify-center w-20 h-20 rounded-full bg-primary/20 dark:bg-primary/30">
+              <span class="material-symbols-outlined text-primary text-4xl" aria-hidden="true">check_circle</span>
+            </div>
+          </div>
+          <h1 class="text-2xl font-bold mb-3">Mot de passe réinitialisé</h1>
+          <p class="text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">
+            Votre mot de passe a bien été mis à jour.<br>
+            Vous êtes connecté(e) à votre compte.
+          </p>
+          <a href="/profil.html"
+             class="w-full h-12 rounded-xl bg-primary text-white font-bold text-lg flex items-center justify-center hover:bg-primary/90 transition">
+            Accéder à mon compte
+          </a>
+        </div>
+
+        <!-- 4. Lien invalide ou expiré -->
+        <div id="etatLienInvalide" hidden class="text-center">
+          <h1 class="text-2xl font-bold mb-3">Lien expiré ou déjà utilisé</h1>
+          <p class="text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">
+            Pour des raisons de sécurité, le lien de réinitialisation n'est valable qu'une fois et pour une durée limitée.
+            Demandez-en un nouveau.
+          </p>
+          <a href="/recupmotdepass.html"
+             class="w-full h-12 rounded-xl bg-primary text-white font-bold text-lg flex items-center justify-center hover:bg-primary/90 transition">
+            Recevoir un nouveau lien
+          </a>
+        </div>
 
       </div>
     </main>
@@ -161,6 +209,96 @@
   </div>
 
   <script src="/public/js/config.js"></script>
+  <script type="module">
+    import { supabase } from "/public/js/supabase.js";
+
+    const etats = ["etatChargement", "etatFormulaire", "etatSucces", "etatLienInvalide"];
+    function afficher(id) {
+      etats.forEach(e => { document.getElementById(e).hidden = (e !== id); });
+      const titre = document.querySelector("#" + id + " h1");
+      if (titre) { titre.tabIndex = -1; titre.focus(); }
+    }
+
+    // Supabase renvoie l'erreur dans l'URL quand le lien est expiré ou déjà utilisé
+    const hash = new URLSearchParams(location.hash.slice(1));
+    const query = new URLSearchParams(location.search);
+    const erreurLien = hash.get("error_code") || hash.get("error") || query.get("error_code") || query.get("error");
+    // Jeton de récupération présent : flux implicite (#access_token…&type=recovery) ou PKCE (?code=)
+    const jetonPresent = (hash.get("type") === "recovery" && hash.has("access_token")) || query.has("code");
+
+    let pret = false;
+    let sessionRecup = null;
+
+    // Seule la session créée par le lien de réinitialisation ouvre le formulaire :
+    // une session déjà ouverte sur un autre compte ne doit jamais être modifiée ici.
+    supabase.auth.onAuthStateChange((event, session) => {
+      if (event !== "PASSWORD_RECOVERY" || !session || pret) return;
+      pret = true;
+      sessionRecup = session;
+      document.getElementById("username").value = session.user?.email || "";
+      afficher("etatFormulaire");
+      document.getElementById("newPassword").focus();
+      // Retire les jetons de l'adresse (historique, partage de l'URL)
+      history.replaceState(null, "", location.pathname);
+    });
+
+    document.getElementById("afficherMdp").addEventListener("change", (e) => {
+      document.getElementById("newPassword").type = e.target.checked ? "text" : "password";
+    });
+
+    const MESSAGES = {
+      same_password: "Ce mot de passe est identique à l'ancien. Choisissez-en un autre.",
+      weak_password: "Ce mot de passe est trop faible. Choisissez-en un plus long ou plus varié.",
+      session_not_found: "Votre lien a expiré. Demandez un nouveau lien de réinitialisation.",
+    };
+
+    document.getElementById("nouveauMdpForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const champ = document.getElementById("newPassword");
+      const erreur = document.getElementById("erreurMdp");
+      const bouton = document.getElementById("enregistrerBtn");
+      erreur.hidden = true;
+
+      if (!pret || !sessionRecup) { afficher("etatLienInvalide"); return; }
+      if (champ.value.length < 6) {
+        erreur.textContent = "Votre mot de passe doit contenir au moins 6 caractères.";
+        erreur.hidden = false;
+        champ.focus();
+        return;
+      }
+
+      bouton.disabled = true;
+      bouton.textContent = "Enregistrement…";
+      let error = null;
+      try {
+        // Vérifie que la session active est toujours celle du lien avant d'écrire
+        const { data } = await supabase.auth.getSession();
+        if (data.session?.user?.id !== sessionRecup.user.id) { afficher("etatLienInvalide"); return; }
+        ({ error } = await supabase.auth.updateUser({ password: champ.value }));
+      } catch (err) {
+        error = err;
+      } finally {
+        bouton.disabled = false;
+        bouton.textContent = "Enregistrer le mot de passe";
+      }
+
+      if (error) {
+        erreur.textContent = MESSAGES[error.code]
+          || "Le mot de passe n'a pas pu être enregistré. Réessayez dans un instant, ou demandez un nouveau lien.";
+        erreur.hidden = false;
+        return;
+      }
+      afficher("etatSucces");
+    });
+
+    if (erreurLien || !jetonPresent) {
+      afficher("etatLienInvalide");
+    } else {
+      // getSession() attend que Supabase ait lu le jeton ; l'événement PASSWORD_RECOVERY suit aussitôt
+      try { await supabase.auth.getSession(); } catch (_) {}
+      setTimeout(() => { if (!pret) afficher("etatLienInvalide"); }, 1500);
+    }
+  </script>
   <script type="module" src="/public/js/header-loader.js"></script>
   <script type="module" src="/public/js/footer-loader.js"></script>
 
