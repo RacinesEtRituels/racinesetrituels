@@ -98,17 +98,19 @@
         </p>
 
         <!-- Formulaire -->
+        <form id="resetForm" method="post">
         <label class="block mb-4">
           <span class="text-sm font-medium">Adresse e-mail</span>
-          <input id="email" type="email" placeholder="votre.email@exemple.com"
+          <input id="email" name="email" type="email" autocomplete="email" spellcheck="false" required placeholder="votre.email@exemple.com"
             class="mt-2 w-full h-12 px-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-background-light dark:bg-background-dark focus:ring-2 focus:ring-primary/50 outline-none" />
         </label>
 
         <!-- Bouton -->
-        <button id="resetBtn"
+        <button id="resetBtn" type="submit"
           class="w-full h-12 rounded-xl bg-primary text-white font-bold text-lg hover:bg-primary/90 transition">
           Envoyer le lien
         </button>
+        </form>
 
         <!-- Message succès -->
         <div id="successMsg"
@@ -184,7 +186,8 @@
     const successMsg = document.getElementById("successMsg");
     const errorMsg = document.getElementById("errorMsg");
 
-    document.getElementById("resetBtn").addEventListener("click", async () => {
+    document.getElementById("resetForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
       const email = emailInput.value.trim();
 
       if (!email) {

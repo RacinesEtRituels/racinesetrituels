@@ -180,6 +180,7 @@
     import { getCart, removeFromCart, updateQuantity, clearCart, getTotals, normalizeCartIds, isUUID } from "/public/js/cart.js";
     import { BACKEND_URL } from "/public/js/backend-config.js";
     import { getStoredPromoCode, storePromoCode, normalizePromoCode } from "/public/js/affiliate.js";
+    const FALLBACK_IMG = "/favicon.png";
 
     const promoInput = document.getElementById("promoCode");
     promoInput.value = getStoredPromoCode();
@@ -228,27 +229,34 @@
         div.className = "flex gap-4 bg-white dark:bg-background-dark/40 p-4 rounded-xl shadow";
 
         div.innerHTML = `
-          <img src="${item.image || 'https://via.placeholder.com/70'}" class="size-[70px] rounded-lg object-cover" onerror="this.src='https://via.placeholder.com/70'">
+          <img alt="" width="70" height="70" class="size-[70px] rounded-lg object-cover">
 
           <div class="flex flex-col justify-between flex-1">
-            <p class="font-medium">${item.name}${item._invalid ? " (introuvable)" : ""}</p>
+            <p class="font-medium nom-produit"></p>
             <p class="text-sm">${Number(item.price || 0).toFixed(2)} €</p>
           </div>
 
           <div class="flex flex-col justify-between items-end">
 
-            <button data-id="${item.id}" class="deleteBtn text-red-600 hover:text-red-800">
+            <button type="button" aria-label="Retirer du panier" class="deleteBtn text-red-600 hover:text-red-800">
               <span class="material-symbols-outlined text-xl">delete</span>
             </button>
 
             <div class="flex items-center gap-2">
-              <button data-id="${item.id}" class="minusBtn h-7 w-7 flex items-center justify-center rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600">−</button>
-              <span class="w-8 text-center">${item.quantity || item.qty || 1}</span>
-              <button data-id="${item.id}" class="plusBtn h-7 w-7 flex items-center justify-center rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600">+</button>
+              <button type="button" aria-label="Diminuer la quantité" class="minusBtn h-7 w-7 flex items-center justify-center rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600">−</button>
+              <span class="w-8 text-center">${Math.max(1, parseInt(item.quantity || item.qty, 10) || 1)}</span>
+              <button type="button" aria-label="Augmenter la quantité" class="plusBtn h-7 w-7 flex items-center justify-center rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600">+</button>
             </div>
 
           </div>
         `;
+
+        // Nom et image posés en propriétés, jamais en HTML : le panier vient du localStorage
+        const img = div.querySelector("img");
+        img.addEventListener("error", () => { img.src = FALLBACK_IMG; }, { once: true });
+        img.src = item.image || FALLBACK_IMG;
+        div.querySelectorAll("button").forEach(b => { b.dataset.id = String(item.id); });
+        div.querySelector(".nom-produit").textContent = (item.name || "") + (item._invalid ? " (introuvable)" : "");
 
         cartItemsEl.appendChild(div);
       });

@@ -93,37 +93,39 @@
       <!-- MESSAGE -->
       <div id="message" class="hidden mb-4 p-3 rounded-xl text-sm font-medium"></div>
 
+      <form id="inscriptionForm" method="post">
       <!-- PRENOM -->
       <label class="block mb-4">
         <span class="font-medium">Prénom</span>
-        <input id="prenom" type="text" placeholder="Votre prénom"
+        <input id="prenom" name="prenom" type="text" autocomplete="given-name" required placeholder="Votre prénom"
           class="mt-1 w-full h-12 px-4 rounded-xl border border-gray-300 dark:border-gray-700 bg-background-light dark:bg-background-dark focus:ring-primary focus:ring-2 outline-none">
       </label>
 
       <!-- EMAIL -->
       <label class="block mb-4">
         <span class="font-medium">Adresse e-mail</span>
-        <input id="email" type="email" placeholder="votre.email@exemple.com"
+        <input id="email" name="email" type="email" autocomplete="username" spellcheck="false" required placeholder="votre.email@exemple.com"
           class="mt-1 w-full h-12 px-4 rounded-xl border border-gray-300 dark:border-gray-700 bg-background-light dark:bg-background-dark focus:ring-primary focus:ring-2 outline-none">
       </label>
 
       <!-- PASSWORD -->
       <label class="block mb-4">
         <span class="font-medium">Mot de passe</span>
-        <input id="password" type="password" placeholder="Créer un mot de passe"
+        <input id="password" name="password" type="password" autocomplete="new-password" minlength="6" required placeholder="Créer un mot de passe"
           class="mt-1 w-full h-12 px-4 rounded-xl border border-gray-300 dark:border-gray-700 bg-background-light dark:bg-background-dark focus:ring-primary focus:ring-2 outline-none">
       </label>
 
       <!-- PASSWORD 2 -->
       <label class="block mb-6">
         <span class="font-medium">Confirmez le mot de passe</span>
-        <input id="password2" type="password" placeholder="Répétez votre mot de passe"
+        <input id="password2" name="password2" type="password" autocomplete="new-password" minlength="6" required placeholder="Répétez votre mot de passe"
           class="mt-1 w-full h-12 px-4 rounded-xl border border-gray-300 dark:border-gray-700 bg-background-light dark:bg-background-dark focus:ring-primary focus:ring-2 outline-none">
       </label>
 
-      <button id="inscriptionBtn" class="w-full h-12 rounded-xl bg-primary text-white font-bold hover:bg-primary/90 transition">
+      <button id="inscriptionBtn" type="submit" class="w-full h-12 rounded-xl bg-primary text-white font-bold hover:bg-primary/90 transition">
         Créer mon compte
       </button>
+      </form>
 
       <div class="my-6 h-px bg-gray-300 dark:bg-gray-700"></div>
 
@@ -152,7 +154,8 @@
     }
   }
 
-  document.getElementById("inscriptionBtn").addEventListener("click", async () => {
+  document.getElementById("inscriptionForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
     const prenom = document.getElementById("prenom").value.trim();
     const email = document.getElementById("email").value.trim();
     const password = document.getElementById("password").value.trim();

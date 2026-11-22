@@ -91,17 +91,18 @@
 
           <h1 class="text-3xl font-bold text-center mb-6">Connexion à mon compte</h1>
 
+          <form id="loginForm" method="post">
           <!-- Email -->
           <div class="mb-5">
-            <label class="block font-medium mb-1">Adresse e-mail</label>
-            <input id="email" type="email" placeholder="votre.email@exemple.com"
+            <label for="email" class="block font-medium mb-1">Adresse e-mail</label>
+            <input id="email" name="email" type="email" autocomplete="username" spellcheck="false" required placeholder="votre.email@exemple.com"
               class="w-full h-12 px-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-background-light dark:bg-background-dark focus:ring-2 focus:ring-primary focus:outline-none">
           </div>
 
           <!-- Mot de passe -->
           <div class="mb-5">
-            <label class="block font-medium mb-1">Mot de passe</label>
-            <input id="password" type="password" placeholder="Votre mot de passe"
+            <label for="password" class="block font-medium mb-1">Mot de passe</label>
+            <input id="password" name="password" type="password" autocomplete="current-password" required placeholder="Votre mot de passe"
               class="w-full h-12 px-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-background-light dark:bg-background-dark focus:ring-2 focus:ring-primary focus:outline-none">
           </div>
 
@@ -113,9 +114,10 @@
           </div>
 
           <!-- Bouton connexion -->
-          <button id="loginBtn" class="w-full h-12 rounded-xl bg-primary text-white font-bold hover:bg-primary/90 transition">
+          <button id="loginBtn" type="submit" class="w-full h-12 rounded-xl bg-primary text-white font-bold hover:bg-primary/90 transition">
             Se connecter
           </button>
+          </form>
 
           <!-- Séparateur -->
           <div class="my-6 h-px bg-gray-300 dark:bg-gray-600"></div>
@@ -135,7 +137,8 @@
   <script type="module">
     import { supabase } from "/public/js/supabase.js";
 
-    document.getElementById("loginBtn").addEventListener("click", async () => {
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value.trim();
 
