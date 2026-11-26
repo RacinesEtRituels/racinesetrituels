@@ -16,6 +16,7 @@ import rateLimit from "express-rate-limit";
 import { createAvisRouter } from "./avis.js";
 import { requireAffiliateManagerWith, supabaseActivityAccess } from "./affiliate-auth.js";
 import { createOrderProcessor, SHIPPING_LINE_NAME } from "./order-processing.js";
+import { creerLecteurProduits, routesProduits, routeAvisGoogle } from "./merchant.js";
 
 // --- CONFIGURATION ---
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -109,16 +110,22 @@ app.use(cors({
   },
 }));
 
+// Identifiant du compte Google Merchant Center (chiffres seulement). Vide : encart d'avis Google désactivé.
+const _merchantId = (process.env.GOOGLE_MERCHANT_ID || '').trim();
+const GOOGLE_MERCHANT_ID = /^\d{5,15}$/.test(_merchantId) ? _merchantId : '';
+
 // --- SÉCURITÉ : HEADERS HTTP ---
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc:  ["'self'", "'unsafe-inline'", "https://esm.sh"],
+      // Google (encart « Avis clients Google ») : seulement si le compte Merchant est configuré.
+      scriptSrc:  ["'self'", "'unsafe-inline'", "https://esm.sh", ...(GOOGLE_MERCHANT_ID ? ["https://apis.google.com", "https://*.gstatic.com"] : [])],
+      ...(GOOGLE_MERCHANT_ID ? { frameSrc: ["'self'", "https://www.google.com", "https://apis.google.com"] } : {}),
       styleSrc:   ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
       fontSrc:    ["'self'", "https://fonts.gstatic.com"],
-      imgSrc:     ["'self'", "data:", "blob:"],
-      connectSrc: ["'self'", "https://*.supabase.co", "wss://*.supabase.co"],
+      imgSrc:     ["'self'", "data:", "blob:", ...(GOOGLE_MERCHANT_ID ? ["https://www.google.com", "https://*.gstatic.com"] : [])],
+      connectSrc: ["'self'", "https://*.supabase.co", "wss://*.supabase.co", ...(GOOGLE_MERCHANT_ID ? ["https://apis.google.com", "https://content.googleapis.com", "https://www.google.com"] : [])],
       frameAncestors: ["'none'"],
       baseUri:    ["'self'"],
       formAction: ["'self'"],
@@ -180,6 +187,7 @@ const adminLimiter = rateLimit({
 app.use('/api/admin', adminLimiter);
 app.use('/api', apiLimiter);
 app.use('/create-checkout-session', apiLimiter);
+app.use('/public/avis-google', apiLimiter);
 
 // Sources d'arrivée des visiteurs (Google, ChatGPT…) : compteur agrégé, sans identifiant.
 const SOURCES_VISITE = ['google', 'bing', 'chatgpt', 'perplexity', 'claude', 'copilot', 'duckduckgo', 'autre_moteur', 'autre_site'];
@@ -227,9 +235,9 @@ const staticOptions = IS_PROD
 // --- ROUTES HTML (URLs propres → /pages/) ---
 // Déclarées AVANT express.static pour prendre priorité sur les originaux à la racine
 [
-  'index', 'boutique', 'hibiscus-blanc', 'hibiscus-rouge',
+  'index', 'boutique',
   'panier', 'checkout', 'success', 'cancel', 'profil', 'connexion', 'inscription',
-  'assistantIA', 'conseil', 'confreinimotPass', 'recupmotdepass', 'khamare',
+  'assistantIA', 'conseil', 'confreinimotPass', 'recupmotdepass',
   'notre-histoire',
   'admin-email-test',
   'admin-email-preview',
@@ -307,6 +315,16 @@ app.get('/', (req, res) => {
 const now = () => new Date().toISOString();
 // activity_id et channel_id requis NOT NULL dans orders
 const ACTIVITY_ID = process.env.SUPABASE_ACTIVITY_ID || "23823b14-7ed5-4ce2-a35d-87d1715ac95a";
+
+// Pages produits (hibiscus rouge, hibiscus blanc, khamaré) : disponibilité lue en base,
+// pour que Google Merchant Center voie la même chose que le flux /merchant-feed.xml.
+routesProduits(app, {
+  lireProduits: creerLecteurProduits(supabase, { activityId: ACTIVITY_ID }),
+  dossierPages: path.join(frontendPath, 'pages'),
+  enProd: IS_PROD,
+});
+routeAvisGoogle(app, { stripe, merchantId: GOOGLE_MERCHANT_ID });
+
 const CHANNEL_ID  = process.env.SUPABASE_CHANNEL_ID  || "a96d625a-a933-444d-a560-1f6671137028";
 
 const isSubscriptionProduct = (product) => product?.type === "subscription";

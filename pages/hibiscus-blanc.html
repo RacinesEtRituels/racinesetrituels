@@ -39,6 +39,7 @@
       "https://www.racinesetrituels.com/public/images/hibiscus-blanc-infusion.jpg"
     ],
     "brand": { "@type": "Brand", "name": "Racines & Rituels" },
+    "sku": "RR-HIBISCUS-BLANC-100G",
     "offers": {
       "@type": "Offer",
       "price": "6.00",
@@ -356,7 +357,7 @@
         btn.textContent = "Chargement...";
 
         const resp = await supabaseFetch(
-          `/rest/v1/products?slug=eq.${encodeURIComponent(SLUG)}&select=id,name,price_cents,slug&is_active=eq.true&activity_id=eq.${RR_ACTIVITY_ID}`
+          `/rest/v1/products?slug=eq.${encodeURIComponent(SLUG)}&select=id,name,price_cents,slug,stock&is_active=eq.true&activity_id=eq.${RR_ACTIVITY_ID}`
         );
 
         if (!resp.ok) throw new Error(`Supabase error ${resp.status}`);
@@ -380,6 +381,13 @@
           // Prix au kilogramme du sachet de 100 g (information obligatoire des produits préemballés)
           const unitEl = document.getElementById("productUnitPrice");
           if (unitEl) unitEl.textContent = 'soit ' + (fetchedProduct.price_cents * 10 / 100).toFixed(2).replace('.', ',') + ' € le kg';
+        }
+
+        // Épuisé : même information que les données lues par Google (disponibilité réelle).
+        if (Number(fetchedProduct.stock ?? 0) <= 0) {
+          btn.disabled = true;
+          btn.textContent = "Épuisé";
+          return;
         }
 
         btn.disabled = false;
