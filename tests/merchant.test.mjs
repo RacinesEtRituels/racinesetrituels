@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'fs';
 import {
   PRODUITS_GOOGLE, estDisponible, appliquerDisponibilite, fluxGoogle,
-  dateLivraisonEstimee, creerLecteurProduits,
+  dateLivraisonEstimee, creerLecteurProduits, appliquerProduit,
 } from '../server/merchant.js';
 
 const page = (slug) => readFileSync(new URL(`../pages/${slug}.html`, import.meta.url), 'utf8');
@@ -79,4 +79,18 @@ test('les pages produits désactivent le bouton quand le stock est à 0', () => 
     assert.ok(html.includes('select=id,name,price_cents,slug,stock'), p.slug);
     assert.ok(html.includes('btn.textContent = "Épuisé"'), p.slug);
   }
+});
+
+test('le prix de la base remplace celui écrit dans la page', () => {
+  const html = appliquerProduit(page('khamare'), { is_active: true, stock: 0, price_cents: 1350 });
+  assert.match(html, /"price": "13\.50"/);
+  assert.doesNotMatch(html, /"price": "12\.00"/);
+  assert.match(html, /id="productPrice"[^>]*>13,50 €</);
+  assert.match(html, /id="productUnitPrice"[^>]*>soit 135,00 € le kg</);
+  assert.match(html, /schema\.org\/OutOfStock/);
+});
+
+test('prix invalide en base : la page garde son prix', () => {
+  const html = appliquerProduit(page('khamare'), { is_active: true, stock: 2, price_cents: null });
+  assert.match(html, /"price": "12\.00"/);
 });

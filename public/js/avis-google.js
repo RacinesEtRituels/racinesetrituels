@@ -47,8 +47,18 @@
     carte.appendChild(bloc);
   }
 
-  fetch(backend + '/public/avis-google?session_id=' + encodeURIComponent(sessionId), { headers: { Accept: 'application/json' } })
-    .then(function (r) { return r.ok ? r.json() : null; })
-    .then(function (d) { if (d && d.actif === true) afficher(d); })
-    .catch(function () {});
+  var affiche = false;
+  function charger() {
+    if (affiche) return;
+    fetch(backend + '/public/avis-google?session_id=' + encodeURIComponent(sessionId), { headers: { Accept: 'application/json' } })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) {
+        if (affiche || !d) return;
+        if (d.actif === true) { affiche = true; afficher(d); }
+      })
+      .catch(function () {});
+  }
+  // Paiement encore en validation au chargement : on réessaie quand success.js le confirme.
+  window.addEventListener('rr-order-paid', function () { if (!affiche) charger(); });
+  charger();
 })();

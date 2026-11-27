@@ -202,6 +202,7 @@ const run = async () => {
             ? "Merci pour votre commande. Un email de confirmation vous a été envoyé."
             : "Merci pour votre commande. Votre paiement est confirmé.";
           retryBtn.style.display = "none";
+          window.dispatchEvent(new CustomEvent("rr-order-paid"));
           try {
             localStorage.removeItem("rr_cart");
             window.dispatchEvent(new CustomEvent("rr-cart-updated", { detail: { subtotal: 0, total: 0, count: 0 } }));

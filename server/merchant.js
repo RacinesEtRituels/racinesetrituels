@@ -45,6 +45,26 @@ export function appliquerDisponibilite(html, disponible) {
     `"availability": "${disponible ? EN_STOCK : EPUISE}"`);
 }
 
+const euros = (cents) => (cents / 100).toFixed(2).replace('.', ',') + ' €';
+
+/**
+ * Remplace le prix écrit dans la page (données structurées, prix affiché, prix au kg)
+ * par celui de la base, pour que Google voie le même prix dans la page et dans le flux.
+ */
+export function appliquerPrix(html, cents) {
+  if (!Number.isInteger(cents) || cents <= 0) return html;
+  return html
+    .replace(/"price"\s*:\s*"\d+(?:\.\d+)?"/g, `"price": "${(cents / 100).toFixed(2)}"`)
+    .replace(/(id="productPrice"[^>]*>)[^<]*(<)/, `$1${euros(cents)}$2`)
+    .replace(/(id="productUnitPrice"[^>]*>)[^<]*(<)/, `$1soit ${euros(cents * 10)} le kg$2`);
+}
+
+/** Page produit avec prix et disponibilité de la base. */
+export function appliquerProduit(html, base) {
+  const avecDispo = appliquerDisponibilite(html, estDisponible(base));
+  return base ? appliquerPrix(avecDispo, base.price_cents) : avecDispo;
+}
+
 /**
  * Lit prix et stock en base. Garde le résultat quelques instants pour ne pas
  * interroger la base à chaque visite. En cas d'erreur, renvoie null.
@@ -118,7 +138,7 @@ export function dateLivraisonEstimee(pays, depuis = new Date()) {
   return d.toISOString().slice(0, 10);
 }
 
-/** Pages produits servies avec la disponibilité réelle. */
+/** Pages produits servies avec le prix et la disponibilité réels. */
 export function routesProduits(app, { lireProduits, dossierPages, enProd }) {
   const fichiers = new Map();
   const lireFichier = async (slug) => {
@@ -132,7 +152,7 @@ export function routesProduits(app, { lireProduits, dossierPages, enProd }) {
         const html = await lireFichier(slug);
         const produits = await lireProduits();
         // Base injoignable : page d'origine, sans la garder longtemps en cache.
-        const corps = produits ? appliquerDisponibilite(html, estDisponible(produits.get(slug))) : html;
+        const corps = produits ? appliquerProduit(html, produits.get(slug)) : html;
         if (enProd) {
           res.setHeader('Cache-Control', produits
             ? 'public, max-age=0, s-maxage=300, stale-while-revalidate=600'
@@ -168,14 +188,16 @@ export function routeAvisGoogle(app, { stripe, merchantId }) {
       const email = s.customer_details?.email;
       const livraison = s.shipping_details || s.collected_information?.shipping_details;
       const pays = String(livraison?.address?.country || s.customer_details?.address?.country || 'FR').toUpperCase();
-      if (s.payment_status !== 'paid' || !email || !s.client_reference_id) return res.json({ actif: false });
+      if (s.payment_status !== 'paid') return res.json({ actif: false, attente: true });
+      if (!email || !s.client_reference_id) return res.json({ actif: false });
       res.json({
         actif: true,
         merchant_id: Number(merchantId),
         order_id: s.client_reference_id,
         email,
         delivery_country: pays,
-        estimated_delivery_date: dateLivraisonEstimee(pays),
+        // Calculée depuis la date de la commande : une visite tardive de la page ne la décale pas.
+        estimated_delivery_date: dateLivraisonEstimee(pays, new Date((s.created || Date.now() / 1000) * 1000)),
       });
     } catch (err) {
       console.error('[avis-google] :', err.message);
